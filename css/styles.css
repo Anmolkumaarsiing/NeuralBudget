@@ -78,6 +78,7 @@ body
     text-align: center;
     padding: 100px; 
     background: white;
+    padding-top: 20;
 }
 
  
@@ -104,8 +105,10 @@ body
     justify-content: space-between;
  }
 
- .features-col
+.features-col
  {
+    width: 500px;
+    height: 400px;
     flex-basis: 31%;
     background: #0694d0;
     border-radius: 10px;
