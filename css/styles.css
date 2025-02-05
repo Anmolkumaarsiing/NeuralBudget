@@ -101,6 +101,7 @@ body
 .features-image img {
     width: 100%;
     max-width: 400px;
+    border-radius: 10px;
 }
 
 .features-text {
@@ -162,13 +163,14 @@ body
 .features-2-image img {
     width: 100%;
     max-width: 400px;
+    border-radius: 10px;
 }
 
 
 /*-----------The Team---------------*/
 .team-section 
 {
-    padding: 50px 20px;
+    padding: 70px 20px;
     max-width: 1200px;
     margin: 0 auto;
     text-align: center;
