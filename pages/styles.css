@@ -1,0 +1,209 @@
+/* Global Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;
+    background-color: #ffffff;
+}
+
+/* Dashboard Layout */
+.dashboard-container {
+    display: flex;
+    width: 100%;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: #ffffff;
+    padding: 20px;
+    height: 100vh;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.09);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h2 {
+    text-align: center;
+    color: #2a2a72;
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.nav-links li {
+    padding: 15px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s;
+    color: #2a2a72;
+}
+
+.nav-links li i {
+    margin-right: 10px;
+}
+
+.nav-links li:hover,
+.nav-links .active {
+    background: #2a2a72;
+    color: white;
+    border-radius: 5px;
+    margin: 8px;
+}
+
+/* Main Content */
+.main-content {
+    flex-grow: 1;
+}
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 9px;
+    padding: 15px 20px;
+    width: 96%;
+    background-color: #ffffff;
+    color: #000000;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); 
+    border-radius: 10px;
+}
+
+.greeting h3 {
+    margin: 0;
+    font-size: 20px;
+    color: #0f3460;
+}
+
+.profile-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.slider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    color: #0f3460; /* Icon color */
+    font-size: 24px;
+    border-radius: 50%; /* Make it circular */
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+
+/* Optional: Adjust positioning if needed */
+.slider i {
+    font-size: 24px;
+}
+
+
+.profile-btn {
+    background: none;
+    border: none;
+    color: #0f3460;
+    font-size: 30px; /* Adjust size */
+    cursor: pointer;
+    padding: 5px;
+}
+
+.profile-btn i {
+    margin-left: 10px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    background-color: #1b1b2f;
+    min-width: 150px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    z-index: 10;
+}
+
+.dropdown-content a {
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+}
+
+.dropdown-content a:hover {
+    background-color: #0f3460;
+}
+
+/* Overview Cards */
+.overview {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.card {
+    background: white;
+    padding: 30px;
+    width: 22%;
+    margin: 10px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card i {
+    font-size: 20px;
+    color: #2a2a72;
+}
+
+.card h3 {
+    margin: 10px 0;
+}
+
+/* Transactions Table */
+.transactions {
+    margin-top: 20px;
+    margin-left: 5px;
+    background: white;
+    padding: 20px;
+    width: 96%;
+    border-radius: 10px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.transactions table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.transactions th,
+.transactions td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.completed {
+    color: green;
+    font-weight: bold;
+}
+
+.pending {
+    color: orange;
+    font-weight: bold;
+}
+
+.due {
+    color: rgb(255, 0, 0);
+    font-weight: bold;
+}

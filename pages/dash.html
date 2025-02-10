@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Budget AI - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+</head>
+<body>
+
+<div class="dashboard-container">
+    
+    <!-- Sidebar Section -->
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>Neural Budget AI</h2>
+        </div>
+        <ul class="nav-links">
+            <li class="active"><i class="fas fa-home"></i> Dashboard</li>
+            <li><i class="fas fa-plus-circle"></i> Add Transaction</li>
+            <li><i class="fas fa-money-bill-wave"></i> Income Tracker</li>
+            <li><i class="fas fa-shopping-cart"></i> Expense Manager</li>
+            <li><i class="fas fa-lightbulb"></i> Smart Insights</li>
+            <li><i class="fas fa-wallet"></i> Budget Planner</li>
+            <li><i class="fas fa-robot"></i> AI Assitance</li>
+            <li><i class="fas fa-user"></i> Profile</li>
+            <li><i class="fas fa-sign-out-alt"></i> Sign Out</li>
+        </ul>
+    </aside>
+    
+
+    <!-- Main Content Section -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="slider">
+                <i class="fas fa-bars"></i>  <!-- Font Awesome Menu Icon -->
+            </div>
+            
+            <div class="greeting">
+                <h3>Hi, <span id="username">User</span> 👋</h3>
+            </div>
+            <div class="actions">
+                <div class="profile-dropdown">
+                    <button class="profile-btn" id="profile-btn">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <div class="dropdown-content" id="dropdown-content">
+                        <a href="#">Profile</a>
+                        <a href="#">Settings</a>
+                        <a href="#" id="logout">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Overview -->
+        <section class="overview">
+            <div class="card">
+                <i class="fas fa-money-bill-wave"></i>
+                <div class="card-info">
+                    <h3>₹5,250</h3>
+                    <p>Total Balance</p>
+                </div>
+            </div>
+            <div class="card">
+                <i class="fas fa-arrow-down"></i>
+                <div class="card-info">
+                    <h3>₹1,750</h3>
+                    <p>Expenses</p>
+                </div>
+            </div>
+            <div class="card">
+                <i class="fas fa-arrow-up"></i>
+                <div class="card-info">
+                    <h3>₹3,500</h3>
+                    <p>Income</p>
+                </div>
+            </div>
+            <div class="card">
+                <i class="fas fa-bullseye"></i>
+                <div class="card-info">
+                    <h3>50%</h3>
+                    <p>Budget Utilization</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Transactions -->
+        <section class="transactions">
+            <h2>Recent Transactions</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Payment Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Groceries</td>
+                        <td>₹150</td>
+                        <td class="completed">Completed</td>
+                        <td>05th Feb</td>
+                    </tr>
+                    <tr>
+                        <td>OTT Subscriptions</td>
+                        <td>₹999</td>
+                        <td class="pending">Pending</td>
+                        <td>09th Feb</td>
+                    </tr>
+                    <tr>
+                        <td>Electricity Bill</td>
+                        <td>₹800</td>
+                        <td class="due">Bill due</td>
+                        <td>11th Feb</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const profileBtn = document.getElementById("profile-btn");
+    const dropdown = document.getElementById("dropdown-content");
+
+    profileBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", function (event) {
+        if (!profileBtn.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.style.display = "none";
+        }
+    });
+});
+
+    </script>
+
+</div>
+</body>
+</html>
