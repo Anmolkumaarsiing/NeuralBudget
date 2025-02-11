@@ -14,7 +14,9 @@ def home(request):
 
 @csrf_exempt  # Temporarily disable CSRF for testing
 def login_view(request):
-    
+    if request.session.get('id_token'):
+        return redirect('home:dashboard')
+
     if request.method == 'POST':
         try:
             # Get the authorization header
@@ -105,10 +107,11 @@ def dashboard_view(request):
     except Exception:
         return redirect('/login/')  # Redirect if token is invalid
 
-
 @csrf_exempt
 def logout_view(request):
-    if request.method == 'POST':
-        request.session.flush()
-        return JsonResponse({"message": "Logged out successfully"})
+    if request.method == "POST":
+        logout(request)  # Django logout function
+        request.session.flush()  # Clears session data
+        return JsonResponse({"message": "Logged out successfully"}, status=200)
+    
     return JsonResponse({"error": "Method not allowed"}, status=405)
