@@ -1,5 +1,4 @@
 env
-.env
 firebase-config.js
 home/static/home/js/auth.js
 home/static/home/js/app.js

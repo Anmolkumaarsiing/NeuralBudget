@@ -62,86 +62,119 @@ body {
 .main-content {
     flex-grow: 1;
 }
+
+/* Topbar Styling */
 .topbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-left: 9px;
-    padding: 15px 20px;
-    width: 96%;
-    background-color: #ffffff;
-    color: #000000;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); 
+    background: white;
+    padding: 10px 20px;
     border-radius: 10px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Greeting */
 .greeting h3 {
-    margin: 0;
+    color: #2a2a72;
     font-size: 20px;
-    color: #0f3460;
 }
 
-.profile-dropdown {
+/* Dark Mode Switch */
+.switch {
     position: relative;
     display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
 }
 
 .slider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 50px;
-    color: #0f3460; /* Icon color */
-    font-size: 24px;
-    border-radius: 50%; /* Make it circular */
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-
-/* Optional: Adjust positioning if needed */
-.slider i {
-    font-size: 24px;
-}
-
-
-.profile-btn {
-    background: none;
-    border: none;
-    color: #0f3460;
-    font-size: 30px; /* Adjust size */
-    cursor: pointer;
-    padding: 5px;
-}
-
-.profile-btn i {
-    margin-left: 10px;
-}
-
-.dropdown-content {
-    display: none;
     position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
     right: 0;
-    top: 40px;
-    background-color: #1b1b2f;
-    min-width: 150px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    z-index: 10;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 20px;
 }
 
-.dropdown-content a {
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2a2a72;
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+/* Dark Mode */
+.dark-mode {
+    background-color: #090909;
     color: white;
-    padding: 10px;
-    text-decoration: none;
-    display: block;
-    font-size: 14px;
 }
 
-.dropdown-content a:hover {
-    background-color: #0f3460;
+.dark-mode .topbar {
+    background: #090909;
+    color: white;
+    box-shadow: 0px 2px 10px rgba(255, 255, 255, 0.1);
+
 }
+
+.dark-mode .sidebar
+{
+    background-color: #090909;
+    color: white;
+    box-shadow: 0px 2px 10px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .sidebar li, .dark-mode .sidebar h2, .dark-mode .topbar h3
+{
+    background-color: #090909;
+    color: white;
+}
+
+.dark-mode li:hover,  .dark-mode .nav-links .active
+{
+    background-color: #2a2a72;
+}
+
+.dark-mode input:checked + .slider {
+    background-color: #f39c12;
+}
+
+.dark-mode .card
+{
+    background-color: #090909;
+    color: white;
+    box-shadow: 0px 2px 10px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .transactions
+{
+    background-color: #090909;
+    color: white;
+    box-shadow: 0px 2px 10px rgba(255, 255, 255, 0.1);
+}
+
 
 /* Overview Cards */
 .overview {
@@ -172,10 +205,10 @@ body {
 /* Transactions Table */
 .transactions {
     margin-top: 20px;
-    margin-left: 5px;
+    margin-left: 10px;
     background: white;
     padding: 20px;
-    width: 96%;
+    width: 95.5%;
     border-radius: 10px;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
 }

@@ -35,26 +35,17 @@
     <!-- Main Content Section -->
     <main class="main-content">
         <header class="topbar">
-            <div class="slider">
-                <i class="fas fa-bars"></i>  <!-- Font Awesome Menu Icon -->
-            </div>
-            
             <div class="greeting">
                 <h3>Hi, <span id="username">User</span> 👋</h3>
             </div>
             <div class="actions">
-                <div class="profile-dropdown">
-                    <button class="profile-btn" id="profile-btn">
-                        <i class="fas fa-user-circle"></i>
-                    </button>
-                    <div class="dropdown-content" id="dropdown-content">
-                        <a href="#">Profile</a>
-                        <a href="#">Settings</a>
-                        <a href="#" id="logout">Logout</a>
-                    </div>
-                </div>
+                <label class="switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider round"></span>
+                </label>
             </div>
         </header>
+        
 
         <!-- Dashboard Overview -->
         <section class="overview">
@@ -125,25 +116,10 @@
     </main>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-    const profileBtn = document.getElementById("profile-btn");
-    const dropdown = document.getElementById("dropdown-content");
-
-    profileBtn.addEventListener("click", function (event) {
-        event.stopPropagation();
-        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-    });
-
-    // Close dropdown when clicking outside
-    document.addEventListener("click", function (event) {
-        if (!profileBtn.contains(event.target) && !dropdown.contains(event.target)) {
-            dropdown.style.display = "none";
-        }
-    });
+        document.getElementById("darkModeToggle").addEventListener("change", function() {
+    document.body.classList.toggle("dark-mode");
 });
-
     </script>
-
 </div>
 </body>
 </html>

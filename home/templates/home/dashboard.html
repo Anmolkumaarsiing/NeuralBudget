@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Budget AI - Dashboard</title>
+    <link rel="stylesheet" href="{% static 'home/css/dashboard.css' %}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+
+<div class="dashboard-container">
+    
+    <!-- SideBar Section -->
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>Neural Budget AI</h2>
+        </div>
+        <ul class="nav-links">
+            <li class="active"><a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="{% url 'add_transaction' %}"><i class="fas fa-plus-circle"></i> Add Transaction</a></li>
+            <li><a href="{% url 'income_tracker' %}"><i class="fas fa-money-bill-wave"></i> Income Tracker</a></li>
+            <li><a href="#"><i class="fas fa-shopping-cart"></i> Expense Manager</a></li>
+            <li><a href="#"><i class="fas fa-lightbulb"></i> Smart Insights</a></li>
+            <li><a href="#"><i class="fas fa-wallet"></i> Budget Planner</a></li>
+            <li><a href="#"><i class="fas fa-robot"></i> AI Assistance</a></li>
+            <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Sign Out</a></li>
+        </ul>
+    </aside>
+    
+    <!-- TopBar Section -->
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="greeting">
+                <h3>Hi, <span id="username">{{ user.username }}</span> 👋</h3>
+            </div>
+            <div class="actions">
+                <label class="switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </header>
+        
+    <!-- Dashboard Section -->
+
+        <section class="overview">
+            <div class="card">
+                <i class="fas fa-money-bill-wave"></i>
+                <div class="card-info">
+                    <h3>₹{{ total_balance }}</h3>
+                    <p>Total Balance</p>
+                </div>
+            </div>
+            <div class="card">
+                <i class="fas fa-arrow-down"></i>
+                <div class="card-info">
+                    <h3>₹{{ total_expenses }}</h3>
+                    <p>Expenses</p>
+                </div>
+            </div>
+            <div class="card">
+                <i class="fas fa-arrow-up"></i>
+                <div class="card-info">
+                    <h3>₹{{ total_income }}</h3>
+                    <p>Income</p>
+                </div>
+            </div>
+            <div class="card">
+                <i class="fas fa-bullseye"></i>
+                <div class="card-info">
+                    <h3>{{ budget_utilization }}%</h3>
+                    <p>Budget Utilization</p>
+                </div>
+            </div>
+        </section>
+
+            <!-- Transaction Section -->
+
+        <section class="transactions">
+            <h2>Recent Transactions</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Payment Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.category }}</td>
+                        <td>₹{{ transaction.amount }}</td>
+                        <td class="{{ transaction.status|lower }}">{{ transaction.status }}</td>
+                        <td>{{ transaction.payment_date|date:"d M" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script>
+        document.getElementById("darkModeToggle").addEventListener("change", function() {
+            document.body.classList.toggle("dark-mode");
+        });
+    </script>
+</div>
+</body>
+</html>
