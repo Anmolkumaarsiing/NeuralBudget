@@ -1,12 +1,9 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.contrib import messages
-from django.http import HttpResponse
+from django.contrib.auth import logout
+
 from firebase_admin import auth
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from django.views.decorators.http import require_http_methods
 import json
 
 def home(request):
@@ -95,15 +92,22 @@ def register_view(request):
     return render(request, 'home/register.html')
 
 def dashboard_view(request):
+    if not request.session.get('id_token'):
+        return redirect('home:login')
+    
     id_token = request.session.get('id_token')
-
-    if not id_token:
-        print("No ID token found in session")
-        return redirect('/login/')  # Redirect to login if not authenticated
-
     try:    
         decoded_token = auth.verify_id_token(id_token)
-        return render(request, 'pages/dash.html', {'email': decoded_token.get('email')})
+        context = {
+        "user": request.user,
+        "email": decoded_token.get('email'),
+        "total_balance": 5250,
+        "total_expenses": 1750,
+        "total_income": 3500,
+        "budget_utilization": 50,  # Example percentage
+        "transactions":'TODO',  # Replace with actual DB query
+    }
+        return render(request, 'home/dashboard.html', context)
     except Exception:
         return redirect('/login/')  # Redirect if token is invalid
 
@@ -136,20 +140,8 @@ def logout_view(request):
         "error": "Method not allowed"
     }, status=405)
 
-def dashboard_view(request):
-    context = {
-        "user": request.user,
-        "total_balance": 5250,
-        "total_expenses": 1750,
-        "total_income": 3500,
-        "budget_utilization": 50,  # Example percentage
-        "transactions":'TODO',  # Replace with actual DB query
-    }
-    return render(request, 'home/dashboard.html', context)
 
 
-from django.shortcuts import render, redirect
-from .models import Transaction
 
 def add_transaction(request):
     if request.method == "POST":
