@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from .views import login_view, register_view, logout_view, dashboard_view, add_transaction, income_tracker
+app_name = 'home'
 
 urlpatterns =[
     path('', views.home, name='home'),
