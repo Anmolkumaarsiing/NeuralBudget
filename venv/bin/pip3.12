@@ -1,4 +1,4 @@
-#!/workspaces/NeuralBudget/venv/bin/python3
+#!/workspaces/NeuralBudget/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

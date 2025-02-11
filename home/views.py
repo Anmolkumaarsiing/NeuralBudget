@@ -63,4 +63,34 @@ def dashboard_view(request):
         "budget_utilization": 50,  # Example percentage
         "transactions": transactions_data,  # Replace with actual DB query
     }
-    return render(request, 'dashboard.html', context)
+    return render(request, 'home/dashboard.html', context)
+
+
+from django.shortcuts import render, redirect
+from .models import Transaction
+
+def add_transaction(request):
+    if request.method == "POST":
+        name = request.POST.get('name')
+        category = request.POST.get('category')
+        other_category = request.POST.get('other_category', '')  # Get other category if provided
+        amount = request.POST.get('amount')
+        date = request.POST.get('date')
+        status = request.POST.get('status')
+
+        # Use "Other" category input if it's provided
+        if category == "Other" and other_category:
+            category = other_category
+
+        # Save transaction to database
+        Transaction.objects.create(
+            name=name,
+            category=category,
+            amount=amount,
+            date=date,
+            status=status
+        )
+
+        return redirect('dashboard')  # Redirect to dashboard after adding transaction
+
+    return render(request, 'home/add_transaction.html')
