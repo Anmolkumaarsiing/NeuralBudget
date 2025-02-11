@@ -1,10 +1,13 @@
 from django.urls import path
 from . import views
-app_name = 'home'
-urlpatterns = [
+from .views import login_view, register_view, logout_view, dashboard_view, add_transaction, income_tracker
+
+urlpatterns =[
     path('', views.home, name='home'),
-    path("login/", views.login_view, name="login"),
-    path("dashboard/", views.dashboard_view, name="dashboard"),
-    path("signup/", views.register_view, name="signup"),
-    path("logout/", views.logout_view, name="logout"),
+    path("login/", login_view, name="login"),
+    path("signup/", register_view, name="signup"),
+    path("logout/", logout_view, name="logout"),
+    path('dashboard/', dashboard_view, name='dashboard'),
+    path('add_transaction/', add_transaction, name='add_transaction'),  # Added this line
+    path('income_tracker/', income_tracker, name='income_tracker'),  # New route
 ]

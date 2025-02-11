@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Global Styles */
 body {
     font-family: 'Poppins', sans-serif;
@@ -206,4 +207,513 @@ body {
 .due {
     color: rgb(255, 0, 0);
     font-weight: bold;
+=======
+body
+{
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;
+    background-color: #ffffff;
+}
+
+/*-----------DASHBOARD---------------*/
+
+.dashboard-container
+{
+    display: flex;
+    width: 100%;
+}
+
+/*-----------SIDEBAR---------------*/
+
+.sidebar
+{
+    width: 250px;
+    background-color: #ffffff;
+    padding: 20px;
+    height: 100vh;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.09);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h2
+{
+    text-align: center;
+    color: #2a2a72;
+}
+
+.nav-links
+{
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.nav-links li
+{
+    padding: 15px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s;
+    color: #2a2a72;
+}
+
+.nav-links li a
+{
+    text-decoration: none;
+    padding: 1px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s;
+    color: #2a2a72;
+}
+
+.nav-links li:hover a, .nav-links li.active a
+{
+    color: white;
+}
+
+.nav-links li i
+{
+    margin-right: 10px;
+}
+
+.nav-links li:hover, .nav-links .active
+{
+    background: #2a2a72;
+    color: white;
+    border-radius: 5px;
+    margin: 8px;
+}
+
+.main-content
+{
+    flex-grow: 1;
+}
+
+/*-----------TOPBAR---------------*/
+
+.topbar
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.greeting h3
+{
+    color: #2a2a72;
+    font-size: 20px;
+}
+
+.switch
+{
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+
+.switch input
+{
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider
+{
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 20px;
+}
+
+.slider:before
+{
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider
+{
+    background-color: #2a2a72;
+}
+
+input:checked + .slider:before
+{
+    transform: translateX(20px);
+}
+
+/*-----------DARK MODE---------------*/
+
+.dark-mode
+{
+    background-color: #090909;
+    color: white;
+}
+
+.dark-mode .topbar
+{
+    background: #090909;
+    color: white;
+    box-shadow: 0px 2px 10px rgba(255, 255, 255, 0.1);
+
+}
+
+.dark-mode .sidebar
+{
+    background-color: #090909;
+    color: white;
+    box-shadow: 0px 2px 10px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .sidebar li, .dark-mode .sidebar h2, .dark-mode .topbar h3
+{
+    background-color: #090909;
+    color: white;
+}
+
+.dark-mode li:hover,  .dark-mode .nav-links .active
+{
+    background-color: #2a2a72;
+}
+
+.dark-mode input:checked + .slider {
+    background-color: #f39c12;
+}
+
+.dark-mode .card
+{
+    background-color: #090909;
+    color: white;
+    box-shadow: 0px 2px 10px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .transactions
+{
+    background-color: #090909;
+    color: white;
+    box-shadow: 0px 2px 10px rgba(255, 255, 255, 0.1);
+}
+
+
+/*-----------DASHBOARD OVERVIEW---------------*/
+
+.overview
+{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.card
+{
+    background: white;
+    padding: 30px;
+    width: 22%;
+    margin: 10px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card i
+{
+    font-size: 20px;
+    color: #2a2a72;
+}
+
+.card h3
+{
+    margin: 10px 0;
+}
+
+/*-----------TRANSACTION---------------*/
+
+.transactions
+{
+    margin-top: 20px;
+    margin-left: 10px;
+    background: white;
+    padding: 20px;
+    width: 95.5%;
+    border-radius: 10px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.transactions table
+{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.transactions th, .transactions td
+{
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.completed
+{
+    color: green;
+    font-weight: bold;
+}
+
+.pending
+{
+    color: orange;
+    font-weight: bold;
+}
+
+.due
+{
+    color: rgb(255, 0, 0);
+    font-weight: bold;
+}
+
+
+
+
+
+
+
+
+/*----------- ADD TRANSACTION SECTION ---------------*/
+.add-transaction
+{
+    background: white;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    width: 95%;
+}
+
+.add-transaction h2
+{
+    color: #2a2a72;
+    margin-bottom: 15px;
+}
+
+.add-transaction form
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.add-transaction label
+{
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.add-transaction input, .add-transaction select
+{
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.add-transaction button
+{
+    background: #2a2a72;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.add-transaction button:hover
+{
+    background: #1e1e5f;
+}
+
+/*----------- DARK MODE FOR ADD TRANSACTION ---------------*/
+
+.dark-mode .add-transaction
+{
+    background: #090909;
+    color: white;
+    box-shadow: 0px 2px 10px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .add-transaction h2, .dark-mode .add-transaction label
+{
+    color: white;
+}
+
+.dark-mode .add-transaction input, .dark-mode .add-transaction select
+{
+    background: #1e1e1e;
+    color: white;
+    border: 1px solid #444;
+}
+
+.dark-mode .add-transaction button
+{
+    background: #f39c12;
+}
+
+.dark-mode .add-transaction button:hover
+{
+    background: #d4880b;
+}
+
+
+
+
+/* General Styles */
+.income-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+}
+
+.add-income, .track-income {
+    width: 96%;
+    background: var(--bg-color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s, color 0.3s;
+}
+
+.add-income h2, .track-income h2 {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.add-income form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.add-income label {
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.add-income select, .add-income input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 16px;
+    background: var(--input-bg);
+    color: var(--text-color);
+}
+
+.add-income #customIncome {
+    display: none; /* Initially hidden when 'Other' is not selected */
+}
+
+.add-income button {
+    background: var(--primary-color);
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.add-income button:hover {
+    background: var(--primary-hover);
+}
+
+/* Table Styling */
+.track-income table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.track-income th, .track-income td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.track-income th {
+    background: var(--primary-color);
+    color: white;
+}
+
+.track-income tbody tr:hover {
+    background: var(--row-hover);
+}
+
+/* Income Status Colors */
+.status-pending { color: orange !important; }
+.status-completed { color: green !important; }
+.status-failed { color: red !important; }
+.status-cancelled { color: gray !important; }
+.status-partially-paid { color: blue !important; }
+.status-due { color: purple !important; }
+.status-received { color: teal !important; }  /* New Received Status */
+
+/* Optional: Background colors for better visibility */
+.status-pending { background-color: rgba(255, 165, 0, 0.2) !important; }
+.status-completed { background-color: rgba(0, 128, 0, 0.2) !important; }
+.status-failed { background-color: rgba(255, 0, 0, 0.2) !important; }
+.status-cancelled { background-color: rgba(128, 128, 128, 0.2) !important; }
+.status-partially-paid { background-color: rgba(0, 0, 255, 0.2) !important; }
+.status-due { background-color: rgba(128, 0, 128, 0.2) !important; }
+.status-received { background-color: rgba(0, 128, 128, 0.2) !important; } /* New */
+
+
+/* Light Mode */
+:root {
+    --bg-color: #ffffff;
+    --text-color: #2a2a72;
+    --primary-color: #2a2a72;
+    --primary-hover: #1e1e50;
+    --input-bg: #ffffff;
+    --border-color: #ddd;
+    --row-hover: rgba(42, 42, 114, 0.1);
+}
+
+/* Dark Mode */
+.dark-mode {
+    --bg-color: #090909;
+    --text-color: #f0f0f0;
+    --primary-color: #3d5afe;
+    --primary-hover: #1e40ff;
+    --input-bg: #2c2c2c;
+    --border-color: #444;
+    --row-hover: rgba(255, 255, 255, 0.1);
+>>>>>>> origin/main
 }
