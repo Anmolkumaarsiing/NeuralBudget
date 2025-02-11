@@ -94,3 +94,22 @@ def add_transaction(request):
         return redirect('dashboard')  # Redirect to dashboard after adding transaction
 
     return render(request, 'home/add_transaction.html')
+
+
+from django.shortcuts import render
+from datetime import date
+
+def income_tracker(request):
+    incomes = [
+        {"source": "Gift", "amount": "200.00", "date": "Feb. 15, 2024", "status": "Received"},
+        {"source": "Investments", "amount": "800.00", "date": "Feb. 10, 2024", "status": "Received"},
+        {"source": "Freelancing", "amount": "1200.00", "date": "Feb. 5, 2024", "status": "Pending"},
+        {"source": "Salary", "amount": "5000.00", "date": "Feb. 1, 2024", "status": "Received"},
+        {"source": "Stock Trading", "amount": "1500.00", "date": "Jan. 28, 2024", "status": "Completed"},
+        {"source": "Rental Income", "amount": "900.00", "date": "Jan. 25, 2024", "status": "Failed"},
+        {"source": "Side Business", "amount": "2200.00", "date": "Jan. 20, 2024", "status": "Cancelled"},
+        {"source": "Dividends", "amount": "300.00", "date": "Jan. 15, 2024", "status": "Partially Paid"},
+        {"source": "Bonus", "amount": "2500.00", "date": "Jan. 10, 2024", "status": "Due"},
+    ]
+
+    return render(request, "home/income_tracker.html", {"incomes": incomes})
