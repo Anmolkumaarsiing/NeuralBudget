@@ -42,3 +42,25 @@ def signup_view(request):
 def logout_view(request):
     logout(request)
     return redirect("login")
+
+
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+
+# Dummy data for transactions (Replace with DB query)
+transactions_data = [
+    {"category": "Groceries", "amount": 150, "status": "Completed", "payment_date": "2025-02-05"},
+    {"category": "OTT Subscriptions", "amount": 999, "status": "Pending", "payment_date": "2025-02-09"},
+    {"category": "Electricity Bill", "amount": 800, "status": "Bill Due", "payment_date": "2025-02-11"},
+]
+
+def dashboard_view(request):
+    context = {
+        "user": request.user,
+        "total_balance": 5250,
+        "total_expenses": 1750,
+        "total_income": 3500,
+        "budget_utilization": 50,  # Example percentage
+        "transactions": transactions_data,  # Replace with actual DB query
+    }
+    return render(request, 'dashboard.html', context)
