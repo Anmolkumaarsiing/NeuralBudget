@@ -12,6 +12,8 @@ function getCSRFToken() {
         .find(cookie => cookie.trim().startsWith('csrftoken='));
     return csrfCookie ? csrfCookie.split('=')[1] : null;
 }
+
+
 export function login(request) {
 
     console.log("Login function called");
