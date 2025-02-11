@@ -92,20 +92,55 @@ export function login(request) {
 }
 
 export function register(event) {
-    event.preventDefault();
+    console.log("Register function called"); // Debug line
 
-    var email = document.getElementById('registerEmail').value;
-    var password = document.getElementById('registerPassword').value;
+    const username = document.getElementById('registerUsername').value;
+    const email = document.getElementById('registerEmail').value;
+    const password1 = document.getElementById('registerPassword1').value;
+    const password2 = document.getElementById('registerPassword2').value;
     const errorDiv = document.getElementById('registerError');
 
-    createUserWithEmailAndPassword(auth, email, password)
+    // Clear any existing error messages
+    if (errorDiv) {
+        errorDiv.style.display = 'none';
+        errorDiv.innerText = '';
+    }
+
+    console.log("Form data:", { username, email, password1, password2 }); // Debug line
+
+    // Validate input
+    if (!username || !email || !password1 || !password2) {
+        console.log("Validation error: All fields are required"); // Debug line
+        if (errorDiv) {
+            errorDiv.style.display = 'block';
+            errorDiv.innerText = 'All fields are required.';
+        }
+        return;
+    }
+
+    if (password1 !== password2) {
+        console.log("Validation error: Passwords do not match"); // Debug line
+        if (errorDiv) {
+            errorDiv.style.display = 'block';
+            errorDiv.innerText = 'Passwords do not match.';
+        }
+        return;
+    }
+
+    console.log("Attempting Firebase registration with email:", email); // Debug line
+
+    // Create user in Firebase
+    createUserWithEmailAndPassword(auth, email, password1)
         .then((userCredential) => {
-            console.log("Registration successful: ", userCredential);
+            console.log("Firebase registration successful:", userCredential); // Debug line
             return userCredential.user.getIdToken();
         })
         .then((idToken) => {
-            const csrfToken = getCSRFToken() || document.querySelector('[name=csrfmiddlewaretoken]').value;
+            console.log("Got ID token:", idToken); // Debug line
+            const csrfToken = getCSRFToken();
+            console.log("CSRF token:", csrfToken); // Debug line
 
+            // Send registration data to the backend
             return fetch('/home/register/', {
                 method: 'POST',
                 headers: {
@@ -113,34 +148,37 @@ export function register(event) {
                     'X-CSRFToken': csrfToken,
                     'Authorization': `Bearer ${idToken}`
                 },
-                credentials: 'include',
                 body: JSON.stringify({
+                    username: username,
                     email: email,
                     idToken: idToken
                 })
             });
         })
         .then(response => {
+            console.log("Backend response status:", response.status); // Debug line
             if (!response.ok) {
                 return response.json().then(data => {
+                    console.log("Backend error response:", data); // Debug line
                     throw new Error(data.error || 'Registration failed');
                 });
             }
             return response.json();
         })
         .then(data => {
-            console.log(data);
+            console.log("Backend response data:", data); // Debug line
             if (data.message === 'Registration successful') {
-                window.location.href = "//dashboard/";
+                console.log("Redirecting to dashboard..."); // Debug line
+                window.location.href = "/dashboard/";
             } else {
                 throw new Error(data.error || 'Registration failed');
             }
         })
         .catch((error) => {
-            console.error("Registration error:", error);
+            console.error("Registration error:", error); // Debug line
             if (errorDiv) {
-                errorDiv.textContent = error.message;
                 errorDiv.style.display = 'block';
+                errorDiv.innerText = error.message;
             }
         });
 }

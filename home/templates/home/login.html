@@ -21,7 +21,7 @@
         {% csrf_token %}
         <!-- Sign In Form -->
         <form action="#" class="sign-in-form" id="loginForm">
-          
+
           <h2 class="title">Sign In</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
@@ -48,21 +48,22 @@
           <h2 class="title">Sign Up</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
-            <input type="text" name="username" placeholder="Username" required />
+            <input type="text" id="registerUsername" placeholder="Username" required />
           </div>
           <div class="input-field">
             <i class="fas fa-envelope"></i>
-            <input type="email" name="email" placeholder="Email" required />
+            <input type="email" id="registerEmail" placeholder="Email" required />
           </div>
           <div class="input-field">
             <i class="fas fa-lock"></i>
-            <input type="password" name="password1" placeholder="Password" required />
+            <input type="password" id="registerPassword1" placeholder="Password" required />
           </div>
           <div class="input-field">
             <i class="fas fa-lock"></i>
-            <input type="password" name="password2" placeholder="Confirm Password" required />
+            <input type="password" id="registerPassword2" placeholder="Confirm Password" required />
           </div>
-          <button type="submit" class="btn solid" id="signupButton">Sign Up</button>
+          <button type="submit" class="btn solid">Sign Up</button>
+          <div id="registerError" style="color: red; margin: 10px 0; display: none;"></div>
           <p class="social-text">Or Sign up with social platforms</p>
           <div class="social-media">
             <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
