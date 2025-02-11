@@ -32,7 +32,7 @@ export function login(request) {
             return userCredential.user.getIdToken();
         })
         .then((idToken) => {
-            console.log("Got ID token:", idToken);
+            console.log("Got ID token!");
 
             return fetch('/login/', {  // Make sure this matches your URL pattern
                 method: 'POST',
@@ -140,5 +140,31 @@ export function register(event) {
                 errorDiv.textContent = error.message;
                 errorDiv.style.display = 'block';
             }
+        });
+}
+
+export function signOut() {
+    auth.signOut()
+        .then(() => {
+            // Clear session on the server
+            return fetch('/logout/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                credentials: 'include'
+            });
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = '/login/';
+            } else {
+                throw new Error('Logout failed');
+            }
+        })
+        .catch((error) => {
+            console.error("Logout error:", error);
+            alert('Failed to logout. Please try again.');
         });
 }

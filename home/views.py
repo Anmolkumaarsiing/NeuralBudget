@@ -110,11 +110,31 @@ def dashboard_view(request):
 @csrf_exempt
 def logout_view(request):
     if request.method == "POST":
-        logout(request)  # Django logout function
-        request.session.flush()  # Clears session data
-        return JsonResponse({"message": "Logged out successfully"}, status=200)
+        try:
+            # Clear Firebase session
+            if 'id_token' in request.session:
+                del request.session['id_token']
+            if 'user_id' in request.session:
+                del request.session['user_id']
+            if 'email' in request.session:
+                del request.session['email']
+            
+            # Django logout
+            logout(request)
+            request.session.flush()
+            
+            return JsonResponse({
+                "message": "Logged out successfully",
+                "redirect_url": "/home/login/"
+            })
+        except Exception as e:
+            return JsonResponse({
+                "error": str(e)
+            }, status=400)
     
-    return JsonResponse({"error": "Method not allowed"}, status=405)
+    return JsonResponse({
+        "error": "Method not allowed"
+    }, status=405)
 
 def dashboard_view(request):
     context = {
