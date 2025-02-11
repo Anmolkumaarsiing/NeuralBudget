@@ -1,5 +1,5 @@
-/* Global Styles */
-body {
+body
+{
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
@@ -8,14 +8,18 @@ body {
     background-color: #ffffff;
 }
 
-/* Dashboard Layout */
-.dashboard-container {
+/*-----------DASHBOARD---------------*/
+
+.dashboard-container
+{
     display: flex;
     width: 100%;
 }
 
-/* Sidebar */
-.sidebar {
+/*-----------SIDEBAR---------------*/
+
+.sidebar
+{
     width: 250px;
     background-color: #ffffff;
     padding: 20px;
@@ -25,18 +29,21 @@ body {
     flex-direction: column;
 }
 
-.sidebar h2 {
+.sidebar h2
+{
     text-align: center;
     color: #2a2a72;
 }
 
-.nav-links {
+.nav-links
+{
     list-style: none;
     padding: 0;
     margin-top: 20px;
 }
 
-.nav-links li {
+.nav-links li
+{
     padding: 15px;
     font-size: 18px;
     display: flex;
@@ -46,25 +53,28 @@ body {
     color: #2a2a72;
 }
 
-.nav-links li i {
+.nav-links li i
+{
     margin-right: 10px;
 }
 
-.nav-links li:hover,
-.nav-links .active {
+.nav-links li:hover, .nav-links .active
+{
     background: #2a2a72;
     color: white;
     border-radius: 5px;
     margin: 8px;
 }
 
-/* Main Content */
-.main-content {
+.main-content
+{
     flex-grow: 1;
 }
 
-/* Topbar Styling */
-.topbar {
+/*-----------TOPBAR---------------*/
+
+.topbar
+{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -74,27 +84,29 @@ body {
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Greeting */
-.greeting h3 {
+.greeting h3
+{
     color: #2a2a72;
     font-size: 20px;
 }
 
-/* Dark Mode Switch */
-.switch {
+.switch
+{
     position: relative;
     display: inline-block;
     width: 40px;
     height: 20px;
 }
 
-.switch input {
+.switch input
+{
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-.slider {
+.slider
+{
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -106,7 +118,8 @@ body {
     border-radius: 20px;
 }
 
-.slider:before {
+.slider:before
+{
     position: absolute;
     content: "";
     height: 14px;
@@ -118,21 +131,26 @@ body {
     border-radius: 50%;
 }
 
-input:checked + .slider {
+input:checked + .slider
+{
     background-color: #2a2a72;
 }
 
-input:checked + .slider:before {
+input:checked + .slider:before
+{
     transform: translateX(20px);
 }
 
-/* Dark Mode */
-.dark-mode {
+/*-----------DARK MODE---------------*/
+
+.dark-mode
+{
     background-color: #090909;
     color: white;
 }
 
-.dark-mode .topbar {
+.dark-mode .topbar
+{
     background: #090909;
     color: white;
     box-shadow: 0px 2px 10px rgba(255, 255, 255, 0.1);
@@ -176,14 +194,17 @@ input:checked + .slider:before {
 }
 
 
-/* Overview Cards */
-.overview {
+/*-----------DASHBOARD OVERVIEW---------------*/
+
+.overview
+{
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
 }
 
-.card {
+.card
+{
     background: white;
     padding: 30px;
     width: 22%;
@@ -193,17 +214,21 @@ input:checked + .slider:before {
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.card i {
+.card i
+{
     font-size: 20px;
     color: #2a2a72;
 }
 
-.card h3 {
+.card h3
+{
     margin: 10px 0;
 }
 
-/* Transactions Table */
-.transactions {
+/*-----------TRANSACTION---------------*/
+
+.transactions
+{
     margin-top: 20px;
     margin-left: 5px;
     background: white;
@@ -213,30 +238,34 @@ input:checked + .slider:before {
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.transactions table {
+.transactions table
+{
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
 }
 
-.transactions th,
-.transactions td {
+.transactions th, .transactions td
+{
     padding: 10px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
-.completed {
+.completed
+{
     color: green;
     font-weight: bold;
 }
 
-.pending {
+.pending
+{
     color: orange;
     font-weight: bold;
 }
 
-.due {
+.due
+{
     color: rgb(255, 0, 0);
     font-weight: bold;
 }
