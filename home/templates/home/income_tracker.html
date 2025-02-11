@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neural Budget AI - Dashboard</title>
     <link rel="stylesheet" href="{% static 'home/css/dashboard.css' %}">
+    <script type="module" src="{% static 'home/js/signOut.js' %}"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
@@ -21,15 +22,15 @@
             <h2>Neural Budget AI</h2>
         </div>
         <ul class="nav-links">
-            <li><a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li><a href="{% url 'add_transaction' %}"><i class="fas fa-plus-circle"></i> Add Transaction</a></li>
-            <li class="active"><a href="{% url 'income_tracker' %}"><i class="fas fa-money-bill-wave"></i> Income Tracker</a></li>
+            <li><a href="{% url 'home:dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="{% url 'home:add_transaction' %}"><i class="fas fa-plus-circle"></i> Add Transaction</a></li>
+            <li class="active"><a href="{% url 'home:income_tracker' %}"><i class="fas fa-money-bill-wave"></i> Income Tracker</a></li>
             <li><a href="#"><i class="fas fa-shopping-cart"></i> Expense Manager</a></li>
             <li><a href="#"><i class="fas fa-lightbulb"></i> Smart Insights</a></li>
             <li><a href="#"><i class="fas fa-wallet"></i> Budget Planner</a></li>
             <li><a href="#"><i class="fas fa-robot"></i> AI Assistance</a></li>
             <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
-            <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Sign Out</a></li>
+            <li><a href="" onclick="signOut()"><i class="fas fa-sign-out-alt"></i> Sign Out</a></li>
         </ul>        
         
     </aside>
@@ -39,7 +40,7 @@
     <main class="main-content">
         <header class="topbar">
             <div class="greeting">
-                <h3>Hi, <span id="username">{{ user.username }}</span> 👋</h3>
+                <h3>Hi, <span id="username">{{ email }}</span> 👋</h3>
             </div>
             <div class="actions">
                 <label class="switch">

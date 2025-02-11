@@ -4,6 +4,7 @@ from django.contrib.auth import logout
 from firebase_admin import auth
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+
 import json
 
 def home(request):
@@ -18,18 +19,11 @@ def login_view(request):
         try:
             # Get the authorization header
             auth_header = request.headers.get('Authorization')
-            print(f"Auth header")  # Debug log
-            
             if not auth_header:
                 return JsonResponse({'error': 'No authorization header'}, status=401)
-            
-            # Extract the token
             token = auth_header.split('Bearer ')[1]
-            print(f"Token: {token}")  # Debug log
-            # Get request body
             body = json.loads(request.body)
             email = body.get('email')
-            
             try:
                 # Verify the Firebase token
                 decoded_token = auth.verify_id_token(token)
@@ -144,6 +138,9 @@ def logout_view(request):
 
 
 def add_transaction(request):
+    if not request.session.get('id_token'):
+        return redirect('home:login')
+    
     if request.method == "POST":
         name = request.POST.get('name')
         category = request.POST.get('category')
@@ -168,9 +165,11 @@ def add_transaction(request):
         return redirect('dashboard')  # Redirect to dashboard after adding transaction
 
     return render(request, 'home/add_transaction.html')
-from django.shortcuts import render
-from datetime import date
+
 def income_tracker(request):
+    if not request.session.get('id_token'):
+        return redirect('home:login')
+    
     incomes = [
         {"source": "Gift", "amount": "200.00", "date": "Feb. 15, 2024", "status": "Received"},
         {"source": "Investments", "amount": "800.00", "date": "Feb. 10, 2024", "status": "Received"},
