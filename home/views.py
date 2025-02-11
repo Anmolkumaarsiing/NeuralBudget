@@ -10,6 +10,14 @@ import json
 def home(request):
     return render(request, 'home/index.html')
 
+def verify_token(id_token):
+    try:
+        decoded_token = auth.verify_id_token(id_token,clock_skew_seconds=5)
+        return decoded_token
+    except Exception as e:
+        print(f"Token verification error: {str(e)}")
+        raise
+
 @csrf_exempt  # Temporarily disable CSRF for testing
 def login_view(request):
     if request.session.get('id_token'):
@@ -26,7 +34,7 @@ def login_view(request):
             email = body.get('email')
             try:
                 # Verify the Firebase token
-                decoded_token = auth.verify_id_token(token)
+                decoded_token = verify_token(token)
                 uid = decoded_token['uid']
                 
                 # Store in session
@@ -55,35 +63,76 @@ def login_view(request):
 
 @csrf_exempt
 def register_view(request):
-    if request.session.get('id_token'):
-        return redirect('home:dashboard')
-    
-    if request.method == 'POST':
+    if request.method == "POST":
         try:
-            auth_header = request.headers.get('Authorization')
-            if not auth_header:
-                return JsonResponse({"error": "No authorization header"}, status=401)
-            
-            id_token = auth_header.split('Bearer ')[1]
-            
-            # Verify the token
+            print("Register view called")  # Debug line
+
+            # Parse JSON data from the request
+            data = json.loads(request.body)
+            print("Request data:", data)  # Debug line
+
+            username = data.get("username")
+            email = data.get("email")
+            id_token = data.get("idToken")
+
+            print("Verifying Firebase token...")  # Debug line
             decoded_token = auth.verify_id_token(id_token)
             uid = decoded_token['uid']
-            
-            # Store both token and decoded token in session
+            print("Token verified, UID:", uid)  # Debug line
+
+            # Store user data in session
             request.session['id_token'] = id_token
             request.session['uid'] = uid
-            
+            request.session['email'] = email
+            request.session['username'] = username
+
+            print("Registration successful, redirecting to dashboard")  # Debug line
             return JsonResponse({
                 "message": "Registration successful",
-                "redirect_url": "/home/dashboard/"
+                "redirect_url": "/dashboard/"
             })
-            
+
+        except auth.EmailAlreadyExistsError:
+            print("Email already exists error")  # Debug line
+            return JsonResponse({"error": "Email already exists"}, status=400)
         except Exception as e:
-            print(f"Registration error: {str(e)}")
-            return JsonResponse({"error": str(e)}, status=400)
-    
-    return render(request, 'home/register.html')
+            print("Unexpected error:", str(e))  # Debug line
+            return JsonResponse({"error": str(e)}, status=500)
+
+    print("Method not allowed")  # Debug line
+    return JsonResponse({"error": "Method not allowed"}, status=405)    # if request.session.get('id_token'):
+    #     return redirect('home:dashboard')
+    if request.method == "POST":
+        try:
+            print("Register view called")
+            data = json.loads(request.body)
+            print("data",data)
+            username = data.get("username")
+            email = data.get("email")
+            id_token = data.get("idToken")
+
+            # Verify the Firebase token
+            decoded_token = verify_token(id_token)
+            uid = decoded_token['uid']
+            print("uid",uid)
+
+            # Store user data in session
+            request.session['id_token'] = id_token
+            request.session['uid'] = uid
+            request.session['email'] = email
+            request.session['username'] = username
+
+            return JsonResponse({
+                "message": "Registration successful",
+                "redirect_url": "/dashboard/"
+            })
+
+        except auth.EmailAlreadyExistsError:
+            return JsonResponse({"error": "Email already exists"}, status=400)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Method not allowed"}, status=405)
 
 def dashboard_view(request):
     if not request.session.get('id_token'):

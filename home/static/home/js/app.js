@@ -1,4 +1,4 @@
-import { login,signOut } from './auth.js';
+import { login,register } from './auth.js';
 
 const sign_in_btn = document.querySelector("#sign-in-btn");
 const sign_up_btn = document.querySelector("#sign-up-btn");
@@ -18,6 +18,14 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.addEventListener('submit', (event) => {
             event.preventDefault();
             login();
+        });
+    }
+    const signupForm = document.getElementById('signupForm');
+
+    if (signupForm) {
+        signupForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            register();
         });
     }
 });
