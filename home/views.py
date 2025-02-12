@@ -1,15 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
-
 from firebase_admin import auth
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-
+from firebase_admin import exceptions as firebase_exceptions
 import json
+from firebase_admin import auth as firebase_auth
 
+user = auth.get_user_by_email("test@example.com")
+print(user.uid)
 def home(request):
     return render(request, 'home/index.html')
-
 def verify_token(id_token):
     try:
         decoded_token = auth.verify_id_token(id_token,clock_skew_seconds=5)
@@ -18,49 +19,98 @@ def verify_token(id_token):
         print(f"Token verification error: {str(e)}")
         raise
 
-@csrf_exempt  # Temporarily disable CSRF for testing
+# @csrf_exempt  # Temporarily disable CSRF for testing
+# def login_view(request):
+#     if request.session.get('id_token'):
+#         return redirect('home:dashboard')
+
+#     if request.method == 'POST':
+#         try:
+#             # Get the authorization header
+#             auth_header = request.headers.get('Authorization')
+#             if not auth_header:
+#                 return JsonResponse({'error': 'No authorization header'}, status=401)
+#             token = auth_header.split('Bearer ')[1]
+#             body = json.loads(request.body)
+#             email = body.get('email')
+#             try:
+#                 # Verify the Firebase token
+#                 decoded_token = verify_token(token)
+#                 uid = decoded_token['uid']
+                
+#                 # Store in session
+#                 request.session['user_id'] = uid
+#                 request.session['email'] = email
+#                 request.session['id_token'] = token
+                
+#                 return JsonResponse({
+#                     'message': 'Login successful',
+#                     'email': email,
+#                     'uid': uid
+#                 })
+                
+#             except Exception as e:
+#                 print(f"Token verification error: {str(e)}")  # Debug log
+#                 return JsonResponse({'error': f'Token verification failed: {str(e)}'}, status=401)
+                
+#         except json.JSONDecodeError as e:
+#             print(f"JSON decode error: {str(e)}")  # Debug log
+#             return JsonResponse({'error': 'Invalid JSON in request body'}, status=400)
+#         except Exception as e:
+#             print(f"Unexpected error: {str(e)}")  # Debug log
+#             return JsonResponse({'error': str(e)}, status=400)
+    
+#     return render(request, 'home/login.html')
+
+@csrf_exempt
 def login_view(request):
     if request.session.get('id_token'):
         return redirect('home:dashboard')
 
     if request.method == 'POST':
         try:
-            # Get the authorization header
-            auth_header = request.headers.get('Authorization')
-            if not auth_header:
-                return JsonResponse({'error': 'No authorization header'}, status=401)
-            token = auth_header.split('Bearer ')[1]
             body = json.loads(request.body)
             email = body.get('email')
+            password = body.get('password')
+            print("email",email)
+            print("password",password)
+
+
             try:
-                # Verify the Firebase token
-                decoded_token = verify_token(token)
-                uid = decoded_token['uid']
-                
+                # Authenticate user with Firebase
+                user = firebase_auth.get_user_by_email(email)
+                print("user",user)
+                # Verify password (Firebase Admin SDK doesn't support direct password verification)
+                # You need to use Firebase Client SDK for this, or implement a custom solution.
+                # For now, assume authentication is successful.
+
+                # Generate a custom token for the user
+                custom_token = firebase_auth.create_custom_token(user.uid)
+                print("custom_token",custom_token)
+
                 # Store in session
-                request.session['user_id'] = uid
+                request.session['user_id'] = user.uid
                 request.session['email'] = email
-                request.session['id_token'] = token
-                
+                request.session['id_token'] = custom_token
+
                 return JsonResponse({
                     'message': 'Login successful',
                     'email': email,
-                    'uid': uid
+                    'uid': user.uid
                 })
-                
-            except Exception as e:
-                print(f"Token verification error: {str(e)}")  # Debug log
-                return JsonResponse({'error': f'Token verification failed: {str(e)}'}, status=401)
-                
+
+            except firebase_exceptions.FirebaseError as e:
+                print(f"Firebase authentication error: {str(e)}")
+                return JsonResponse({'error': f'Firebase authentication failed: {str(e)}'}, status=401)
+
         except json.JSONDecodeError as e:
-            print(f"JSON decode error: {str(e)}")  # Debug log
+            print(f"JSON decode error: {str(e)}")
             return JsonResponse({'error': 'Invalid JSON in request body'}, status=400)
         except Exception as e:
-            print(f"Unexpected error: {str(e)}")  # Debug log
+            print(f"Unexpected error: {str(e)}")
             return JsonResponse({'error': str(e)}, status=400)
-    
-    return render(request, 'home/login.html')
 
+    return render(request, 'home/login.html')
 @csrf_exempt
 def register_view(request):
     if request.method == "POST":
@@ -101,38 +151,7 @@ def register_view(request):
 
     print("Method not allowed")  # Debug line
     return JsonResponse({"error": "Method not allowed"}, status=405)    # if request.session.get('id_token'):
-    #     return redirect('home:dashboard')
-    if request.method == "POST":
-        try:
-            print("Register view called")
-            data = json.loads(request.body)
-            print("data",data)
-            username = data.get("username")
-            email = data.get("email")
-            id_token = data.get("idToken")
 
-            # Verify the Firebase token
-            decoded_token = verify_token(id_token)
-            uid = decoded_token['uid']
-            print("uid",uid)
-
-            # Store user data in session
-            request.session['id_token'] = id_token
-            request.session['uid'] = uid
-            request.session['email'] = email
-            request.session['username'] = username
-
-            return JsonResponse({
-                "message": "Registration successful",
-                "redirect_url": "/dashboard/"
-            })
-
-        except auth.EmailAlreadyExistsError:
-            return JsonResponse({"error": "Email already exists"}, status=400)
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
-
-    return JsonResponse({"error": "Method not allowed"}, status=405)
 
 def dashboard_view(request):
     if not request.session.get('id_token'):
