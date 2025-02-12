@@ -1,7 +1,4 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
-
-
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
 
 // Helper function to get CSRF token
 function getCSRFToken() {
@@ -12,20 +9,21 @@ function getCSRFToken() {
 }
 
 
-export function login(request) {
+export function login() {
     console.log("Login function called");
 
-    var email = document.getElementById('loginEmail').value;
-    var password = document.getElementById('loginPassword').value;
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
     const errorDiv = document.getElementById('loginError');
 
-    // Clear any existing error messages
+    // Clear errors
     if (errorDiv) {
         errorDiv.style.display = 'none';
         errorDiv.innerText = '';
     }
 
-    fetch('/login/', {  // Make sure this matches your URL pattern
+    // Send email/password to backend
+    fetch('/login/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -35,47 +33,28 @@ export function login(request) {
             password: password
         })
     })
-    .then(async response => {
-        console.log("Response status:", response.status);
-
-        const text = await response.text();
-        console.log("Response text:", text);  // Debug log
-
-        if (!response.ok) {
-            try {
-                const data = JSON.parse(text);
+        .then(async response => {
+            const text = await response.text();
+            if (!response.ok) throw new Error(text || 'Login failed');
+            return JSON.parse(text);
+        })
+        .then(data => {
+            if (data.message === 'Login successful') {
+                console.log("Login successful! Redirecting...");
+                window.location.href = "/dashboard/";  // Redirect to dashboard
+            } else {
                 throw new Error(data.error || 'Login failed');
-            } catch (e) {
-                throw new Error('Server returned an invalid response');
             }
-        }
-        
-        try {
-            const data = JSON.parse(text);
-            return data;
-        } catch (e) {
-            throw new Error('Invalid JSON response from server');
-        }
-    })
-    .then(data => {
-        console.log("Backend response:", data);
-        if (data.message === 'Login successful') {
-            console.log("Redirecting to dashboard...");
-            window.location.replace("/dashboard/");
-        } else {
-            throw new Error(data.error || 'Login failed');
-        }
-    })
-    .catch((error) => {
-        console.error("Login error:", error);
-        if (errorDiv) {
-            errorDiv.style.display = 'block';
-            errorDiv.innerText = error.message;
-        } else {
-            console.error("Error div not found");
-            alert(error.message);  // Fallback error display
-        }
-    });
+        })
+        .catch((error) => {
+            console.error("Login error:", error);
+            if (errorDiv) {
+                errorDiv.style.display = 'block';
+                errorDiv.innerText = error.message;
+            } else {
+                alert(error.message);
+            }
+        });
 }
 
 export function register(event) {
@@ -170,28 +149,24 @@ export function register(event) {
         });
 }
 
-export function signOut() {
-    auth.signOut()
-        .then(() => {
-            // Clear session on the server
-            return fetch('/logout/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCSRFToken()
-                },
-                credentials: 'include'
-            });
-        })
-        .then(response => {
-            if (response.ok) {
-                window.location.href = '/login/';
-            } else {
-                throw new Error('Logout failed');
-            }
-        })
-        .catch((error) => {
-            console.error("Logout error:", error);
-            alert('Failed to logout. Please try again.');
-        });
+export function logOut() {
+    fetch('/logout/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken()
+        },
+        credentials: 'include'
+    })
+    .then(response => {
+        if (response.ok) {
+            window.location.href = '/login/';
+    } else {
+        throw new Error('Logout failed');
+    }
+})
+    .catch((error) => {
+        console.error("Logout error:", error);
+        alert('Failed to logout. Please try again.');
+    })
 }

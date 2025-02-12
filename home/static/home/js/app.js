@@ -28,4 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
             register();
         });
     }
+    const signOutLink = document.querySelector('a[id="LogOut"]');
+    if (signOutLink) {
+        signOutLink.addEventListener('click', function (event) {
+            event.preventDefault();  // Prevent default link behavior
+            signOut();
+        });
+    }
 });

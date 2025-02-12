@@ -2,18 +2,20 @@ from pathlib import Path
 from firebase_admin import credentials
 import firebase_admin
 import os
-BASE_DIR =os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FIREBASE_CREDENTIALS_PATH = os.path.join(BASE_DIR, 'firebase_auth_key.json')
-
-cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
-firebase_admin.initialize_app(cred)
-print("firebase_admin.initialize_app(cred)")
-
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-dpo0dectr+pe25z_2h-gdy*5ib2fz5_$#twj7^(5)rh-rm+b-8"
 
+# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(BASE_DIR, "firebase_auth_key.json")
+# print(os.environ["GOOGLE_APPLICATION_CREDENTIALS"])
+# try :
+#     cred = credentials.ApplicationDefault()
+#     firebase_admin.initialize_app(cred)
+#     print("Firebase initialized")
+# except Exception as e:
+#     print(f"Firebase initialization error: {str(e)}")
+    
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
