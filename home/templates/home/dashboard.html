@@ -1,15 +1,14 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neural Budget AI - Dashboard</title>
     <link rel="stylesheet" href="{% static 'home/css/dashboard.css' %}">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script type="module" src="{% static 'home/js/signOut.js' %}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 
 <body>
@@ -31,7 +30,7 @@
                 <li><a href="#"><i class="fas fa-wallet"></i> Budget Planner</a></li>
                 <li><a href="#"><i class="fas fa-robot"></i> AI Assistance</a></li>
                 <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
-                <li><a href="#" onclick="signOut(); return false"><i class="fas fa-sign-out-alt"></i> Sign Out</a></li>
+                <li><a href="#" onclick="signOut()"><i class="fas fa-sign-out-alt"></i> Sign Out</a></li>
             </ul>
         </aside>
 

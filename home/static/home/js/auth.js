@@ -1,9 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
-import firebaseConfig from "./firebase-config.js";
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+
 
 // Helper function to get CSRF token
 function getCSRFToken() {
@@ -15,7 +13,6 @@ function getCSRFToken() {
 
 
 export function login(request) {
-
     console.log("Login function called");
 
     var email = document.getElementById('loginEmail').value;
@@ -28,67 +25,57 @@ export function login(request) {
         errorDiv.innerText = '';
     }
 
-    signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            console.log("Firebase authentication successful");
-            return userCredential.user.getIdToken();
+    fetch('/login/', {  // Make sure this matches your URL pattern
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            email: email,
+            password: password
         })
-        .then((idToken) => {
-            console.log("Got ID token!");
+    })
+    .then(async response => {
+        console.log("Response status:", response.status);
 
-            return fetch('/login/', {  // Make sure this matches your URL pattern
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${idToken}`
-                },
-                body: JSON.stringify({
-                    email: email,
-                    idToken: idToken
-                })
-            });
-        })
-        .then(async response => {
-            console.log("Response status:", response.status);
+        const text = await response.text();
+        console.log("Response text:", text);  // Debug log
 
-            const text = await response.text();
-            console.log("Response text:", text);  // Debug log
-
-            if (!response.ok) {
-                try {
-                    const data = JSON.parse(text);
-                    throw new Error(data.error || 'Login failed');
-                } catch (e) {
-                    throw new Error('Server returned an invalid response');
-                }
-            }
-
+        if (!response.ok) {
             try {
                 const data = JSON.parse(text);
-                return data;
-            } catch (e) {
-                throw new Error('Invalid JSON response from server');
-            }
-        })
-        .then(data => {
-            console.log("Backend response:", data);
-            if (data.message === 'Login successful') {
-                console.log("Redirecting to dashboard...");
-                window.location.replace("/dashboard/");
-            } else {
                 throw new Error(data.error || 'Login failed');
+            } catch (e) {
+                throw new Error('Server returned an invalid response');
             }
-        })
-        .catch((error) => {
-            console.error("Login error:", error);
-            if (errorDiv) {
-                errorDiv.style.display = 'block';
-                errorDiv.innerText = error.message;
-            } else {
-                console.error("Error div not found");
-                alert(error.message);  // Fallback error display
-            }
-        });
+        }
+        
+        try {
+            const data = JSON.parse(text);
+            return data;
+        } catch (e) {
+            throw new Error('Invalid JSON response from server');
+        }
+    })
+    .then(data => {
+        console.log("Backend response:", data);
+        if (data.message === 'Login successful') {
+            console.log("Redirecting to dashboard...");
+            window.location.replace("/dashboard/");
+        } else {
+            throw new Error(data.error || 'Login failed');
+        }
+    })
+    .catch((error) => {
+        console.error("Login error:", error);
+        if (errorDiv) {
+            errorDiv.style.display = 'block';
+            errorDiv.innerText = error.message;
+        } else {
+            console.error("Error div not found");
+            alert(error.message);  // Fallback error display
+        }
+    });
 }
 
 export function register(event) {
