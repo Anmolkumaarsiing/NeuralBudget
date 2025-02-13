@@ -5,8 +5,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from firebase_admin import exceptions as firebase_exceptions
 import json,requests,time
-from .firebase_config import FIREBASE_SIGN_IN_URL,FIREBASE_API_KEY
+from .firebase_config import FIREBASE_API_KEY
 
+FIREBASE_SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
 @csrf_exempt
 def login_view(request):
     if request.session.get('id_token'):
@@ -39,7 +40,7 @@ def login_view(request):
             id_token = response_data.get("idToken")
             if not id_token:
                 return JsonResponse({'error': 'Failed to retrieve ID token'}, status=401)
-            time.sleep(1)
+            time.sleep(2)
             # Verify the ID token using Firebase Admin SDK
             try:
                 decoded_token = auth.verify_id_token(id_token)
