@@ -1,64 +1,74 @@
-import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
-
 // Helper function to get CSRF token
-function getCSRFToken() {
-    const csrfCookie = document.cookie
-        .split(';')
-        .find(cookie => cookie.trim().startsWith('csrftoken='));
-    return csrfCookie ? csrfCookie.split('=')[1] : null;
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 
+const csrftoken = getCookie('csrftoken'); // Get the CSRF token
 
-export function login() {
-    console.log("Login function called");
+// Helper function to display errors
+function displayError(errorDiv, message) {
+    if (errorDiv) {
+        errorDiv.style.display = 'block';
+        errorDiv.innerText = message;
+    } else {
+        alert(message);
+    }
+}
 
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-    const errorDiv = document.getElementById('loginError');
-
-    // Clear errors
+// Helper function to clear errors
+function clearError(errorDiv) {
     if (errorDiv) {
         errorDiv.style.display = 'none';
         errorDiv.innerText = '';
     }
+}
 
-    // Send email/password to backend
+// Login function
+export function login(email, password) {
+    console.log("Login function called");
+    const errorDiv = document.getElementById('loginError');
+    clearError(errorDiv);
     fetch('/login/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
         },
-        body: JSON.stringify({
-            email: email,
-            password: password
-        })
+        body: JSON.stringify({ email, password })
     })
-        .then(async response => {
-            const text = await response.text();
-            if (!response.ok) throw new Error(text || 'Login failed');
-            return JSON.parse(text);
-        })
-        .then(data => {
-            if (data.message === 'Login successful') {
-                console.log("Login successful! Redirecting...");
-                window.location.href = "/dashboard/";  // Redirect to dashboard
-            } else {
-                throw new Error(data.error || 'Login failed');
-            }
-        })
-        .catch((error) => {
-            console.error("Login error:", error);
-            if (errorDiv) {
-                errorDiv.style.display = 'block';
-                errorDiv.innerText = error.message;
-            } else {
-                alert(error.message);
-            }
-        });
+    .then(async response => {
+        const text = await response.text();
+        if (!response.ok) throw new Error(text || 'Login failed');
+        return JSON.parse(text);
+    })
+    .then(data => {
+        if (data.message === 'Login successful') {
+            console.log("Login successful! Redirecting...");
+            window.location.href = "/dashboard/"; // Redirect to dashboard
+        } else {
+            throw new Error(data.error || 'Login failed');
+        }
+    })
+    .catch(error => {
+        console.error("Login error:", error);
+        displayError(errorDiv, error.message);
+    });
 }
 
-export function register(event) {
-    console.log("Register function called"); // Debug line
+// Register function
+export function register() {
+    console.log("Register function called");
 
     const username = document.getElementById('registerUsername').value;
     const email = document.getElementById('registerEmail').value;
@@ -66,107 +76,80 @@ export function register(event) {
     const password2 = document.getElementById('registerPassword2').value;
     const errorDiv = document.getElementById('registerError');
 
-    // Clear any existing error messages
-    if (errorDiv) {
-        errorDiv.style.display = 'none';
-        errorDiv.innerText = '';
-    }
-
-    console.log("Form data:", { username, email, password1, password2 }); // Debug line
+    clearError(errorDiv);
 
     // Validate input
     if (!username || !email || !password1 || !password2) {
-        console.log("Validation error: All fields are required"); // Debug line
-        if (errorDiv) {
-            errorDiv.style.display = 'block';
-            errorDiv.innerText = 'All fields are required.';
-        }
+        displayError(errorDiv, 'All fields are required.');
         return;
     }
 
     if (password1 !== password2) {
-        console.log("Validation error: Passwords do not match"); // Debug line
-        if (errorDiv) {
-            errorDiv.style.display = 'block';
-            errorDiv.innerText = 'Passwords do not match.';
-        }
+        displayError(errorDiv, 'Passwords do not match.');
         return;
     }
 
-    console.log("Attempting Firebase registration with email:", email); // Debug line
+    console.log("Attempting Firebase registration with email:", email);
 
     // Create user in Firebase
     createUserWithEmailAndPassword(auth, email, password1)
         .then((userCredential) => {
-            console.log("Firebase registration successful:", userCredential); // Debug line
+            console.log("Firebase registration successful:", userCredential);
             return userCredential.user.getIdToken();
         })
         .then((idToken) => {
-            console.log("Got ID token:", idToken); // Debug line
-            const csrfToken = getCSRFToken();
-            console.log("CSRF token:", csrfToken); // Debug line
-
             // Send registration data to the backend
             return fetch('/home/register/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken,
+                    'X-CSRFToken': csrftoken,
                     'Authorization': `Bearer ${idToken}`
                 },
-                body: JSON.stringify({
-                    username: username,
-                    email: email,
-                    idToken: idToken
-                })
+                body: JSON.stringify({ username, email, idToken })
             });
         })
         .then(response => {
-            console.log("Backend response status:", response.status); // Debug line
             if (!response.ok) {
                 return response.json().then(data => {
-                    console.log("Backend error response:", data); // Debug line
                     throw new Error(data.error || 'Registration failed');
                 });
             }
             return response.json();
         })
         .then(data => {
-            console.log("Backend response data:", data); // Debug line
             if (data.message === 'Registration successful') {
-                console.log("Redirecting to dashboard..."); // Debug line
+                console.log("Redirecting to dashboard...");
                 window.location.href = "/dashboard/";
             } else {
                 throw new Error(data.error || 'Registration failed');
             }
         })
-        .catch((error) => {
-            console.error("Registration error:", error); // Debug line
-            if (errorDiv) {
-                errorDiv.style.display = 'block';
-                errorDiv.innerText = error.message;
-            }
+        .catch(error => {
+            console.error("Registration error:", error);
+            displayError(errorDiv, error.message);
         });
 }
 
+// Logout function
 export function logOut() {
     fetch('/logout/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCSRFToken()
+            'X-CSRFToken': csrftoken
         },
         credentials: 'include'
     })
     .then(response => {
         if (response.ok) {
             window.location.href = '/login/';
-    } else {
-        throw new Error('Logout failed');
-    }
-})
-    .catch((error) => {
+        } else {
+            throw new Error('Logout failed');
+        }
+    })
+    .catch(error => {
         console.error("Logout error:", error);
         alert('Failed to logout. Please try again.');
-    })
+    });
 }

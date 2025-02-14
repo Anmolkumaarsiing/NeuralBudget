@@ -1,180 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neural Budget AI - Dashboard</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'home/css/dashboard.css' %}">
-    <script type="module" src="{% static 'home/js/app.js' %}"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
+    <title>Neural Budget AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
+    <div class="container">
 
-    <div class="dashboard-container">
-        <!-- Sidebar Section -->
+        <!-- SIDEBAR SECTION -->
+
         <aside class="sidebar">
             <div class="logo">
-                <h2>Neural Budget AI</h2>
-            </div>
-            <ul class="nav-links">
-                <li class="active"><i class="fas fa-home"></i> Dashboard</li>
-                <li><i class="fas fa-plus-circle"></i> Add Transaction</li>
-                <li><i class="fas fa-money-bill-wave"></i> Income Tracker</li>
-                <li><i class="fas fa-shopping-cart"></i> Expense Manager</li>
-                <li><i class="fas fa-lightbulb"></i> Smart Insights</li>
-                <li><i class="fas fa-wallet"></i> Budget Planner</li>
-                <li><i class="fas fa-robot"></i> AI Assitance</li>
-                <li><i class="fas fa-user"></i> Profile</li>
-                <li><i class="fas fa-sign-out-alt"></i> Sign Out</li>
-            </ul>
+                <img src="image.png" alt="Neural Budget AI Logo" class="logo-img">
+                <span class="logo-text">Neural Budget AI</span>
+            </div>            
+            <nav>
+                <ul>
+                    <li class="dropdown">
+                        <button class="drop-btn"><i class="fas fa-receipt"></i>Expense Tracking
+                            <i class="fas fa-angle-right dropdown-icon"></i>
+                        </button>
+                        <ul class="dropdown-content">
+                            <li><a href="pages/track1.html"><i class="fas fa-eye"></i> View Expenses</a></li>
+                            <li><a href="pages/track2.html"><i class="fas fa-plus-circle"></i> Add Expense</a></li>
+                            <li><a href="pages/track3.html"><i class="fas fa-edit"></i> Edit Categories</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <button class="drop-btn"><i class="fas fa-wallet"></i>Budgeting Tools
+                            <i class="fas fa-angle-right dropdown-icon"></i>
+                        </button>
+                        <ul class="dropdown-content">
+                            <li><a href="pages/budget1.html"><i class="fas fa-coins"></i>Set Budget</a></li>
+                            <li><a href="pages/budget2.html"><i class="fas fa-piggy-bank"></i> Savings Goals</a></li>
+                            <li><a href="pages/budget3.html"><i class="fas fa-chart-pie"></i> Spending Insights</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <button class="drop-btn"><i class="fas fa-chart-line"></i>AI Insights
+                            <i class="fas fa-angle-right dropdown-icon"></i>
+                        </button>
+                        <ul class="dropdown-content">
+                            <li><a href="pages/ai1.html"><i class="fas fa-brain"></i> Predictive Analysis</a></li>
+                            <li><a href="pages/ai2.html"><i class="fas fa-layer-group"></i> Smart Categorization</a></li>
+                            <li><a href="pages/ai3.html"><i class="fas fa-chart-line"></i> Expense Forecasting</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <button class="drop-btn"><i class="fas fa-cog"></i>Settings
+                            <i class="fas fa-angle-right dropdown-icon"></i>
+                        </button>
+                        <ul class="dropdown-content">
+                            <li><a href="pages/ai1.html"><i class="fas fa-user"></i> Profile</a></li>
+                            <li><a href="pages/ai2.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                
+                </ul>
+            </nav>
         </aside>
 
+        <main class="content">
+            
+        <!-- TOPBAR SECTION -->
 
-        <!-- Main Content Section -->
-        <main class="main-content">
             <header class="topbar">
-                <div class="slider">
-                    <i class="fas fa-bars"></i> <!-- Font Awesome Menu Icon -->
-                </div>
-
                 <div class="greeting">
-                    <h3>Hi, <span id="username">User</span> 👋</h3>
+                    <h3>Hi, user <i class="fas fa-smile"></i></h3>
                 </div>
+                
                 <div class="actions">
-                    <div class="profile-dropdown">
-                        <button class="profile-btn" id="profile-btn">
-                            <i class="fas fa-user-circle"></i>
-                        </button>
-                        <div class="dropdown-content" id="dropdown-content">
-                            <a href="#">Profile</a>
-                            <a href="#">Settings</a>
-                            <a href="#" id="logout">Logout</a>
-                        </div>
-                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider round"></span>
+                    </label>
                 </div>
             </header>
+            
+        <!-- DASHBOARD CONTENTS SECTION -->
 
-            <!-- Dashboard Overview -->
-            <section class="overview">
-                <div class="card">
-                    <i class="fas fa-money-bill-wave"></i>
-                    <div class="card-info">
-                        <h3>₹5,250</h3>
-                        <p>Total Balance</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <i class="fas fa-arrow-down"></i>
-                    <div class="card-info">
-                        <h3>₹1,750</h3>
-                        <p>Expenses</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <i class="fas fa-arrow-up"></i>
-                    <div class="card-info">
-                        <h3>₹3,500</h3>
-                        <p>Income</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <i class="fas fa-bullseye"></i>
-                    <div class="card-info">
-                        <h3>50%</h3>
-                        <p>Budget Utilization</p>
-                    </div>
-                </div>
-            </section>
 
-            <!-- Recent Transactions -->
-            <section class="transactions">
-                <h2>Recent Transactions</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Payment Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Groceries</td>
-                            <td>₹150</td>
-                            <td class="completed">Completed</td>
-                            <td>05th Feb</td>
-                        </tr>
-                        <tr>
-                            <td>OTT Subscriptions</td>
-                            <td>₹999</td>
-                            <td class="pending">Pending</td>
-                            <td>09th Feb</td>
-                        </tr>
-                        <tr>
-                            <td>Electricity Bill</td>
-                            <td>₹800</td>
-                            <td class="due">Bill due</td>
-                            <td>11th Feb</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <section class="dashboard">
+                <div class="dashboard-left">
+                    <div class="dashboard-cards">
+                        <div class="card">
+                            <h3>Total Expenses</h3>
+                            <p id="totalExpenses">₹0.00</p>
+                        </div>
+                        <div class="card">
+                            <h3>Savings</h3>
+                            <p id="savings">₹0.00</p>
+                        </div>
+                        <div class="card">
+                            <h3>Budget Left</h3>
+                            <p id="budgetLeft">₹0.00</p>
+                        </div>
+                    </div>
+            
+                    <div class="recent-transactions">
+                        <h3>Recent Transactions</h3>
+                        <ul id="transactionList">
+                            <li>No recent transactions</li>
+                        </ul>
+                    </div>
+                </div>
+            
+        <!-- CHART SECTION -->
+
+                <div class="chart-section">
+                    <h3>Expense Category Distribution</h3>
+                    <canvas id="expenseChart"></canvas>
+                </div>
             </section>
         </main>
-
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const profileBtn = document.getElementById("profile-btn");
-                const dropdown = document.getElementById("dropdown-content");
-
-                profileBtn.addEventListener("click", function (event) {
-                    event.stopPropagation();
-                    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-                });
-
-                // Close dropdown when clicking outside
-                document.addEventListener("click", function (event) {
-                    if (!profileBtn.contains(event.target) && !dropdown.contains(event.target)) {
-                        dropdown.style.display = "none";
-                    }
-                });
-            });
-            document.getElementById("logout").addEventListener("click", function (event) {
-                event.preventDefault(); // 
-
-                fetch("{% url 'home:logout' %}", {
-                    method: "POST",
-                    headers: {
-                        "X-CSRFToken": getCSRFToken(), // Ensure CSRF protection
-                        "Content-Type": "application/json"
-                    },
-                    credentials: "include"
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.message === "Logged out successfully") {
-                            window.location.href = "/";  // Redirect to home page after logout
-                        } else {
-                            console.error("Logout failed:", data.error);
-                        }
-                    })
-                    .catch(error => console.error("Logout error:", error));
-            });
-
-            // Function to get CSRF token from cookies
-            function getCSRFToken() {
-                return document.querySelector('[name=csrfmiddlewaretoken]')?.value;
-            }
-
-
-
-        </script>
-
     </div>
 </body>
-
 </html>
