@@ -1,5 +1,4 @@
-// Helper function to get CSRF token
-function getCookie(name) {
+export function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
         const cookies = document.cookie.split(';');
@@ -13,7 +12,6 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
 const csrftoken = getCookie('csrftoken'); // Get the CSRF token
 
 // Helper function to display errors
@@ -67,18 +65,63 @@ export function login(email, password) {
 }
 
 // Register function
+// export function register() {
+//     console.log("Register function called");
+
+//     const username = document.getElementById('registerUsername').value;
+//     const email = document.getElementById('registerEmail').value;
+//     const password1 = document.querySelector('input[name="registerPassword1"]').value;
+//     const password2 = document.querySelector('input[name="registerPassword2"]').value;
+//     const errorDiv = document.getElementById('registerError');
+
+//     clearError(errorDiv);
+
+//     if (!username || !email || !password1 || !password2) {
+//         displayError(errorDiv, 'All fields are required.');
+//         return;
+//     }
+
+//     if (password1 !== password2) {
+//         displayError(errorDiv, 'Passwords do not match.');
+//         return;
+//     }
+
+//     console.log("Sending registration data to backend...");
+
+//     const response = fetch('/signup/', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'X-CSRFToken': csrftoken
+//         },
+//         body: JSON.stringify({ username, email, password: password1 })
+//     })
+//     console.log(response)
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.message === 'User created successfully') {
+//             console.log("User created in Firebase! UID:", data.uid);
+//             window.location.href = "/dashboard/";
+//         } else {
+//             throw new Error(data.error || 'Registration failed');
+//         }
+//     })
+//     .catch(error => {
+//         console.error("Registration error:", error);
+//         displayError(errorDiv, error.message);
+//     });
+// }
+
+
 export function register() {
     console.log("Register function called");
 
     const username = document.getElementById('registerUsername').value;
     const email = document.getElementById('registerEmail').value;
-    const password1 = document.getElementById('registerPassword1').value;
-    const password2 = document.getElementById('registerPassword2').value;
+    const password1 = document.querySelector('input[name="registerPassword1"]').value;
+    const password2 = document.querySelector('input[name="registerPassword2"]').value;
     const errorDiv = document.getElementById('registerError');
-
     clearError(errorDiv);
-
-    // Validate input
     if (!username || !email || !password1 || !password2) {
         displayError(errorDiv, 'All fields are required.');
         return;
@@ -89,46 +132,29 @@ export function register() {
         return;
     }
 
-    console.log("Attempting Firebase registration with email:", email);
+    console.log("Sending registration data to backend...");
 
-    // Create user in Firebase
-    createUserWithEmailAndPassword(auth, email, password1)
-        .then((userCredential) => {
-            console.log("Firebase registration successful:", userCredential);
-            return userCredential.user.getIdToken();
-        })
-        .then((idToken) => {
-            // Send registration data to the backend
-            return fetch('/home/register/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken,
-                    'Authorization': `Bearer ${idToken}`
-                },
-                body: JSON.stringify({ username, email, idToken })
-            });
-        })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(data => {
-                    throw new Error(data.error || 'Registration failed');
-                });
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.message === 'Registration successful') {
-                console.log("Redirecting to dashboard...");
-                window.location.href = "/dashboard/";
-            } else {
-                throw new Error(data.error || 'Registration failed');
-            }
-        })
-        .catch(error => {
-            console.error("Registration error:", error);
-            displayError(errorDiv, error.message);
-        });
+    fetch('/signup/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({ username, email, password: password1 })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message === 'Registration successful') {
+            console.log("User created in Firebase! UID:", data.uid);
+            window.location.href = "/dashboard/";
+        } else {
+            throw new Error(data.error || 'Registration failed');
+        }
+    })
+    .catch(error => {
+        console.error("Registration error:", error);
+        displayError(errorDiv, error.message);
+    });
 }
 
 // Logout function
