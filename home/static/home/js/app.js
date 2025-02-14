@@ -42,22 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (signupForm) {
         signupForm.addEventListener('submit', async (event) => {
             event.preventDefault();
-            const email = signupForm.querySelector('input[name="email"]').value;
-            const password = signupForm.querySelector('input[name="password"]').value;
-            const confirmPassword = signupForm.querySelector('input[name="confirmPassword"]').value;
-
-            if (password !== confirmPassword) {
-                alert("Passwords do not match!");
-                return;
-            }
-
-            try {
-                await register(email, password);
-                alert("Registration successful! Please log in.");
-                container.classList.remove("sign-up-mode"); // Switch to login mode
-            } catch (error) {
-                alert(`Registration failed: ${error.message}`);
-            }
+            register();
         });
     }
 

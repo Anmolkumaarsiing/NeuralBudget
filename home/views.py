@@ -4,14 +4,26 @@ from firebase_admin import auth
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from firebase_admin import exceptions as firebase_exceptions
-import json,requests,time
+import json,requests
 from .firebase_config import FIREBASE_API_KEY
+from .utils.python.help import  verify_token
 
 FIREBASE_SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
+uid = auth.get_user_by_email("heinsyh@gmail.com")
+print(uid.display_name)
+
+def is_authenticated(request):
+    if request.session.get('id_token'):
+        return True
+    return False
+
+def home(request):
+    return render(request, 'home/index.html')
 
 @csrf_exempt
 def login_view(request):
-    if request.session.get('id_token'):
+    if is_authenticated(request):
+        print("User is authenticated")
         return redirect('home:dashboard')
 
     if request.method == 'POST':
@@ -68,20 +80,11 @@ def login_view(request):
 
     return render(request, 'home/login.html')
 
-def home(request):
-    return render(request, 'home/index.html')
-
-def verify_token(id_token):
-    try:
-        decoded_token = auth.verify_id_token(id_token,clock_skew_seconds=5)
-        return decoded_token
-    except Exception as e:
-        print(f"Token verification error: {str(e)}")
-        raise
-
-
 @csrf_exempt
 def register_view(request):
+    if is_authenticated(request):
+        return render(request, 'home/dashboard.html')
+
     if request.method == "POST":
         try:
             print("Register view called")  # Debug line
@@ -92,15 +95,23 @@ def register_view(request):
 
             username = data.get("username")
             email = data.get("email")
-            id_token = data.get("idToken")
+            password = data.get("password")
 
-            print("Verifying Firebase token...")  # Debug line
-            decoded_token = verify_token(id_token)
-            uid = decoded_token['uid']
-            print("Token verified, UID:", uid)  # Debug line
+            # Create user in Firebase
+            print("Creating user in Firebase...")  # Debug line
+            user = auth.create_user(
+                email=email,
+                password=password,
+                display_name=username
+            )
+            uid = user.display_name
+            print("User created in Firebase! UID:", uid)  # Debug line
 
-            # Store user data in session
-            request.session['id_token'] = id_token
+            # Optionally, you can generate a custom token for the user
+            custom_token = auth.create_custom_token(uid)
+            print("Custom token generated:", custom_token)  # Debug line
+
+            # Store user information in session (optional)
             request.session['uid'] = uid
             request.session['email'] = email
             request.session['username'] = username
@@ -108,6 +119,7 @@ def register_view(request):
             print("Registration successful, redirecting to dashboard")  # Debug line
             return JsonResponse({
                 "message": "Registration successful",
+                "uid": uid,
                 "redirect_url": "/dashboard/"
             })
 
@@ -117,26 +129,23 @@ def register_view(request):
         except Exception as e:
             print("Unexpected error:", str(e))  # Debug line
             return JsonResponse({"error": str(e)}, status=500)
+    
 
     print("Method not allowed")  # Debug line
-    return JsonResponse({"error": "Method not allowed"}, status=405)    # if request.session.get('id_token'):
-
+    return JsonResponse({"error": "Method not allowed"}, status=405)
 
 def dashboard_view(request):
-    if not request.session.get('id_token'):
+    if not is_authenticated(request):
+        print("User is not authenticated")
         return redirect('home:login')
     
     id_token = request.session.get('id_token')
     try:    
-        decoded_token = auth.verify_id_token(id_token)
+        decoded_token = verify_token(id_token)
+        user = auth.get_user_by_email(decoded_token.get('email'))
         context = {
-        "user": request.user,
         "email": decoded_token.get('email'),
-        "total_balance": 5250,
-        "total_expenses": 1750,
-        "total_income": 3500,
-        "budget_utilization": 50,  # Example percentage
-        "transactions":'TODO',  # Replace with actual DB query
+        'uid': user.display_name # Replace with actual DB query
     }
         return render(request, 'home/dashboard.html', context)
     except Exception:
