@@ -8,6 +8,7 @@ import json,requests,time
 from .firebase_config import FIREBASE_API_KEY
 
 FIREBASE_SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
+
 @csrf_exempt
 def login_view(request):
     if request.session.get('id_token'):
@@ -40,10 +41,10 @@ def login_view(request):
             id_token = response_data.get("idToken")
             if not id_token:
                 return JsonResponse({'error': 'Failed to retrieve ID token'}, status=401)
-            time.sleep(2)
+
             # Verify the ID token using Firebase Admin SDK
             try:
-                decoded_token = auth.verify_id_token(id_token)
+                decoded_token = verify_token(id_token)
                 uid = decoded_token['uid']
 
                 # Store in session
@@ -94,7 +95,7 @@ def register_view(request):
             id_token = data.get("idToken")
 
             print("Verifying Firebase token...")  # Debug line
-            decoded_token = auth.verify_id_token(id_token)
+            decoded_token = verify_token(id_token)
             uid = decoded_token['uid']
             print("Token verified, UID:", uid)  # Debug line
 

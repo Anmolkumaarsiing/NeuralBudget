@@ -50,32 +50,32 @@ transactionList.innerHTML = transactions
     `)
     .join("");
 
-    // document.addEventListener("DOMContentLoaded", function () {
-    //     const ctx = document.getElementById("expenseChart").getContext("2d");
-    //     if (!ctx) {
-    //         console.error("Canvas element not found!");
-    //         return;
-    //     }
+    document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById("expenseChart").getContext("2d");
+        if (!ctx) {
+            console.error("Canvas element not found!");
+            return;
+        }
     
-    //     new Chart(ctx, {
-    //         type: "doughnut", 
-    //         data: {
-    //             labels: ["Groceries", "Entertainment", "Utilities", "Rent", "Shopping"],
-    //             datasets: [{
-    //                 label: "Expense Distribution",
-    //                 data: [200, 150, 100, 500, 250], 
-    //                 backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4CAF50", "#9C27B0"],
-    //                 borderWidth: 1
-    //             }]
-    //         },
-    //         options: {
-    //             responsive: true,
-    //             maintainAspectRatio: false,
-    //             plugins: {
-    //                 legend: {
-    //                     position: "bottom"
-    //                 }
-    //             }
-    //         }
-    //     });
-    // });
+        new Chart(ctx, {
+            type: "doughnut", 
+            data: {
+                labels: ["Groceries", "Entertainment", "Utilities", "Rent", "Shopping"],
+                datasets: [{
+                    label: "Expense Distribution",
+                    data: [200, 150, 100, 500, 250], 
+                    backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4CAF50", "#9C27B0"],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: "bottom"
+                    }
+                }
+            }
+        });
+    });
