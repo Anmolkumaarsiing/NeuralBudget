@@ -6,23 +6,10 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-dpo0dectr+pe25z_2h-gdy*5ib2fz5_$#twj7^(5)rh-rm+b-8"
-
-# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(BASE_DIR, "firebase_auth_key.json")
-# print(os.environ["GOOGLE_APPLICATION_CREDENTIALS"])
-# try :
-#     cred = credentials.ApplicationDefault()
-#     firebase_admin.initialize_app(cred)
-#     print("Firebase initialized")
-# except Exception as e:
-#     print(f"Firebase initialization error: {str(e)}")
-    
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
-
-# Application definition
+# Applicationdefinition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -31,7 +18,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     'home',
 ]
 
@@ -65,21 +51,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "neural_budget.wsgi.application"
 
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -111,7 +88,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-import os
 
 STATIC_URL = '/static/'
 

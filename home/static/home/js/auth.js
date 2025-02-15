@@ -10,33 +10,18 @@ export function getCookie(name) {
             }
         }
     }
+   
     return cookieValue;
 }
 const csrftoken = getCookie('csrftoken'); // Get the CSRF token
-
-// Helper function to display errors
-function displayError(errorDiv, message) {
-    if (errorDiv) {
-        errorDiv.style.display = 'block';
-        errorDiv.innerText = message;
-    } else {
-        alert(message);
-    }
-}
-
-// Helper function to clear errors
-function clearError(errorDiv) {
-    if (errorDiv) {
-        errorDiv.style.display = 'none';
-        errorDiv.innerText = '';
-    }
-}
+print(csrftoken);
 
 // Login function
 export function login(email, password) {
     console.log("Login function called");
     const errorDiv = document.getElementById('loginError');
     clearError(errorDiv);
+
     fetch('/login/', {
         method: 'POST',
         headers: {
@@ -47,10 +32,21 @@ export function login(email, password) {
     })
     .then(async response => {
         const text = await response.text();
-        if (!response.ok) throw new Error(text || 'Login failed');
+        if (!response.ok) {
+            // Parse the error message if the response is JSON
+            let errorMessage = 'Login failed';
+            try {
+                const errorData = JSON.parse(text);
+                errorMessage = errorData.error || errorMessage;
+            } catch (e) {
+                errorMessage = text || errorMessage;
+            }
+            throw new Error(errorMessage);
+        }
         return JSON.parse(text);
     })
     .then(data => {
+        console.log("Login response data:", data);
         if (data.message === 'Login successful') {
             console.log("Login successful! Redirecting...");
             window.location.href = "/dashboard/"; // Redirect to dashboard
@@ -64,54 +60,15 @@ export function login(email, password) {
     });
 }
 
-// Register function
-// export function register() {
-//     console.log("Register function called");
+function clearError(errorDiv) {
+    errorDiv.textContent = '';
+    errorDiv.style.display = 'none';
+}
 
-//     const username = document.getElementById('registerUsername').value;
-//     const email = document.getElementById('registerEmail').value;
-//     const password1 = document.querySelector('input[name="registerPassword1"]').value;
-//     const password2 = document.querySelector('input[name="registerPassword2"]').value;
-//     const errorDiv = document.getElementById('registerError');
-
-//     clearError(errorDiv);
-
-//     if (!username || !email || !password1 || !password2) {
-//         displayError(errorDiv, 'All fields are required.');
-//         return;
-//     }
-
-//     if (password1 !== password2) {
-//         displayError(errorDiv, 'Passwords do not match.');
-//         return;
-//     }
-
-//     console.log("Sending registration data to backend...");
-
-//     const response = fetch('/signup/', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'X-CSRFToken': csrftoken
-//         },
-//         body: JSON.stringify({ username, email, password: password1 })
-//     })
-//     console.log(response)
-//     .then(response => response.json())
-//     .then(data => {
-//         if (data.message === 'User created successfully') {
-//             console.log("User created in Firebase! UID:", data.uid);
-//             window.location.href = "/dashboard/";
-//         } else {
-//             throw new Error(data.error || 'Registration failed');
-//         }
-//     })
-//     .catch(error => {
-//         console.error("Registration error:", error);
-//         displayError(errorDiv, error.message);
-//     });
-// }
-
+function displayError(errorDiv, message) {
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+}
 
 export function register() {
     console.log("Register function called");

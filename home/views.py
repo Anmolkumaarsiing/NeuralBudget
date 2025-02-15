@@ -1,16 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from firebase_admin import auth
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from firebase_admin import exceptions as firebase_exceptions
 import json,requests
 from .firebase_config import FIREBASE_API_KEY
-from .utils.python.help import  verify_token
+from home.utils.python.help import verify_token
 
 FIREBASE_SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
-uid = auth.get_user_by_email("heinsyh@gmail.com")
-print(uid.display_name)
+
 
 def is_authenticated(request):
     if request.session.get('id_token'):
@@ -23,19 +23,23 @@ def home(request):
 @csrf_exempt
 def login_view(request):
     if is_authenticated(request):
-        print("User is authenticated")
         return redirect('home:dashboard')
-
-    if request.method == 'POST':
+    elif request.method == 'GET':
+        return render(request, 'home/login.html')
+    elif request.method == 'POST':
         try:
+            # Parse the request body
             body = json.loads(request.body)
             email = body.get('email')
             password = body.get('password')
+            print("Email:", email)
+            print("Password:", password)
 
+            # Validate email and password
             if not email or not password:
                 return JsonResponse({'error': 'Email and password are required'}, status=400)
 
-            # Verify email/password using Firebase REST API
+            # Authenticate with Firebase REST API
             payload = {
                 "email": email,
                 "password": password,
@@ -44,12 +48,14 @@ def login_view(request):
             params = {"key": FIREBASE_API_KEY}
             response = requests.post(FIREBASE_SIGN_IN_URL, json=payload, params=params)
             response_data = response.json()
+            print("Firebase response:", response_data)
 
+            # Handle Firebase authentication errors
             if response.status_code != 200:
                 error_message = response_data.get("error", {}).get("message", "Authentication failed")
                 return JsonResponse({'error': error_message}, status=401)
 
-            # If authentication is successful, get the Firebase ID token
+            # Extract the Firebase ID token
             id_token = response_data.get("idToken")
             if not id_token:
                 return JsonResponse({'error': 'Failed to retrieve ID token'}, status=401)
@@ -58,12 +64,14 @@ def login_view(request):
             try:
                 decoded_token = verify_token(id_token)
                 uid = decoded_token['uid']
+                print("Decoded token UID:", uid)
 
-                # Store in session
+                # Store user information in the session
                 request.session['user_id'] = uid
                 request.session['email'] = email
                 request.session['id_token'] = id_token
 
+                # Return success response
                 return JsonResponse({
                     'message': 'Login successful',
                     'email': email,
@@ -74,11 +82,13 @@ def login_view(request):
                 return JsonResponse({'error': f'Firebase error: {str(e)}'}, status=401)
 
         except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+            return JsonResponse({'error': 'Invalid JSON in request body'}, status=400)
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=400)
+            print("Unexpected error:", str(e))  # Log unexpected errors
+            return JsonResponse({'error': 'An unexpected error occurred'}, status=500)
 
-    return render(request, 'home/login.html')
+    # Return method not allowed for non-POST requests
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 @csrf_exempt
 def register_view(request):
