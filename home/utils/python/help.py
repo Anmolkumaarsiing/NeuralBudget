@@ -14,5 +14,6 @@ def verify_token(id_token):
         decoded_token = auth.verify_id_token(id_token,clock_skew_seconds=5)
         return decoded_token
     except Exception as e:
+        print("In verify_token")
         print(f"Token verification error: {str(e)}")
         raise

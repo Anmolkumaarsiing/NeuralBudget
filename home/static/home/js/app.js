@@ -24,21 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             const email = document.getElementById('loginEmail').value;
-            console.log(email);
             const password = document.getElementById('loginPassword').value;
-
-            try {
-                await login(email, password);
-                alert("Login successful!");
-                // Redirect or update UI after successful login
-                window.location.href = "/dashboard"; // Example redirect
-            } catch (error) {
-                alert(`Login failed: ${error.message}`);
-            }
+            login(email, password);
         });
     }
 
-    // Signup Form Submission
     if (signupForm) {
         signupForm.addEventListener('submit', async (event) => {
             event.preventDefault();
