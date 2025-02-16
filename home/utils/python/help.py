@@ -17,3 +17,12 @@ def verify_token(id_token):
         print("In verify_token")
         print(f"Token verification error: {str(e)}")
         raise
+
+def get_user_id(id_token):
+    try:
+        decoded_token = verify_token(id_token)
+        email = decoded_token.get('email')
+        print(email)
+        return email
+    except Exception as e:
+        print(f"Error getting user ID: {str(e)}")

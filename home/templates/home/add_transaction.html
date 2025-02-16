@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neural Budget AI - Dashboard</title>
-    <link rel="stylesheet" href="{% static 'home/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/add_transaction.css' %}">
     <script type="module" src="{% static 'home/js/signOut.js' %}"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
+    <script type="module" src="{% static 'home/js/add_transaction.js' %}"></script>
 </head>
 <body>
 
@@ -30,7 +30,7 @@
             <li><a href="#"><i class="fas fa-wallet"></i> Budget Planner</a></li>
             <li><a href="#"><i class="fas fa-robot"></i> AI Assistance</a></li>
             <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
-            <li><a href="#" onclick="signOut()"><i class="fas fa-sign-out-alt"></i> Sign Out</a></li>
+            <li><a href="#" id="signOutLink"><i class="fas fa-sign-out-alt"></i>Sign Out</a></li>
         </ul>        
         
     </aside>
@@ -40,7 +40,7 @@
     <main class="main-content">
         <header class="topbar">
             <div class="greeting">
-                <h3>Hi, <span id="username">{{ user.username }}</span> 👋</h3>
+                <h3>Hi, <span id="username">{{ email }}</span> 👋</h3>
             </div>
             <div class="actions">
                 <label class="switch">
@@ -54,7 +54,7 @@
 
     <section class="add-transaction">
         <h2>Add Transaction</h2>
-        <form method="POST" action="">
+        <form method="POST" action="" id="addTransactionForm">
             {% csrf_token %}
             
             <!-- Name Field -->

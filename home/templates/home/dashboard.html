@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="{% static 'home/css/dashboard.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="module" src="{% static 'home/js/script.js' %}"></script>
+    <script type="module" src="{% static 'home/js/dashboard.js' %}"></script>
     <script type="module" src="{% static 'home/js/signOut.js' %}"></script>
 </head>
 <body>
@@ -29,7 +29,7 @@
                         </button>
                         <ul class="dropdown-content">
                             <li><a href="#"><i class="fas fa-eye"></i> View Expenses</a></li>
-                            <li><a href="#"><i class="fas fa-plus-circle"></i> Add Expense</a></li>
+                            <li><a href="/add_transaction "><i class="fas fa-plus-circle"></i> Add Expense</a></li>
                             <li><a href="#"><i class="fas fa-edit"></i> Edit Categories</a></li>
                         </ul>
                     </li>
@@ -73,7 +73,7 @@
 
             <header class="topbar">
                 <div class="greeting">
-                    <h3>Hi, {{uid}} <i class="fas fa-smile"></i></h3>
+                    <h3>Hi, {{email}} <i class="fas fa-smile"></i></h3>
                 </div>
                 
                 <div class="actions">
@@ -94,7 +94,7 @@
                             <h3>Total Expenses</h3>
                             <p id="totalExpenses">₹0.00</p>
                         </div>
-                        <div class="card">
+                         <div class="card">
                             <h3>Savings</h3>
                             <p id="savings">₹0.00</p>
                         </div>

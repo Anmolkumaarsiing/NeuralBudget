@@ -10,13 +10,18 @@ export function getCookie(name) {
             }
         }
     }
-   
+
     return cookieValue;
 }
 const csrftoken = getCookie('csrftoken'); // Get the CSRF token
-print(csrftoken);
+// console.log("Checking for print calls...");
 
-// Login function
+// Override window.print for debugging
+// const originalPrint = window.print;
+// window.print = function() {
+//     console.trace("Print dialog triggered from:"); // Log the call stack
+//     originalPrint.apply(window, arguments);
+// };
 export function login(email, password) {
     console.log("Login function called");
     const errorDiv = document.getElementById('loginError');
@@ -30,34 +35,36 @@ export function login(email, password) {
         },
         body: JSON.stringify({ email, password })
     })
-    .then(async response => {
-        const text = await response.text();
-        if (!response.ok) {
-            // Parse the error message if the response is JSON
-            let errorMessage = 'Login failed';
-            try {
-                const errorData = JSON.parse(text);
-                errorMessage = errorData.error || errorMessage;
-            } catch (e) {
-                errorMessage = text || errorMessage;
+        .then(async response => {
+            const text = await response.text();
+            if (!response.ok) {
+                // Parse the error message if the response is JSON
+                let errorMessage = 'Login failed';
+                try {
+                    const errorData = JSON.parse(text);
+                    errorMessage = errorData.error || errorMessage;
+                } catch (e) {
+                    errorMessage = text || errorMessage;
+                }
+                throw new Error(errorMessage);
             }
-            throw new Error(errorMessage);
-        }
-        return JSON.parse(text);
-    })
-    .then(data => {
-        console.log("Login response data:", data);
-        if (data.message === 'Login successful') {
-            console.log("Login successful! Redirecting...");
-            window.location.href = "/dashboard/"; // Redirect to dashboard
-        } else {
-            throw new Error(data.error || 'Login failed');
-        }
-    })
-    .catch(error => {
-        console.error("Login error:", error);
-        displayError(errorDiv, error.message);
-    });
+            return JSON.parse(text);
+        })
+        .then(data => {
+            console.log("Login response data:", data);
+            if (data.message === 'Login successful') {
+                const uid = data.uid;
+                console.log("Login successful! Redirecting... for uid:", uid);
+                localStorage.setItem("uid", uid);
+                window.location.href = "/dashboard/"; // Redirect to dashboard
+            } else {
+                throw new Error(data.error || 'Login failed');
+            }
+        })
+        .catch(error => {
+            console.error("Login error:", error);
+            displayError(errorDiv, error.message);
+        });
 }
 
 function clearError(errorDiv) {
@@ -99,19 +106,19 @@ export function register() {
         },
         body: JSON.stringify({ username, email, password: password1 })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message === 'Registration successful') {
-            console.log("User created in Firebase! UID:", data.uid);
-            window.location.href = "/dashboard/";
-        } else {
-            throw new Error(data.error || 'Registration failed');
-        }
-    })
-    .catch(error => {
-        console.error("Registration error:", error);
-        displayError(errorDiv, error.message);
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'Registration successful') {
+                console.log("User created in Firebase! UID:", data.uid);
+                window.location.href = "/dashboard/";
+            } else {
+                throw new Error(data.error || 'Registration failed');
+            }
+        })
+        .catch(error => {
+            console.error("Registration error:", error);
+            displayError(errorDiv, error.message);
+        });
 }
 
 // Logout function
@@ -124,15 +131,15 @@ export function logOut() {
         },
         credentials: 'include'
     })
-    .then(response => {
-        if (response.ok) {
-            window.location.href = '/login/';
-        } else {
-            throw new Error('Logout failed');
-        }
-    })
-    .catch(error => {
-        console.error("Logout error:", error);
-        alert('Failed to logout. Please try again.');
-    });
+        .then(response => {
+            if (response.ok) {
+                window.location.href = '/login/';
+            } else {
+                throw new Error('Logout failed');
+            }
+        })
+        .catch(error => {
+            console.error("Logout error:", error);
+            alert('Failed to logout. Please try again.');
+        });
 }
