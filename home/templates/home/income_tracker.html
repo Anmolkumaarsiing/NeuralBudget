@@ -5,18 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neural Budget AI - Dashboard</title>
-    <link rel="stylesheet" href="{% static 'home/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/income_tracker.css' %}">
+    <script type="module" src="{% static 'home/js/income_tracker.js' %}"></script>
     <script type="module" src="{% static 'home/js/signOut.js' %}"></script>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
 </head>
 <body>
 
 <div class="dashboard-container">
-    
-    <!-- SideBar Section -->
-
     <aside class="sidebar">
         <div class="logo">
             <h2>Neural Budget AI</h2>
@@ -30,7 +25,7 @@
             <li><a href="#"><i class="fas fa-wallet"></i> Budget Planner</a></li>
             <li><a href="#"><i class="fas fa-robot"></i> AI Assistance</a></li>
             <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
-            <li><a href="" onclick="signOut()"><i class="fas fa-sign-out-alt"></i> Sign Out</a></li>
+            <li><a href="" id ="signOutLink"><i class="fas fa-sign-out-alt"></i> Sign Out</a></li>
         </ul>        
         
     </aside>
@@ -52,86 +47,26 @@
         
     <!-- Income Tracker Section -->
 
-<!-- Section 1: Add Income -->
-<section class="add-income">
-    <h2>Add Income</h2>
-    <form method="POST" action="">
-        {% csrf_token %}
-
-        <label for="source">Income Source:</label>
-        <select id="source" name="source" required onchange="toggleCustomInput()">
-            <option value="Salary">Salary</option>
-            <option value="Freelancing">Freelancing</option>
-            <option value="Business">Business</option>
-            <option value="Investments">Investments</option>
-            <option value="Other">Other</option>
-        </select>
-
-        <!-- Custom income input field (hidden by default) -->
-        <input type="text" id="customIncome" name="customIncome" placeholder="Enter Income Source" style="display:none;">
-
-        <label for="amount">Amount:</label>
-        <input type="number" id="amount" name="amount" required>
-
-        <label for="date">Date:</label>
-        <input type="date" id="date" name="date" required>
-
-        <label for="status">Status:</label>
-        <select id="status" name="status" required>
-            <option value="Received">Received</option>
-            <option value="Pending">Pending</option>
-            <option value="Failed">Failed</option>
-        </select>
-
-        <button type="submit">Add Income</button>
-    </form>
-</section>
 
 <!-- Section 2: Track Income -->
 <section class="track-income">
     <h2>Track Income</h2>
-    <table>
+    <table class="incomeTable">
         <thead>
             <tr>
-                <th>Source</th>
+                <th>Name</th>
+                <th>Category</th>
                 <th>Amount</th>
                 <th>Date</th>
                 <th>Status</th>
             </tr>
         </thead>
         <tbody>
-            {% for income in incomes %}
-            <tr>
-                <td>{{ income.source }}</td>
-                <td>₹{{ income.amount }}</td>
-                <td>{{ income.date }}</td>
-                <td class="status-{{ income.status|lower|slugify }}">{{ income.status }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4">No income records found.</td>
-            </tr>
-            {% endfor %}
+
         </tbody>
     </table>
 </section>
-
-<script>
-    function toggleCustomInput() {
-        var source = document.getElementById("source");
-        var customIncome = document.getElementById("customIncome");
-        if (source.value === "Other") {
-            customIncome.style.display = "block";
-            customIncome.setAttribute("required", "required");
-        } else {
-            customIncome.style.display = "none";
-            customIncome.removeAttribute("required");
-        }
-    }
-</script>
-    
-
-    </main>
+</main>
 
     <!-- Dark Mode Section -->
 

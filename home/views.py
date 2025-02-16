@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
 from firebase_admin import auth
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from firebase_admin import exceptions as firebase_exceptions
 import json,requests
-from .firebase_config import FIREBASE_API_KEY
-from home.utils.python.help import verify_token
+from home.firebase_config import FIREBASE_API_KEY, db
+from home.utils.python.help import verify_token, get_user_id
+from home.utils.python.firebase_service import add_transaction, get_transactions
 
 FIREBASE_SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
 
@@ -97,36 +97,26 @@ def register_view(request):
 
     if request.method == "POST":
         try:
-            print("Register view called")  # Debug line
-
-            # Parse JSON data from the request
             data = json.loads(request.body)
-            print("Request data:", data)  # Debug line
-
             username = data.get("username")
             email = data.get("email")
             password = data.get("password")
 
-            # Create user in Firebase
-            print("Creating user in Firebase...")  # Debug line
             user = auth.create_user(
                 email=email,
                 password=password,
                 display_name=username
             )
             uid = user.display_name
-            print("User created in Firebase! UID:", uid)  # Debug line
 
             # Optionally, you can generate a custom token for the user
             custom_token = auth.create_custom_token(uid)
-            print("Custom token generated:", custom_token)  # Debug line
 
             # Store user information in session (optional)
             request.session['uid'] = uid
             request.session['email'] = email
             request.session['username'] = username
 
-            print("Registration successful, redirecting to dashboard")  # Debug line
             return JsonResponse({
                 "message": "Registration successful",
                 "uid": uid,
@@ -134,14 +124,10 @@ def register_view(request):
             })
 
         except auth.EmailAlreadyExistsError:
-            print("Email already exists error")  # Debug line
             return JsonResponse({"error": "Email already exists"}, status=400)
         except Exception as e:
-            print("Unexpected error:", str(e))  # Debug line
             return JsonResponse({"error": str(e)}, status=500)
     
-
-    print("Method not allowed")  # Debug line
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
 def dashboard_view(request):
@@ -151,13 +137,8 @@ def dashboard_view(request):
     
     id_token = request.session.get('id_token')
     try:    
-        decoded_token = verify_token(id_token)
-        user = auth.get_user_by_email(decoded_token.get('email'))
-        context = {
-        "email": decoded_token.get('email'),
-        'uid': user.display_name # Replace with actual DB query
-    }
-        return render(request, 'home/dashboard.html', context)
+        email = get_user_id(id_token)
+        return render(request, 'home/dashboard.html', {"email": email})
     except Exception:
         return redirect('/login/')  # Redirect if token is invalid
 
@@ -189,52 +170,52 @@ def logout_view(request):
     return JsonResponse({
         "error": "Method not allowed"
     }, status=405)
+from django.http import JsonResponse
 
-
-
-
-def add_transaction(request):
-    if not request.session.get('id_token'):
+@csrf_exempt
+def submit_transaction(request):
+    if not is_authenticated(request):
         return redirect('home:login')
-    
+    if request.method == "GET":
+        email = get_user_id(request.session.get('id_token'))
+        return render(request, 'home/add_transaction.html', {"email": email})
     if request.method == "POST":
-        name = request.POST.get('name')
-        category = request.POST.get('category')
-        other_category = request.POST.get('other_category', '')  # Get other category if provided
-        amount = request.POST.get('amount')
-        date = request.POST.get('date')
-        status = request.POST.get('status')
+        try:
+            # Parse JSON data from the request
+            data = json.loads(request.body)
+            user_id = data.get("id")  # Get user ID from session
+            print(user_id)
+            if not user_id:
+                return JsonResponse({"error": "User not authenticated"}, status=401)
 
-        # Use "Other" category input if it's provided
-        if category == "Other" and other_category:
-            category = other_category
+            # Add transaction to Firestore
+            add_transaction(user_id, data)
+            return JsonResponse({"message": "Transaction added successfully"})
 
-        # Save transaction to database
-        Transaction.objects.create(
-            name=name,
-            category=category,
-            amount=amount,
-            date=date,
-            status=status
-        )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
 
-        return redirect('dashboard')  # Redirect to dashboard after adding transaction
+    return JsonResponse({"error": "Method not allowed"}, status=405)
 
-    return render(request, 'home/add_transaction.html')
+
 
 def income_tracker(request):
-    if not request.session.get('id_token'):
+    if not is_authenticated(request):
         return redirect('home:login')
-    
-    incomes = [
-        {"source": "Gift", "amount": "200.00", "date": "Feb. 15, 2024", "status": "Received"},
-        {"source": "Investments", "amount": "800.00", "date": "Feb. 10, 2024", "status": "Received"},
-        {"source": "Freelancing", "amount": "1200.00", "date": "Feb. 5, 2024", "status": "Pending"},
-        {"source": "Salary", "amount": "5000.00", "date": "Feb. 1, 2024", "status": "Received"},
-        {"source": "Stock Trading", "amount": "1500.00", "date": "Jan. 28, 2024", "status": "Completed"},
-        {"source": "Rental Income", "amount": "900.00", "date": "Jan. 25, 2024", "status": "Failed"},
-        {"source": "Side Business", "amount": "2200.00", "date": "Jan. 20, 2024", "status": "Cancelled"},
-        {"source": "Dividends", "amount": "300.00", "date": "Jan. 15, 2024", "status": "Partially Paid"},
-        {"source": "Bonus", "amount": "2500.00", "date": "Jan. 10, 2024", "status": "Due"},
-    ]
-    return render(request, "home/income_tracker.html", {"incomes": incomes})
+    email = get_user_id(request.session.get('id_token'))
+    return render(request, 'home/income_tracker.html', {"email": email})
+
+@csrf_exempt
+def get_incomes(request):
+    if not is_authenticated(request):
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return JsonResponse({"error": "User ID is missing"}, status=400)
+
+    try:
+        incomes = get_transactions(user_id)
+        return JsonResponse({"incomes": incomes}, safe=False)
+    except Exception as e:
+        print(e)
+        return JsonResponse({"error": str(e)}, status=500)

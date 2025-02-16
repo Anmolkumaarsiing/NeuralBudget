@@ -1,0 +1,288 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7f6;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    color: #fff;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar .logo h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.sidebar .nav-links {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar .nav-links li {
+    margin: 15px 0;
+}
+
+.sidebar .nav-links li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar .nav-links li a i {
+    margin-right: 10px;
+}
+
+.sidebar .nav-links li a:hover {
+    background-color: #34495e;
+}
+
+.sidebar .nav-links li.active a {
+    background-color: #34495e;
+    font-weight: bold;
+}
+
+/* Main Content Styles */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+}
+
+/* Topbar Styles */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.topbar .greeting h3 {
+    font-size: 22px;
+    margin: 0;
+}
+
+.topbar .greeting span {
+    color: #3498db;
+}
+
+.topbar .actions {
+    display: flex;
+    align-items: center;
+}
+
+/* Dark Mode Toggle */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #3498db;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Add Income Section */
+.add-income {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.add-income h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.add-income form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.add-income label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.add-income input,
+.add-income select,
+.add-income button {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.add-income input:focus,
+.add-income select:focus {
+    border-color: #3498db;
+}
+
+.add-income button {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-income button:hover {
+    background-color: #2980b9;
+}
+
+/* Track Income Section */
+.track-income {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.track-income h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.track-income table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.track-income th,
+.track-income td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.track-income th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+.track-income tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Status Colors */
+.status-received {
+    color: #28a745;
+}
+
+.status-pending {
+    color: #ffc107;
+}
+
+.status-failed {
+    color: #dc3545;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #1a1a1a;
+    color: #f4f7f6;
+}
+
+.dark-mode .sidebar {
+    background-color: #1a1a1a;
+}
+
+.dark-mode .sidebar .nav-links li a {
+    color: #f4f7f6;
+}
+
+.dark-mode .sidebar .nav-links li a:hover {
+    background-color: #333;
+}
+
+.dark-mode .main-content {
+    background-color: #2c3e50;
+    color: #f4f7f6;
+}
+
+.dark-mode .add-income,
+.dark-mode .track-income {
+    background-color: #34495e;
+    color: #f4f7f6;
+}
+
+.dark-mode .add-income label,
+.dark-mode .track-income th {
+    color: #f4f7f6;
+}
+
+.dark-mode .add-income input,
+.dark-mode .add-income select {
+    background-color: #2c3e50;
+    color: #f4f7f6;
+    border-color: #555;
+}
+
+.dark-mode .add-income button {
+    background-color: #2980b9;
+}
+
+.dark-mode .add-income button:hover {
+    background-color: #3498db;
+}

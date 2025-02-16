@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import login_view, register_view, logout_view, dashboard_view, add_transaction, income_tracker
+from .views import login_view, register_view, logout_view, dashboard_view,get_incomes, income_tracker, submit_transaction
 app_name = 'home'
 
 urlpatterns =[
@@ -9,6 +9,7 @@ urlpatterns =[
     path("signup/", register_view, name="signup"),
     path("logout/", logout_view, name="logout"),
     path('dashboard/', dashboard_view, name='dashboard'),
-    path('add_transaction/', add_transaction, name='add_transaction'),  # Added this line
-    path('income_tracker/', income_tracker, name='income_tracker'),  # New route
+    path('income_tracker/', income_tracker, name='income_tracker'), 
+    path('add_transaction/', submit_transaction, name='add_transaction'),
+    path('get_incomes/', get_incomes, name='get_incomes'),
 ]
