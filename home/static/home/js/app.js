@@ -1,5 +1,4 @@
 import { login, register, logOut } from './auth.js';
-
 const sign_in_btn = document.querySelector("#sign-in-btn");
 const sign_up_btn = document.querySelector("#sign-up-btn");
 const container = document.querySelector(".container");
@@ -40,13 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (signOutLink) {
         signOutLink.addEventListener('click', async (event) => {
             event.preventDefault();
-            try {
-                await logOut();
-                alert("Signed out successfully!");
-                window.location.href = "/"; // Redirect to home page
-            } catch (error) {
-                alert(`Sign out failed: ${error.message}`);
-            }
+            logOut();
         });
     }
 });

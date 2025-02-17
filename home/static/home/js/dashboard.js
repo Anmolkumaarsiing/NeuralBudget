@@ -1,14 +1,10 @@
 document.getElementById("darkModeToggle").addEventListener("change", function () {
     document.body.classList.toggle("dark-mode");
+    localStorage.setItem("darkMode", document.body.classList.contains("dark-mode"));
 });
 
-const uid = localStorage.getItem("uid");
-console.log("Dashboard.js loaded");
 
-console.log(uid);
-
-//For dropdown
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
     const dropdownButtons = document.querySelectorAll(".drop-btn");
 
     dropdownButtons.forEach(button => {
