@@ -29,12 +29,12 @@ async function fetchAndDisplayIncomes() {
         const fragment = document.createDocumentFragment();
 
         incomes.forEach(income => {
-            const transaction = income;
+            const transaction = income.transaction;
             const tr = document.createElement("tr");
             tr.innerHTML = `
             <tr data-id="${income.id}">
                 <td>${transaction.name || "No Name"}</td>
-                <td>${transaction.source.toString()}</td>
+                <td>${transaction.source}</td>
                 <td>₹${transaction.amount.toFixed(2) || 0}</td>
                 <td>${new Date(transaction.date).toLocaleDateString()}</td>
                 <td class="status-${transaction.status.toLowerCase()}">${transaction.status}</td>

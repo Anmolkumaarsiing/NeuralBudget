@@ -15,7 +15,7 @@ def add_transaction(user_id, transaction_data):
     })
 
 def get_transactions(user_id,limit=10):
-    transactions_ref = db.collection("incomes")
+    transactions_ref = db.collection("transactions")
     query = transactions_ref.where("userId", "==", user_id).limit(limit).get()
     transactions = []
     for doc in query:

@@ -12,7 +12,6 @@ from home.utils.python.ml_util import preprocess_data, predict_future_income, ca
 
 FIREBASE_SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
 
-
 def is_authenticated(request):
     if verify_token(request.session.get('id_token')):
         return True
