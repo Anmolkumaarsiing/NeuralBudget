@@ -15,12 +15,12 @@ def add_transaction(user_id, transaction_data):
     })
 
 def get_transactions(user_id):
-    transactions_ref = db.collection("transactions")
-    query = transactions_ref.where("userId", "==", user_id).stream()
+    transactions_ref = db.collection("incomes")
+    query = transactions_ref.where("userId", "==", user_id).limit(10).get()
     transactions = []
     for doc in query:
         transaction = doc.to_dict()
-        transaction["id"] = doc.id  # Include document ID
+        transaction["id"] = doc.id
         transactions.append(transaction)
     return transactions
 

@@ -1,19 +1,15 @@
 // Handle form submission
 document.getElementById("addTransactionForm").addEventListener("submit", async (e) => {
-    e.preventDefault(); // Prevent default form submission
-
-    // Get form values
+    e.preventDefault(); 
     const name = document.getElementById("name").value;
     const category = document.getElementById("category").value;
     const otherCategory = document.getElementById("other-category").value;
     const amount = parseFloat(document.getElementById("amount").value);
     const date = document.getElementById("date").value;
     const status = document.getElementById("status").value;
-
-    // Use "Other" category if specified
     const finalCategory = category === "Other" ? otherCategory : category;
-
-    // Create transaction object
+    const id = localStorage.getItem("uid");
+    
     const transaction = {
         name,
         category: finalCategory,

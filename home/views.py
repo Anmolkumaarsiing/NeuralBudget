@@ -108,6 +108,7 @@ def register_view(request):
                 display_name=username
             )
             uid = user.display_name
+            
 
             # Optionally, you can generate a custom token for the user
             custom_token = auth.create_custom_token(uid)
@@ -172,6 +173,7 @@ def logout_view(request):
     }, status=405)
 from django.http import JsonResponse
 
+
 @csrf_exempt
 def submit_transaction(request):
     if not is_authenticated(request):
@@ -197,7 +199,26 @@ def submit_transaction(request):
 
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
+@csrf_exempt
+def delete_income(request):
+    """Delete an income transaction."""
+    if request.method == "DELETE":
+        try:
+            income_id = request.GET.get("income_id")  # Get income ID from query params
 
+            if not income_id:
+                return JsonResponse({"error": "Income ID is required"}, status=400)
+
+            # Delete the income from Firestore
+            income_ref = db.collection("transactions").document(income_id)
+            income_ref.delete()
+
+            return JsonResponse({"message": "Income deleted successfully"})
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Method not allowed"}, status=405)
 
 def income_tracker(request):
     if not is_authenticated(request):
@@ -210,11 +231,13 @@ def get_incomes(request):
     if not is_authenticated(request):
         return JsonResponse({"error": "Unauthorized"}, status=401)
     user_id = request.session.get("user_id")
+    print(user_id)
     if not user_id:
         return JsonResponse({"error": "User ID is missing"}, status=400)
 
     try:
         incomes = get_transactions(user_id)
+        print(incomes)
         return JsonResponse({"incomes": incomes}, safe=False)
     except Exception as e:
         print(e)

@@ -1,27 +1,7 @@
-export function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
+import { clearError, displayError, getCookie } from './help.js';
 
-    return cookieValue;
-}
-const csrftoken = getCookie('csrftoken'); // Get the CSRF token
-// console.log("Checking for print calls...");
+const csrftoken = getCookie('csrftoken');
 
-// Override window.print for debugging
-// const originalPrint = window.print;
-// window.print = function() {
-//     console.trace("Print dialog triggered from:"); // Log the call stack
-//     originalPrint.apply(window, arguments);
-// };
 export function login(email, password) {
     console.log("Login function called");
     const errorDiv = document.getElementById('loginError');
@@ -38,7 +18,6 @@ export function login(email, password) {
         .then(async response => {
             const text = await response.text();
             if (!response.ok) {
-                // Parse the error message if the response is JSON
                 let errorMessage = 'Login failed';
                 try {
                     const errorData = JSON.parse(text);
@@ -67,15 +46,6 @@ export function login(email, password) {
         });
 }
 
-function clearError(errorDiv) {
-    errorDiv.textContent = '';
-    errorDiv.style.display = 'none';
-}
-
-function displayError(errorDiv, message) {
-    errorDiv.textContent = message;
-    errorDiv.style.display = 'block';
-}
 
 export function register() {
     console.log("Register function called");
