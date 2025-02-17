@@ -30,12 +30,10 @@ async function fetchAndDisplayIncomes() {
 
         incomes.forEach(income => {
             const transaction = income;
-            console.log(transaction);
-
             const tr = document.createElement("tr");
             tr.innerHTML = `
             <tr data-id="${income.id}">
-                <td>${transaction.name}</td>
+                <td>${transaction.name || "No Name"}</td>
                 <td>${transaction.source.toString()}</td>
                 <td>₹${transaction.amount.toFixed(2) || 0}</td>
                 <td>${new Date(transaction.date).toLocaleDateString()}</td>
