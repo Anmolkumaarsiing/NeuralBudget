@@ -8,12 +8,13 @@ import json,requests
 from home.firebase_config import FIREBASE_API_KEY, db
 from home.utils.python.help import verify_token, get_user_id
 from home.utils.python.firebase_service import add_transaction, get_transactions
+from home.utils.python.ml_util import preprocess_data, predict_future_income, categorize_spending, generate_visualizations
 
 FIREBASE_SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
 
 
 def is_authenticated(request):
-    if request.session.get('id_token'):
+    if verify_token(request.session.get('id_token')):
         return True
     return False
 
@@ -135,7 +136,6 @@ def dashboard_view(request):
     if not is_authenticated(request):
         print("User is not authenticated")
         return redirect('home:login')
-    
     id_token = request.session.get('id_token')
     try:    
         email = get_user_id(id_token)
@@ -231,14 +231,38 @@ def get_incomes(request):
     if not is_authenticated(request):
         return JsonResponse({"error": "Unauthorized"}, status=401)
     user_id = request.session.get("user_id")
-    print(user_id)
     if not user_id:
         return JsonResponse({"error": "User ID is missing"}, status=400)
 
     try:
         incomes = get_transactions(user_id)
-        print(incomes)
         return JsonResponse({"incomes": incomes}, safe=False)
     except Exception as e:
         print(e)
         return JsonResponse({"error": str(e)}, status=500)
+
+@csrf_exempt
+def visualize(request):
+    if not is_authenticated(request):
+        return redirect('home:login')
+    
+    user_id = request.session.get("user_id")
+
+    if not user_id:
+        return render(request, "error.html", {"error": "User not authenticated"})
+
+    # Fetch income data from Firestore
+    incomes = get_transactions(user_id,200)
+
+    # Preprocess data
+    df = preprocess_data(incomes)
+
+    # Run ML models
+    future_income = predict_future_income(df)
+    df = categorize_spending(df)
+
+    # Generate visualizations
+    visualizations = generate_visualizations(df, future_income)
+
+    # Render the visualize.html template with visualizations
+    return render(request, "home/visualize.html", visualizations)

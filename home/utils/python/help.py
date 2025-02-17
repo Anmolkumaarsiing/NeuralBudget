@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.shortcuts import redirect
 from firebase_admin import auth
 
 def validate_input(data):
@@ -10,19 +11,18 @@ def validate_input(data):
         raise ValidationError("Firebase ID token is required.")
 
 def verify_token(id_token):
+    print("In verify_token")
     try:
         decoded_token = auth.verify_id_token(id_token,clock_skew_seconds=5)
         return decoded_token
     except Exception as e:
-        print("In verify_token")
         print(f"Token verification error: {str(e)}")
-        raise
+        return False
 
 def get_user_id(id_token):
+    print("In get_user_id")
     try:
-        decoded_token = verify_token(id_token)
-        email = decoded_token.get('email')
-        print(email)
+        email = verify_token(id_token).get('email')
         return email
     except Exception as e:
         print(f"Error getting user ID: {str(e)}")

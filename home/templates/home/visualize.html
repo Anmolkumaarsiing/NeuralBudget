@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Income Insights</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .visualization {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .visualization h2 {
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+        .visualization img {
+            width: 100%;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Income Insights</h1>
+
+        <!-- Visualization 1: Income Over Time -->
+        <div class="visualization">
+            <h2>Income Over Time</h2>
+            <img src="data:image/png;base64,{{ income_over_time }}" alt="Income Over Time">
+        </div>
+
+        <!-- Visualization 2: Predicted Future Income -->
+        <div class="visualization">
+            <h2>Predicted Future Income</h2>
+            <img src="data:image/png;base64,{{ predicted_income }}" alt="Predicted Future Income">
+        </div>
+
+        <!-- Visualization 3: Spending Categories -->
+        <div class="visualization">
+            <h2>Spending Categories</h2>
+            <img src="data:image/png;base64,{{ spending_categories }}" alt="Spending Categories">
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
