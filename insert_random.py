@@ -33,11 +33,11 @@ def generate_random_amount():
 def generate_random_transaction():
     """Generate a random transaction."""
     return {
-        "userId": USER_ID,
-        "source": random.choice(INCOME_SOURCES),
+        "name": 'abcd',
+        "category": random.choice(INCOME_SOURCES),
         "amount": generate_random_amount(),
         "date": generate_random_date(),
-        "status": random.choice(STATUSES),
+        "status": random.choice(STATUSES),   
     }
 
 def insert_random_data(num_records=200):

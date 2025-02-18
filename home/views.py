@@ -11,6 +11,7 @@ from home.utils.python.firebase_service import add_transaction, get_transactions
 from home.utils.python.ml_util import preprocess_data, predict_future_income, categorize_spending, generate_visualizations
 
 FIREBASE_SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
+collection = 'incomes'
 
 def is_authenticated(request):
     if verify_token(request.session.get('id_token')):
@@ -32,8 +33,6 @@ def login_view(request):
             body = json.loads(request.body)
             email = body.get('email')
             password = body.get('password')
-            print("Email:", email)
-            print("Password:", password)
 
             # Validate email and password
             if not email or not password:
@@ -48,7 +47,6 @@ def login_view(request):
             params = {"key": FIREBASE_API_KEY}
             response = requests.post(FIREBASE_SIGN_IN_URL, json=payload, params=params)
             response_data = response.json()
-            print("Firebase response:", response_data)
 
             # Handle Firebase authentication errors
             if response.status_code != 200:
@@ -64,7 +62,6 @@ def login_view(request):
             try:
                 decoded_token = verify_token(id_token)
                 uid = decoded_token['uid']
-                print("Decoded token UID:", uid)
 
                 # Store user information in the session
                 request.session['user_id'] = uid
@@ -84,7 +81,6 @@ def login_view(request):
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON in request body'}, status=400)
         except Exception as e:
-            print("Unexpected error:", str(e))  # Log unexpected errors
             return JsonResponse({'error': 'An unexpected error occurred'}, status=500)
 
     # Return method not allowed for non-POST requests
@@ -185,7 +181,6 @@ def submit_transaction(request):
             # Parse JSON data from the request
             data = json.loads(request.body)
             user_id = data.get("id")  # Get user ID from session
-            print(user_id)
             if not user_id:
                 return JsonResponse({"error": "User not authenticated"}, status=401)
 
@@ -209,9 +204,8 @@ def delete_income(request):
                 return JsonResponse({"error": "Income ID is required"}, status=400)
 
             # Delete the income from Firestore
-            income_ref = db.collection("transactions").document(income_id)
+            income_ref = db.collection(collection).document(income_id)
             income_ref.delete()
-
             return JsonResponse({"message": "Income deleted successfully"})
 
         except Exception as e:
@@ -232,9 +226,10 @@ def get_incomes(request):
     user_id = request.session.get("user_id")
     if not user_id:
         return JsonResponse({"error": "User ID is missing"}, status=400)
-
+    itemCount = int(request.GET.get("itemCount"))
+    # print(type(itemsPerPage),type(page))
     try:
-        incomes = get_transactions(user_id)
+        incomes = get_transactions(user_id,itemCount,collection)
         return JsonResponse({"incomes": incomes}, safe=False)
     except Exception as e:
         print(e)
@@ -249,19 +244,18 @@ def visualize(request):
 
     if not user_id:
         return render(request, "error.html", {"error": "User not authenticated"})
-
     # Fetch income data from Firestore
-    incomes = get_transactions(user_id,200)
+    incomes = get_transactions(user_id,100,collection)
 
-    # Preprocess data
     df = preprocess_data(incomes)
+    # print(df)
 
-    # Run ML models
+    # # Run ML models
     future_income = predict_future_income(df)
     df = categorize_spending(df)
 
-    # Generate visualizations
+    # # Generate visualizations
     visualizations = generate_visualizations(df, future_income)
 
     # Render the visualize.html template with visualizations
-    return render(request, "home/visualize.html", visualizations)
+    return render(request, "home/visualize.html",visualizations)

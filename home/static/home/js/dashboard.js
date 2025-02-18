@@ -4,9 +4,8 @@ document.getElementById("darkModeToggle").addEventListener("change", function ()
 });
 
 
-    document.addEventListener("DOMContentLoaded", function () {
-    const dropdownButtons = document.querySelectorAll(".drop-btn");
-
+document.addEventListener("DOMContentLoaded", function () {
+const dropdownButtons = document.querySelectorAll(".drop-btn");
     dropdownButtons.forEach(button => {
         button.addEventListener("click", function () {
             const dropdownContent = this.nextElementSibling;

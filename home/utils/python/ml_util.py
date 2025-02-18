@@ -9,6 +9,7 @@ import base64
 
 def preprocess_data(incomes):
     """Convert Firestore income data into a Pandas DataFrame."""
+    
     data = []
     for income in incomes:
         data.append({
