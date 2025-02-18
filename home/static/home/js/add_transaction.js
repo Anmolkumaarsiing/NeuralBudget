@@ -61,3 +61,25 @@ function toggleOtherCategory() {
 
 // Add event listener for category dropdown change
 document.getElementById("category").addEventListener("change", toggleOtherCategory);
+
+document.addEventListener("DOMContentLoaded", function () {
+    const dropdownButtons = document.querySelectorAll(".drop-btn");
+        dropdownButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const dropdownContent = this.nextElementSibling;
+                const icon = this.querySelector(".dropdown-icon");
+    
+                dropdownContent.classList.toggle("active");
+    
+                if (dropdownContent.classList.contains("active")) {
+                    dropdownContent.style.display = "block";
+                    icon.classList.remove("fa-angle-right");
+                    icon.classList.add("fa-angle-down");
+                } else {
+                    dropdownContent.style.display = "none";
+                    icon.classList.remove("fa-angle-down");
+                    icon.classList.add("fa-angle-right");
+                }
+            });
+    });
+});
