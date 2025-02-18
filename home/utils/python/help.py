@@ -13,7 +13,7 @@ def validate_input(data):
 def verify_token(id_token):
     print("In verify_token")
     try:
-        decoded_token = auth.verify_id_token(id_token,clock_skew_seconds=5)
+        decoded_token = auth.verify_id_token(id_token)
         return decoded_token
     except Exception as e:
         print(f"Token verification error: {str(e)}")

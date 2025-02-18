@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Budget AI - Dashboard</title>
+    <link rel="stylesheet" href="{% static 'home/css/income_tracker.css' %}">
+    <script type="module" src="{% static 'home/js/income_tracker.js' %}"></script>
+    <script type="module" src="{% static 'home/js/signOut.js' %}"></script>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>Neural Budget AI</h2>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{% url 'home:dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="{% url 'home:add_transaction' %}"><i class="fas fa-plus-circle"></i> Add Transaction</a></li>
+            <li class="active"><a href="{% url 'home:income_tracker' %}"><i class="fas fa-money-bill-wave"></i> Income Tracker</a></li>
+            <li><a href="{% url 'home:visualize' %}"><i class="fas fa-shopping-cart"></i> Expense Manager</a></li>
+            <li><a href="#"><i class="fas fa-lightbulb"></i> Smart Insights</a></li>
+            <li><a href="#"><i class="fas fa-wallet"></i> Budget Planner</a></li>
+            <li><a href="#"><i class="fas fa-robot"></i> AI Assistance</a></li>
+            <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="" id ="signOutLink"><i class="fas fa-sign-out-alt"></i> Sign Out</a></li>
+        </ul>        
+        
+    </aside>
+    
+    <!-- TopBar Section -->
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="greeting">
+                <h3>Hi, <span id="username">{{ email }}</span> 👋</h3>
+            </div>
+            <div class="actions">
+                <label class="switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </header>
+        
+    <!-- Income Tracker Section -->
+
+
+<!-- Section 2: Track Income -->
+<section class="track-income">
+    <h2>Track Income</h2>
+    <table class="incomeTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    <button id="LoadMore">Load More</button>
+</section>
+</main>
+
+    <!-- Dark Mode Section -->
+
+    <script>
+        document.getElementById("darkModeToggle").addEventListener("change", function() {
+            document.body.classList.toggle("dark-mode");
+        });
+    </script>
+
+</div>
+</body>
+</html>

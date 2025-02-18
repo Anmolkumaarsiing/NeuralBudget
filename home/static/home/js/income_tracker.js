@@ -34,13 +34,16 @@ async function fetchAndDisplayIncomes() {
             tr.innerHTML = `
             <tr data-id="${income.id}">
                 <td>${transaction.name || "No Name"}</td>
-                <td>${transaction.source}</td>
+                <td>${transaction.category}</td>
                 <td>₹${transaction.amount.toFixed(2) || 0}</td>
                 <td>${new Date(transaction.date).toLocaleDateString()}</td>
                 <td class="status-${transaction.status.toLowerCase()}">${transaction.status}</td>
                 <td>
                     <button class="delete-btn" data-id="${income.id}">Delete</button>
                 </td>
+                <td>
+            <button class="edit-btn" data-id="${income.id}">Edit</button>
+        </td>
             </tr>
             `;
             fragment.appendChild(tr);
