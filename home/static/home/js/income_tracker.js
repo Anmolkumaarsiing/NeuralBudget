@@ -1,9 +1,10 @@
 import { getCookie } from './help.js';
 const csrftoken = getCookie('csrftoken');
+let itemCount = 10;
 
 async function fetchAndDisplayIncomes() {
     try {
-        const response = await fetch(`/get_incomes/`, {
+        const response = await fetch(`/get_incomes/?itemCount=${itemCount}`, {
             headers: { "X-Requested-With": "XMLHttpRequest" }
         });
 
@@ -29,12 +30,12 @@ async function fetchAndDisplayIncomes() {
         const fragment = document.createDocumentFragment();
 
         incomes.forEach(income => {
-            const transaction = income.transaction;
+            const transaction = income;
             const tr = document.createElement("tr");
             tr.innerHTML = `
             <tr data-id="${income.id}">
                 <td>${transaction.name || "No Name"}</td>
-                <td>${transaction.category}</td>
+                <td>${transaction.source || "No Source"}</td>
                 <td>₹${transaction.amount.toFixed(2) || 0}</td>
                 <td>${new Date(transaction.date).toLocaleDateString()}</td>
                 <td class="status-${transaction.status.toLowerCase()}">${transaction.status}</td>
@@ -53,9 +54,29 @@ async function fetchAndDisplayIncomes() {
         alert(error.message);
     }
 }
-
-// Ensure script runs after page is fully loaded
 document.addEventListener("DOMContentLoaded", fetchAndDisplayIncomes);
+
+document.addEventListener("DOMContentLoaded", function () {
+    const dropdownButtons = document.querySelectorAll(".drop-btn");
+        dropdownButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const dropdownContent = this.nextElementSibling;
+                const icon = this.querySelector(".dropdown-icon");
+    
+                dropdownContent.classList.toggle("active");
+    
+                if (dropdownContent.classList.contains("active")) {
+                    dropdownContent.style.display = "block";
+                    icon.classList.remove("fa-angle-right");
+                    icon.classList.add("fa-angle-down");
+                } else {
+                    dropdownContent.style.display = "none";
+                    icon.classList.remove("fa-angle-down");
+                    icon.classList.add("fa-angle-right");
+                }
+            });
+    });
+});
 
 document.addEventListener("click", async (e) => {
     if (e.target.classList.contains("delete-btn")) {
@@ -84,3 +105,11 @@ document.addEventListener("click", async (e) => {
         }
     }
 });
+
+document.addEventListener("click", async (e) => {
+    if (e.target.id.includes("LoadMore")) {
+        itemCount+=5;
+        await fetchAndDisplayIncomes();
+    }
+});
+

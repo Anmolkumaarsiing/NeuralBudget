@@ -11,7 +11,6 @@ path = os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(BASE_DIR, "fi
 if not firebase_admin._apps:
     cred = credentials.Certificate(path)
     firebase_admin.initialize_app(cred)
-    print("Firebase initialized, app created")
     db = firestore.client()
 else:
     print("Firebase already initialized")
