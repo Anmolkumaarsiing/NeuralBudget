@@ -357,6 +357,194 @@ input:checked + .slider:before
     height: 100% !important;
 }
 
+/*-----------TRACK INCOME SECTION---------------*/
+
+.track-income {
+    background: rgb(255, 249, 244);
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 80px;
+    margin-left: 20px;
+    width: 148%;
+}
+
+.track-income h2 {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #000000;
+}
+
+.incomeTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.incomeTable thead {
+    background-color: #2a2a72;
+    color: white;
+    
+}
+
+.incomeTable th {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    background-color: #2a2a72;
+    color: white;
+}
+
+/* Apply border-radius only to the first and last th */
+.incomeTable th:first-child {
+    border-top-left-radius: 10px;
+}
+
+.incomeTable th:last-child {
+    border-top-right-radius: 10px;
+}
+
+
+.incomeTable td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.incomeTable tbody tr:hover {
+    background-color: rgba(252, 217, 189, 0.2);
+}
+
+.incomeTable th {
+    font-weight: bold;
+}
+
+.incomeTable td {
+    color: #333;
+}
+
+.incomeTable button {
+    background-color: #007bff; /* Blue color */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.incomeTable button:hover {
+    background-color: #0056b3; /* Darker blue */
+}
+
+.incomeTable .delete-btn {
+    background-color: #dc3545; /* Red for delete */
+}
+
+.incomeTable .delete-btn:hover {
+    background-color: #a71d2a;
+}
+
+.incomeTable .edit-btn {
+    background-color: #ffc107; /* Yellow for edit */
+    color: black;
+}
+
+.incomeTable .edit-btn:hover {
+    background-color: #d39e00;
+}
+
+#LoadMore {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(36, 167, 145);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+#LoadMore:hover {
+    background-color: #2a2a72;
+}
+/* Styling for the Add Transaction Section */
+.add-transaction {
+    background: rgb(255, 249, 244);
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 80px;
+    margin-left: 20px;
+    width: 340%;
+}
+
+.add-transaction h2 {
+    text-align: center;
+    color: #000000;
+    margin-bottom: 20px;
+}
+
+/* Style the labels */
+.add-transaction label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+/* Style for input fields and select dropdowns */
+.add-transaction input,
+.add-transaction select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+}
+
+/* Focus effects for inputs */
+.add-transaction input:focus,
+.add-transaction select:focus {
+    border-color: #007bff;
+    outline: none;
+    background-color: #fff;
+}
+
+#other-category-container {
+    display: none;
+}
+
+/* Submit Button Styling */
+.add-transaction button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-transaction button:hover {
+    background-color: #0056b3;
+}
+
 /*-----------DARK MODE---------------*/
 
 .dark-mode
@@ -390,6 +578,37 @@ input:checked + .slider:before
 {
     color: white;
 }
+
+.dark-mode .track-income, .dark-mode .add-transaction {
+    background: #1f1e1e;
+    color: white;
+}
+
+.dark-mode .track-income h2, .dark-mode .add-transaction h2
+{
+    color: white;
+
+}
+
+.dark-mode .incomeTable thead, .dark-mode .add-transaction input,
+.dark-mode .add-transaction select {
+    background-color: #444;
+}
+
+.dark-mode .incomeTable td {
+    color: #ffffff;
+}
+
+.dark-mode #LoadMore {
+    background-color: #2af5a1;
+    color: #ffffff;
+}
+
+.dark-mode #LoadMore:hover {
+    background-color: #2a2a72;
+    color: white;
+}
+
 
 .category-chart
 {

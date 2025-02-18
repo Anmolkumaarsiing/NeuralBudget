@@ -1,5 +1,6 @@
 .env
 env
+venv
 firebase_key.json
 home/static/home/js/auth.js
 home/static/home/js/app.js

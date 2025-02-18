@@ -1,83 +1,118 @@
-{% load static %}
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neural Budget AI - Dashboard</title>
-    <link rel="stylesheet" href="{% static 'home/css/income_tracker.css' %}">
+    <title>Neural Budget AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'home/css/dashboard.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="{% static 'home/js/dashboard.js' %}"></script>
     <script type="module" src="{% static 'home/js/income_tracker.js' %}"></script>
     <script type="module" src="{% static 'home/js/signOut.js' %}"></script>
+    <style>
+        .incomeTable tbody {
+    display: table-row-group !important;
+}
+
+    </style>
 </head>
 <body>
+    <div class="container">
 
-<div class="dashboard-container">
-    <aside class="sidebar">
-        <div class="logo">
-            <h2>Neural Budget AI</h2>
-        </div>
-        <ul class="nav-links">
-            <li><a href="{% url 'home:dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li><a href="{% url 'home:add_transaction' %}"><i class="fas fa-plus-circle"></i> Add Transaction</a></li>
-            <li class="active"><a href="{% url 'home:income_tracker' %}"><i class="fas fa-money-bill-wave"></i> Income Tracker</a></li>
-            <li><a href="{% url 'home:visualize' %}"><i class="fas fa-shopping-cart"></i> Expense Manager</a></li>
-            <li><a href="#"><i class="fas fa-lightbulb"></i> Smart Insights</a></li>
-            <li><a href="#"><i class="fas fa-wallet"></i> Budget Planner</a></li>
-            <li><a href="#"><i class="fas fa-robot"></i> AI Assistance</a></li>
-            <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
-            <li><a href="" id ="signOutLink"><i class="fas fa-sign-out-alt"></i> Sign Out</a></li>
-        </ul>        
-        
-    </aside>
+        <!-- SIDEBAR SECTION -->
+
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="{% static 'home/img/logo.png' %}" alt="Neural Budget AI Logo" class="logo-img">
+                <span class="logo-text">Neural Budget AI</span>
+            </div>            
+            <nav>
+                <ul>
+                    <li class="dropdown">
+                        <button class="drop-btn"><i class="fas fa-receipt"></i>Expense Tracking
+                            <i class="fas fa-angle-right dropdown-icon"></i>
+                        </button>
+                        <ul class="dropdown-content">
+                            <li><a href="/income_tracker"><i class="fas fa-eye"></i> View Expenses</a></li>
+                            <li><a href="/add_transaction "><i class="fas fa-plus-circle"></i> Add Expense</a></li>
+                            <li><a href="#"><i class="fas fa-edit"></i> Edit Categories</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <button class="drop-btn"><i class="fas fa-wallet"></i>Budgeting Tools
+                            <i class="fas fa-angle-right dropdown-icon"></i>
+                        </button>
+                        <ul class="dropdown-content">
+                            <li><a href="#"><i class="fas fa-coins"></i>Set Budget</a></li>
+                            <li><a href="#"><i class="fas fa-piggy-bank"></i> Savings Goals</a></li>
+                            <li><a href="#"><i class="fas fa-chart-pie"></i> Spending Insights</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <button class="drop-btn"><i class="fas fa-chart-line"></i>AI Insights
+                            <i class="fas fa-angle-right dropdown-icon"></i>
+                        </button>
+                        <ul class="dropdown-content"> 
+                            <li><a href="#"><i class="fas fa-brain"></i> Predictive Analysis</a></li>
+                            <li><a href="#"><i class="fas fa-layer-group"></i> Smart Categorization</a></li>
+                            <li><a href="#"><i class="fas fa-chart-line"></i> Expense Forecasting</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <button class="drop-btn"><i class="fas fa-cog"></i>Settings
+                            <i class="fas fa-angle-right dropdown-icon"></i>
+                        </button>
+                        <ul class="dropdown-content">
+                            <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+                            <li><a href="#" id="signOutLink"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="content">
+            
+            <!-- TOPBAR SECTION -->
     
-    <!-- TopBar Section -->
-
-    <main class="main-content">
-        <header class="topbar">
-            <div class="greeting">
-                <h3>Hi, <span id="username">{{ email }}</span> 👋</h3>
-            </div>
-            <div class="actions">
-                <label class="switch">
-                    <input type="checkbox" id="darkModeToggle">
-                    <span class="slider round"></span>
-                </label>
-            </div>
-        </header>
-        
-    <!-- Income Tracker Section -->
-
-
-<!-- Section 2: Track Income -->
-<section class="track-income">
-    <h2>Track Income</h2>
-    <table class="incomeTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Amount</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-
-        </tbody>
-    </table>
-    <button id="LoadMore">Load More</button>
-</section>
-</main>
-
-    <!-- Dark Mode Section -->
-
-    <script>
-        document.getElementById("darkModeToggle").addEventListener("change", function() {
-            document.body.classList.toggle("dark-mode");
-        });
-    </script>
-
-</div>
+                <header class="topbar">
+                    <div class="greeting">
+                        <h3>Hi, {{email}} <i class="fas fa-smile"></i></h3>
+                    </div>
+                    
+                    <div class="actions">
+                        <label class="switch">
+                            <input type="checkbox" id="darkModeToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </header>
+                
+    <!-- INCOME TRACKER SECTION -->
+    <section class="track-income">
+        <h2>Track Income</h2>
+        <table class="incomeTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Delete</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+    
+            </tbody>
+        </table>
+        <button id="LoadMore">Load More</button>
+    </section>
+    </main>
+    </div>
 </body>
 </html>
