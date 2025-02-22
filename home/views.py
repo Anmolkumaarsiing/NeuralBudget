@@ -14,7 +14,8 @@ FIREBASE_SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signI
 collection = 'incomes'
 
 def is_authenticated(request):
-    if verify_token(request.session.get('id_token')):
+    print("inside  is" ,request.session.get('id_token'))
+    if request.session.get('id_token'):
         return True
     return False
 
@@ -26,19 +27,17 @@ def login_view(request):
     if is_authenticated(request):
         return redirect('home:dashboard')
     elif request.method == 'GET':
+        print("in view login")
         return render(request, 'home/login.html')
     elif request.method == 'POST':
         try:
-            # Parse the request body
             body = json.loads(request.body)
             email = body.get('email')
             password = body.get('password')
 
-            # Validate email and password
             if not email or not password:
                 return JsonResponse({'error': 'Email and password are required'}, status=400)
 
-            # Authenticate with Firebase REST API
             payload = {
                 "email": email,
                 "password": password,
@@ -48,17 +47,14 @@ def login_view(request):
             response = requests.post(FIREBASE_SIGN_IN_URL, json=payload, params=params)
             response_data = response.json()
 
-            # Handle Firebase authentication errors
             if response.status_code != 200:
                 error_message = response_data.get("error", {}).get("message", "Authentication failed")
                 return JsonResponse({'error': error_message}, status=401)
 
-            # Extract the Firebase ID token
             id_token = response_data.get("idToken")
             if not id_token:
                 return JsonResponse({'error': 'Failed to retrieve ID token'}, status=401)
 
-            # Verify the ID token using Firebase Admin SDK
             try:
                 decoded_token = verify_token(id_token)
                 uid = decoded_token['uid']
@@ -131,9 +127,9 @@ def dashboard_view(request):
     if not is_authenticated(request):
         print("User is not authenticated")
         return redirect('home:login')
-    id_token = request.session.get('id_token')
     try:    
-        email = get_user_id(id_token)
+        email = get_user_id(request)
+        print(email)
         return render(request, 'home/dashboard.html', {"email": email})
     except Exception:
         return redirect('/login/')  # Redirect if token is invalid
@@ -254,7 +250,6 @@ def visualize(request):
     future_income = predict_future_income(df)
     df = categorize_spending(df)
 
-    # # Generate visualizations
     visualizations = generate_visualizations(df, future_income)
 
     # Render the visualize.html template with visualizations

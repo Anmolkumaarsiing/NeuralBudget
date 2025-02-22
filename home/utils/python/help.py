@@ -13,16 +13,13 @@ def validate_input(data):
 def verify_token(id_token):
     print("In verify_token")
     try:
+        print("In try")
         decoded_token = auth.verify_id_token(id_token)
         return decoded_token
     except Exception as e:
         print(f"Token verification error: {str(e)}")
         return False
 
-def get_user_id(id_token):
-    print("In get_user_id")
-    try:
-        email = verify_token(id_token).get('email')
-        return email
-    except Exception as e:
-        print(f"Error getting user ID: {str(e)}")
+def get_user_id(request):
+    return request.session.get('user_id')
+    
