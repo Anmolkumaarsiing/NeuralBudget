@@ -14,7 +14,6 @@ FIREBASE_SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signI
 collection = 'incomes'
 
 def is_authenticated(request):
-    print("inside  is" ,request.session.get('id_token'))
     if request.session.get('id_token'):
         return True
     return False
@@ -106,7 +105,7 @@ def register_view(request):
             custom_token = auth.create_custom_token(uid)
 
             # Store user information in session (optional)
-            request.session['uid'] = uid
+            request.session['user_id'] = uid
             request.session['email'] = email
             request.session['username'] = username
 
@@ -170,7 +169,7 @@ def submit_transaction(request):
     if not is_authenticated(request):
         return redirect('home:login')
     if request.method == "GET":
-        email = get_user_id(request.session.get('id_token'))
+        email = get_user_id(request)
         return render(request, 'home/add_transaction.html', {"email": email})
     if request.method == "POST":
         try:
