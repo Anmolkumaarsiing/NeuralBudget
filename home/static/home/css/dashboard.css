@@ -6,13 +6,35 @@ body
     display: flex;
 }
 
-.container
-{
+.container {
     display: flex;
-    width: 100vw;
+    flex-direction: column; /* Stack elements vertically */
+    width: 90vw;
     height: 100vh;
-    overflow: auto;
 }
+.visualization {
+    width: 100%;
+    min-height: 100vh; /* Full viewport height */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    background: #fff;
+    padding: 20px;
+    text-align: center;
+}
+.graph-container {
+    width: 100%; /* Ensure full screen width */
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    margin: auto; /* Ensures perfect centering */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers graph inside the container */
+    justify-content: center;
+}
+
 
 /*-----------SIDEBAR---------------*/
 
@@ -659,6 +681,42 @@ input:checked + .slider:before
 {
     color: #bbb;
 }
+
+.dark-mode .container {
+    background-color: #1e1e1e;
+}
+
+.dark-mode .content
+{
+    background-color: #1e1e1e;
+}
+.dark-mode .visualization {
+    background: #1e1e1e;
+    color: #1e1e1e;
+    display: flex;
+    justify-content: center; /* Center content */
+    align-items: center;
+    overflow: hidden; /* Prevents extra spacing */
+    padding: 10px 0;
+}
+
+.dark-mode .graph-container {
+    background: #1e1e1e;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .visualization img {
+    width: 100%;  /* Ensure it fits within the container */
+    height: auto;
+    object-fit: contain; /* Maintain aspect ratio */
+    display: block; /* Remove extra spacing */
+    border-radius: 10px;
+    background: transparent; /* Remove unwanted white background */
+    margin: 0; /* Ensure no extra margins */
+    padding: 0; /* Remove any extra padding */
+}
+
+
 
 .dark-mode .card
 {
