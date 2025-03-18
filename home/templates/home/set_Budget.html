@@ -8,18 +8,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="{% static 'home/css/dashboard.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="module" src="{% static 'home/js/dashboard.js' %}"></script>
     <script type="module" src="{% static 'home/js/darkmode.js' %}"></script>
+    <script type="module" src="{% static 'home/js/income_tracker.js' %}"></script>
     <script type="module" src="{% static 'home/js/signOut.js' %}"></script>
+    <style>
+        .incomeTable tbody {
+    display: table-row-group !important;
+}
+
+    </style>
 </head>
 <body>
     <div class="container">
-
-        <!-- SIDEBAR SECTION -->
-
         <aside class="sidebar">
             <div class="logo">
-                <img src="{% static 'home/img/logo.png' %}" href="/dashboard" alt="Neural Budget AI Logo" class="logo-img">
+                <img src="{% static 'home/img/logo.png' %}" alt="Neural Budget AI Logo" class="logo-img">
                 <span class="logo-text">Neural Budget AI</span>
             </div>            
             <nav>
@@ -41,7 +44,7 @@
                         <ul class="dropdown-content">
                             <li><a href="/set-budget"><i class="fas fa-coins"></i>Set Budget</a></li>
                             <li><a href="#"><i class="fas fa-piggy-bank"></i> Savings Goals</a></li>
-                            <li><a href="#"><i class="fas fa-chart-pie"></i> Spending Insights</a></li>
+                            <li><a href="#"><i class="fas `fa-chart-pie"></i> Spending Insights</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -70,57 +73,43 @@
 
         <main class="content">
             
-        <!-- TOPBAR SECTION -->
-
-            <header class="topbar">
-                <div class="greeting">
-                    <h3>Hi, {{email}} <i class="fas fa-smile"></i></h3>
-                </div>
+            <!-- TOPBAR SECTION -->
+    
+                <header class="topbar">
+                    <div class="greeting">
+                        <h3>Hi, {{email}} <i class="fas fa-smile"></i></h3>
+                    </div>
+                    
+                    <div class="actions">
+                        <label class="switch">
+                            <input type="checkbox" id="darkModeToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </header>
                 
-                <div class="actions">
-                    <label class="switch">
-                        <input type="checkbox" id="darkModeToggle">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-            </header>
-            
-        <!-- DASHBOARD CONTENTS SECTION -->
+    <!-- INCOME TRACKER SECTION -->
+        <!-- Set_Budget Section -->
 
-
-            <section class="dashboard">
-                <div class="dashboard-left">
-                    <div class="dashboard-cards">
-                        <div class="card">
-                            <h3>Total Expenses</h3>
-                            <p id="totalExpenses">₹0.00</p>
-                        </div>
-                         <div class="card">
-                            <h3>Savings</h3>
-                            <p id="savings">₹0.00</p>
-                        </div>
-                        <div class="card">
-                            <h3>Budget Left</h3>
-                            <p id="budgetLeft">₹0.00</p>
-                        </div>
-                    </div>
-            
-                    <div class="recent-transactions">
-                        <h3>Recent Transactions</h3>
-                        <ul id="transactionList">
-                            <li>No recent transactions</li>
-                        </ul>
-                    </div>
+        <section class="Set_Budget">
+            <div class="budget-container">
+                <h2>Set Your Monthly Budget</h2>
+    
+                <div class="budget-input">
+                    <label for="budget-amount">Enter Budget Amount:</label>
+                    <input type="number" id="budget-amount" placeholder="₹ Enter amount">
                 </div>
-            
-        <!-- CHART SECTION -->
-
-                <div class="chart-section">
-                    <h3>Expense Category Distribution</h3>
-                    <canvas id="expenseChart"></canvas>
+    
+                <div class="budget-progress">
+                    <span>Budget Spent</span>
+                    <progress id="budget-progress-bar" value="30" max="100"></progress>
+                    <span id="budget-percentage">30%</span>
                 </div>
-            </section>
-        </main>
+    
+                <button class="set-budget-btn">Save Budget</button>
+            </div>
+        </section>
+    </main>
     </div>
 </body>
 </html>

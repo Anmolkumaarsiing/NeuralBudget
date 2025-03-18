@@ -12,6 +12,7 @@ urlpatterns =[
     path('income_tracker/', income_tracker, name='income_tracker'), 
     path('add_transaction/', submit_transaction, name='add_transaction'),
     path('get_incomes/', get_incomes, name='get_incomes'),
+    path("set-budget/", views.set_budget, name="set_budget"),
     path('delete_income/', delete_income, name='delete_income'),
     path('visualize/', visualize, name='visualize'),
 ]
