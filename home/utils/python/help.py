@@ -21,5 +21,6 @@ def verify_token(id_token):
         return False
 
 def get_user_id(request):
-    print("In get_user_id")
+    return request.session.get('user_id')
+def get_email(request):
     return request.session.get('email')

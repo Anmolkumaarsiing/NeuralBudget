@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="{% static 'home/js/dashboard.js' %}"></script>
     <script type="module" src="{% static 'home/js/signOut.js' %}"></script>
+    <script type="module" src="{% static 'home/js/darkmode.js' %}"></script>
 </head>
 <body>
     <div class="container">
@@ -87,15 +88,15 @@
             <section class="dashboard">
                 <div class="container">
                     <div class="visualization">
-                        <img src="data:image/png;base64,{{ income_over_time }}" alt="Income Over Time">
+                        <img src="data:image/png;base64,{{ visualizations.income_over_time }}" alt="Income Over Time">
                     </div>
                     
                     <div class="visualization">
-                        <img src="data:image/png;base64,{{ predicted_income }}" alt="Predicted Future Income">
+                        <img src="data:image/png;base64,{{ visualizations.predicted_income }}" alt="Predicted Future Income">
                     </div>
                     
                     <div class="visualization">
-                        <img src="data:image/png;base64,{{ spending_categories }}" alt="Spending Categories">
+                        <img src="data:image/png;base64,{{ visualizations.spending_categories }}" alt="Spending Categories">
                     </div>
                 </div>
             </section>

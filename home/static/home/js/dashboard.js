@@ -1,8 +1,3 @@
-document.getElementById("darkModeToggle").addEventListener("change", function () {
-    document.body.classList.toggle("dark-mode");
-    localStorage.setItem("darkMode", document.body.classList.contains("dark-mode"));
-});
-
 
 document.addEventListener("DOMContentLoaded", function () {
 const dropdownButtons = document.querySelectorAll(".drop-btn");

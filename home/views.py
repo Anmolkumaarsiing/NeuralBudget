@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from firebase_admin import exceptions as firebase_exceptions
 import json,requests
 from home.firebase_config import FIREBASE_API_KEY, db
-from home.utils.python.help import verify_token, get_user_id
+from home.utils.python.help import verify_token, get_user_id,get_email
 from home.utils.python.firebase_service import add_transaction, get_transactions
 from home.utils.python.ml_util import preprocess_data, predict_future_income, categorize_spending, generate_visualizations
 
@@ -127,7 +127,7 @@ def dashboard_view(request):
         print("User is not authenticated")
         return redirect('home:login')
     try:    
-        email = get_user_id(request)
+        email = get_email(request)
         print(email)
         return render(request, 'home/dashboard.html', {"email": email})
     except Exception:
@@ -169,7 +169,7 @@ def submit_transaction(request):
     if not is_authenticated(request):
         return redirect('home:login')
     if request.method == "GET":
-        email = get_user_id(request)
+        email = get_email(request)
         return render(request, 'home/add_transaction.html', {"email": email})
     if request.method == "POST":
         try:
@@ -211,7 +211,7 @@ def delete_income(request):
 def income_tracker(request):
     if not is_authenticated(request):
         return redirect('home:login')
-    email = get_user_id(request.session.get('id_token'))
+    email = get_email(request)
     return render(request, 'home/income_tracker.html', {"email": email})
 
 @csrf_exempt
@@ -234,11 +234,8 @@ def get_incomes(request):
 def visualize(request):
     if not is_authenticated(request):
         return redirect('home:login')
-    
-    user_id = request.session.get("user_id")
-
-    if not user_id:
-        return render(request, "error.html", {"error": "User not authenticated"})
+    email = get_email(request)
+    user_id = get_user_id(request)
     # Fetch income data from Firestore
     incomes = get_transactions(user_id,100,collection)
 
@@ -248,8 +245,8 @@ def visualize(request):
     # # Run ML models
     future_income = predict_future_income(df)
     df = categorize_spending(df)
-
     visualizations = generate_visualizations(df, future_income)
+    data = {'email':email,'visualizations':visualizations}
 
     # Render the visualize.html template with visualizations
-    return render(request, "home/visualize.html",visualizations)
+    return render(request, "home/visualize.html",data) 
