@@ -380,6 +380,7 @@ input:checked + .slider:before
     width: 35%;
     max-width: 400px;
     height: 400px;
+    margin-left: 80px;
 }
 
 #expenseChart
@@ -387,6 +388,12 @@ input:checked + .slider:before
     width: 100% !important;
     height: 100% !important;
 }
+
+.chart-section h3 {
+    white-space: nowrap;
+    
+}
+
 
 /*-----------TRACK INCOME SECTION---------------*/
 
@@ -578,6 +585,142 @@ input:checked + .slider:before
 .add-transaction button:hover {
     background-color: #0056b3;
 }
+/* Set Budget Section */
+.Set_Budget {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    width: 100%;
+}
+
+.budget-container {
+    background: var(--card-background);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 600px;
+    width: 90%;
+    transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    margin-left: 450px;
+}
+
+/* Title */
+.budget-container h2 {
+    font-size: 2rem;
+    color: var(--primary-text);
+    margin-bottom: 20px;
+}
+
+/* Budget Input */
+.budget-input {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.budget-input label {
+    font-size: 1rem;
+    color: var(--secondary-text);
+}
+
+.budget-input input {
+    padding: 12px;
+    border: 2px solid var(--input-border);
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    background: var(--input-background);
+    color: var(--primary-text);
+    width: 100%;
+}
+
+.budget-input input:focus {
+    border-color: var(--accent);
+}
+
+/* Progress Bar */
+.budget-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.budget-progress span {
+    font-size: 1rem;
+    color: var(--secondary-text);
+    margin-bottom: 8px;
+}
+
+progress {
+    width: 100%;
+    height: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+progress::-webkit-progress-bar {
+    background: var(--progress-background);
+    border-radius: 10px;
+}
+
+progress::-webkit-progress-value {
+    background: var(--accent);
+    border-radius: 10px;
+}
+
+/* Budget Percentage */
+#budget-percentage {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-top: 5px;
+    color: var(--primary-text);
+}
+
+/* Button */
+.set-budget-btn {
+    padding: 14px;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.set-budget-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+}
+
+/* Light Mode Variables */
+:root {
+    --card-background: rgb(255, 249, 244);
+    --primary-text: #333;
+    --secondary-text: #666;
+    --input-border: #ccc;
+    --input-background: #fff;
+    --progress-background: #e0e0e0;
+    --accent: #007bff;
+    --accent-hover: #0056b3;
+}
+
+
+
+/* Fix for Full Width */
+@media (max-width: 768px) {
+    .budget-container {
+        width: 95%;
+        max-width: 100%;
+    }
+}
+
 
 /*-----------DARK MODE---------------*/
 
@@ -586,6 +729,71 @@ input:checked + .slider:before
     background-color: #242323;
     color: white;
 }
+
+
+/* Budget Container */
+.dark-mode .budget-container {
+    background: #242323;
+    color: white;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+    border: 1px solid #3a3a3a;
+}
+
+/* Heading & Labels */
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode label,
+.dark-mode p {
+    color: white;
+}
+
+/* Input Field */
+.dark-mode .budget-input input {
+    background: #2b2b2b;
+    color: white;
+    border: 2px solid #3d3d3d;
+    padding: 8px;
+}
+
+.dark-mode .budget-input input:focus {
+    border-color: #5a9cf8;
+    outline: none;
+}
+
+/* Progress Bar */
+.dark-mode .budget-progress progress {
+    background: #3d3d3d;
+    color: #5a9cf8;
+}
+
+/* Save Button */
+.dark-mode .set-budget-btn {
+    background: #5a9cf8;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.dark-mode .set-budget-btn:hover {
+    background: #4a8be6;
+}
+
+/* Error Message */
+.dark-mode .error-message {
+    color: red;
+    font-weight: bold;
+}
+
+/* Mobile View */
+@media (max-width: 768px) {
+    .dark-mode .budget-container {
+        width: 90%;
+    }
+}
+
 
 .dark-mode .topbar
 {

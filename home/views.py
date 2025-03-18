@@ -250,3 +250,18 @@ def visualize(request):
 
     # Render the visualize.html template with visualizations
     return render(request, "home/visualize.html",data) 
+
+
+    from django.shortcuts import render, redirect
+from django.contrib import messages
+
+def set_budget(request):
+    if request.method == "POST":
+        budget = request.POST.get("budget")
+        category = request.POST.get("category")
+
+        # Example logic to save the budget (You may need to connect with your database)
+        messages.success(request, f"Budget of {budget} for {category} set successfully!")
+        return redirect("set_budget")
+
+    return render(request, "home/set_Budget.html")
