@@ -5,10 +5,10 @@ from paddleocr import PaddleOCR
 ocr = PaddleOCR(use_angle_cls=True, lang="en")
 
 # Define the image path
-image_path = "/ML testings/text_recognition-/image.png"
+image_path = "image.png"
 
 # Check if the file exists
-if not os.path.exists(image_path):
+if not os.path.isfile(image_path):
     print(f"Error: File '{image_path}' not found! Check the path.")
 else:
     # Run OCR if the file exists

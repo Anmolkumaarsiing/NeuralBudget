@@ -17,7 +17,7 @@ async function fetchAndDisplayIncomes() {
         const tbody = document.querySelector(".incomeTable tbody"); // Ensure correct ID
 
         if (!tbody) {
-            console.error("Table body not found! Make sure #incomeTableBody exists.");
+            console.error("Table body not foualnd! Make sure #incomeTableBody exists.");
             return;
         }
 
@@ -30,7 +30,7 @@ async function fetchAndDisplayIncomes() {
         const fragment = document.createDocumentFragment();
 
         incomes.forEach(income => {
-            const transaction = income;
+            const transaction = income.transaction;
             const tr = document.createElement("tr");
             tr.innerHTML = `
             <tr data-id="${income.id}">

@@ -11,7 +11,7 @@ from home.utils.python.firebase_service import add_transaction, get_transactions
 from home.utils.python.ml_util import preprocess_data, predict_future_income, categorize_spending, generate_visualizations
 
 FIREBASE_SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
-collection = 'incomes'
+collection = 'transactions'
 
 def is_authenticated(request):
     if request.session.get('id_token'):
@@ -161,8 +161,6 @@ def logout_view(request):
     return JsonResponse({
         "error": "Method not allowed"
     }, status=405)
-from django.http import JsonResponse
-
 
 @csrf_exempt
 def submit_transaction(request):
