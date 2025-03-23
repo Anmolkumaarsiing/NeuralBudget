@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
+from django.contrib import messages
 from firebase_admin import auth
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
@@ -33,6 +34,7 @@ def login_view(request):
             body = json.loads(request.body)
             email = body.get('email')
             password = body.get('password')
+            print(email,password)
 
             if not email or not password:
                 return JsonResponse({'error': 'Email and password are required'}, status=400)
@@ -249,9 +251,6 @@ def visualize(request):
     # Render the visualize.html template with visualizations
     return render(request, "home/visualize.html",data) 
 
-
-    from django.shortcuts import render, redirect
-from django.contrib import messages
 
 def set_budget(request):
     if request.method == "POST":
