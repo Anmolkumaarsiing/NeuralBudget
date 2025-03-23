@@ -6,20 +6,35 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from io import BytesIO
 import base64
+import pandas as pd
+from datetime import datetime
 
 def preprocess_data(incomes):
-    """Convert Firestore income data into a Pandas DataFrame."""
-    
     data = []
+
     for income in incomes:
+        transaction = income.get("transaction", {})  # Safely get the 'transaction' dictionary
+        # Handle missing or invalid 'date'
+        try:
+            date = pd.to_datetime(transaction.get("date", None), errors="coerce")  # Coerce invalid/missing dates to NaT
+            if pd.isna(date):  # Skip rows with missing or invalid 'date'
+                print(f"Skipping entry due to missing/invalid date: {transaction}")
+                continue
+        except Exception as e:
+            print(f"Error processing date: {e}")
+            continue
+
         data.append({
-            "source": income["source"],
-            "amount": income["amount"],
-            "date": pd.to_datetime(income["date"]),
-            "status": income["status"],
+            "source": transaction.get("category", "Unknown"),  # Fallback to 'Unknown' for missing category
+            "amount": transaction.get("amount", 0),  # Default to 0 if 'amount' is missing
+            "date": date,
+            "status": transaction.get("status", "Unknown"),  # Fallback to 'Unknown' for missing status
+            "name": transaction.get("name", ""),  # Handle missing 'name' gracefully
         })
+    # Create DataFrame and sort by date
     df = pd.DataFrame(data)
     df.sort_values(by="date", inplace=True)
+    df.reset_index(drop=True, inplace=True)
 
     return df
 

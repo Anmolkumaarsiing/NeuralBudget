@@ -14,7 +14,7 @@ def verify_token(id_token):
     print("In verify_token")
     try:
         print("In try")
-        decoded_token = auth.verify_id_token(id_token)
+        decoded_token = auth.verify_id_token(id_token,check_revoked=True,clock_skew_seconds=30)
         return decoded_token
     except Exception as e:
         print(f"Token verification error: {str(e)}")
@@ -22,5 +22,6 @@ def verify_token(id_token):
 
 def get_user_id(request):
     return request.session.get('user_id')
+
 def get_email(request):
     return request.session.get('email')
