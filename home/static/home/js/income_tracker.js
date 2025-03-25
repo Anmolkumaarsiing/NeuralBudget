@@ -17,7 +17,7 @@ async function fetchAndDisplayIncomes() {
         const tbody = document.querySelector(".incomeTable tbody"); // Ensure correct ID
 
         if (!tbody) {
-            console.error("Table body not foualnd! Make sure #incomeTableBody exists.");
+            console.error("Table body not found! Make sure #incomeTableBody exists.");
             return;
         }
 
@@ -31,11 +31,12 @@ async function fetchAndDisplayIncomes() {
 
         incomes.forEach(income => {
             const transaction = income.transaction;
+            console.log(transaction);
             const tr = document.createElement("tr");
             tr.innerHTML = `
             <tr data-id="${income.id}">
                 <td>${transaction.name || "No Name"}</td>
-                <td>${transaction.source || "No Source"}</td>
+                <td>${transaction.category || "No Source"}</td>
                 <td>₹${transaction.amount.toFixed(2) || 0}</td>
                 <td>${new Date(transaction.date).toLocaleDateString()}</td>
                 <td class="status-${transaction.status.toLowerCase()}">${transaction.status}</td>
