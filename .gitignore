@@ -6,4 +6,8 @@ firebase_key.json
 home/static/home/js/auth.js
 home/static/home/js/app.js
 home/static/home/js/firebase-config.js
-.vscode
+db.sqlite3
+/neural_budget/__pycache__
+/neural_budget/migrations/__pycache__/
+/home/__pycache__
+/home/migrations/__pycache__/
