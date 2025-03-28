@@ -253,12 +253,11 @@ def visualize(request):
 
 
 def set_budget(request):
+    email=get_email(request)
     if request.method == "POST":
         budget = request.POST.get("budget")
         category = request.POST.get("category")
-
         # Example logic to save the budget (You may need to connect with your database)
         messages.success(request, f"Budget of {budget} for {category} set successfully!")
         return redirect("set_budget")
-
-    return render(request, "home/set_Budget.html")
+    return render(request, "home/set_Budget.html", {"email": email})
