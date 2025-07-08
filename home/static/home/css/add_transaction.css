@@ -136,64 +136,6 @@ input:checked + .slider:before {
 }
 
 /* Add Transaction Section */
-.add-transaction {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.add-transaction h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #2c3e50;
-}
-
-.add-transaction form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.add-transaction label {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-}
-
-.add-transaction input,
-.add-transaction select,
-.add-transaction button {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    outline: none;
-    transition: border-color 0.3s ease;
-}
-
-.add-transaction input:focus,
-.add-transaction select:focus {
-    border-color: #3498db;
-}
-
-.add-transaction button {
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.add-transaction button:hover {
-    background-color: #2980b9;
-}
-
-/* Other Category Input */
-#other-category-container {
-    margin-top: 10px;
-}
-
 /* Dark Mode Styles */
 body.dark-mode {
     background-color: #1a1a1a;
@@ -215,28 +157,4 @@ body.dark-mode {
 .dark-mode .main-content {
     background-color: #2c3e50;
     color: #f4f7f6;
-}
-
-.dark-mode .add-transaction {
-    background-color: #34495e;
-    color: #f4f7f6;
-}
-
-.dark-mode .add-transaction label {
-    color: #f4f7f6;
-}
-
-.dark-mode .add-transaction input,
-.dark-mode .add-transaction select {
-    background-color: #2c3e50;
-    color: #f4f7f6;
-    border-color: #555;
-}
-
-.dark-mode .add-transaction button {
-    background-color: #2980b9;
-}
-
-.dark-mode .add-transaction button:hover {
-    background-color: #3498db;
 }

@@ -31,7 +31,6 @@ def preprocess_data(incomes):
             "status": transaction.get("status", "Unknown"),  # Fallback to 'Unknown' for missing status
             "name": transaction.get("name", ""),  # Handle missing 'name' gracefully
         })
-    # Create DataFrame and sort by date
     df = pd.DataFrame(data)
     df.sort_values(by="date", inplace=True)
     df.reset_index(drop=True, inplace=True)
@@ -63,7 +62,7 @@ def categorize_spending(df):
 
 def generate_visualizations(df, future_income):
     """Generate visualizations and return them as base64-encoded images."""
-    plt.switch_backend("Agg")  # Use a non-interactive backend for Matplotlib
+    plt.switch_backend("Agg")  
 
     # Visualization 1: Income Over Time
     plt.figure(figsize=(10, 6))
@@ -76,7 +75,7 @@ def generate_visualizations(df, future_income):
     income_over_time = plot_to_base64(plt)
     plt.close()
 
-    # Visualization 2: Predicted Future Income
+    # Visualization 
     plt.figure(figsize=(10, 6))
     sns.lineplot(x="day_of_year", y="predicted_amount", data=future_income, label="Predicted Income")
     plt.title("Predicted Future Income")
@@ -86,7 +85,7 @@ def generate_visualizations(df, future_income):
     predicted_income = plot_to_base64(plt)
     plt.close()
 
-    # Visualization 3: Spending Categories
+    # Visualization 3
     plt.figure(figsize=(10, 6))
     sns.countplot(x="spending_category", data=df, hue="spending_category", palette="viridis", legend=False)
     plt.title("Spending Categories")
