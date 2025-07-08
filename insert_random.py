@@ -10,9 +10,6 @@ firebase_admin.initialize_app(cred)
 # Get Firestore client
 db = firestore.client()
 
-# User ID for whom the data will be inserted
-USER_ID = "xX0DXk4FvTV2ULCyKF3kQQ6kizO2"  # Replace with the actual user ID
-
 # List of possible income sources
 INCOME_SOURCES = ["Salary", "Freelancing", "Business", "Investments", "Other"]
 
@@ -31,25 +28,46 @@ def generate_random_amount():
     return round(random.uniform(100, 10000), 2)
 
 def generate_random_transaction():
-    """Generate a random transaction."""
+    """Generate a random transaction."""    
     return {
-        "name": 'abcd',
+        "name": 'Stuff',
         "category": random.choice(INCOME_SOURCES),
         "amount": generate_random_amount(),
         "date": generate_random_date(),
         "status": random.choice(STATUSES),   
     }
 
-def insert_random_data(num_records=200):
+USER_ID = "PZWaO69zDjfivyIwPX4wi1KK6Pp2"  # User ID for deletion
+collection = 'transactions'
+def insert_random_data(user_id, num_records=20):
     """Insert random transactions into Firestore."""
-    incomes_ref = db.collection("incomes")
+    incomes_ref = db.collection(collection)
 
     for i in range(num_records):
         transaction = generate_random_transaction()
-        incomes_ref.add(transaction)
+        incomes_ref.add({
+            "userId" : user_id,
+            "transaction" : {
+                **transaction
+            },
+            "id":user_id
+        })
         print(f"Inserted transaction {i + 1}: {transaction}")
 
-    print(f"Successfully inserted {num_records} random transactions for user {USER_ID}.")
+    print(f"Successfully inserted {num_records} random transactions for user {user_id}.")
+
+def delete_user_transactions(user_id):
+    """Delete all transactions for a given user ID."""
+    transactions_ref = db.collection(collection)
+    query = transactions_ref.where("userId", "==", user_id).stream()
+
+    deleted_count = 0
+    for doc in query:
+        doc.reference.delete()
+        deleted_count += 1
+    print(f"Successfully deleted {deleted_count} transactions for user {user_id}.")
 
 if __name__ == "__main__":
-    insert_random_data()
+    # Use the predefined USER_ID for deletion
+    # delete_user_transactions(USER_ID)
+    insert_random_data(USER_ID, 20)

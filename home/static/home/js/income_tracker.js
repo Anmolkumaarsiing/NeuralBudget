@@ -1,10 +1,16 @@
 import { getCookie } from './help.js';
 const csrftoken = getCookie('csrftoken');
-let itemCount = 10;
+let itemCount = 5; // Initial batch size
+let lastDocId = null; // To store the ID of the last document fetched
 
-async function fetchAndDisplayIncomes() {
+async function fetchAndDisplayIncomes(append = false) {
     try {
-        const response = await fetch(`/get_incomes/?itemCount=${itemCount}`, {
+        let url = `/get_incomes/?itemCount=${itemCount}`;
+        if (lastDocId) {
+            url += `&lastDocId=${lastDocId}`;
+        }
+
+        const response = await fetch(url, {
             headers: { "X-Requested-With": "XMLHttpRequest" }
         });
 
@@ -14,24 +20,28 @@ async function fetchAndDisplayIncomes() {
 
         const data = await response.json();
         const incomes = data.incomes || [];
-        const tbody = document.querySelector(".incomeTable tbody"); // Ensure correct ID
+        const tbody = document.querySelector(".incomeTable tbody");
+        const loadMoreButton = document.getElementById("LoadMore");
 
         if (!tbody) {
-            console.error("Table body not found! Make sure #incomeTableBody exists.");
+            console.error("Table body not found! Make sure .incomeTable tbody exists.");
             return;
         }
 
-        tbody.innerHTML = ""; // Clear existing rows
+        if (!append) {
+            tbody.innerHTML = ""; // Clear existing rows only if not appending
+        }
 
-        if (incomes.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">No income records found.</td></tr>`;
+        if (incomes.length === 0 && !append) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center;">No income records found.</td></tr>`;
+            if (loadMoreButton) loadMoreButton.style.display = "none"; // Hide if no records at all
             return;
         }
+
         const fragment = document.createDocumentFragment();
 
         incomes.forEach(income => {
             const transaction = income.transaction;
-            console.log(transaction);
             const tr = document.createElement("tr");
             tr.innerHTML = `
             <tr data-id="${income.id}">
@@ -50,12 +60,40 @@ async function fetchAndDisplayIncomes() {
             `;
             fragment.appendChild(tr);
         });
-        tbody.appendChild(fragment); // Append all at once
+        tbody.appendChild(fragment);
+
+        // Update lastDocId with the ID of the last fetched income
+        if (incomes.length > 0) {
+            lastDocId = incomes[incomes.length - 1].id;
+        }
+
+        // Control Load More button visibility
+        if (loadMoreButton) {
+            if (incomes.length < itemCount) { // If fewer records than requested, no more to load
+                loadMoreButton.style.display = "none";
+            } else {
+                loadMoreButton.style.display = "block"; // Ensure it's visible if there might be more
+            }
+        }
     } catch (error) {
         alert(error.message);
     }
 }
-document.addEventListener("DOMContentLoaded", fetchAndDisplayIncomes);
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Reset lastDocId and itemCount for initial load
+    lastDocId = null;
+    itemCount = 5; // Initial batch size
+    fetchAndDisplayIncomes();
+});
+
+document.addEventListener("click", async (e) => {
+    if (e.target.id === "LoadMore") {
+        // itemCount remains the batch size (5)
+        await fetchAndDisplayIncomes(true); // Pass true to append
+    }
+});
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const dropdownButtons = document.querySelectorAll(".drop-btn");
@@ -104,13 +142,6 @@ document.addEventListener("click", async (e) => {
                 alert(error.message);
             }
         }
-    }
-});
-
-document.addEventListener("click", async (e) => {
-    if (e.target.id.includes("LoadMore")) {
-        itemCount+=5;
-        await fetchAndDisplayIncomes();
     }
 });
 
