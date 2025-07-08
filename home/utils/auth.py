@@ -21,7 +21,7 @@ def firebase_login(email, password):
 
 def verify_firebase_token(id_token):
     try:
-        decoded_token = auth.verify_id_token(id_token)
+        decoded_token = auth.verify_id_token(id_token, clock_skew_seconds=30)
         return decoded_token
     except firebase_exceptions.FirebaseError as e:
         raise e

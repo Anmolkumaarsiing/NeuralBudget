@@ -1,3 +1,5 @@
+import { getCookie } from './help.js';
+
 // Handle form submission
 document.getElementById("addTransactionForm").addEventListener("submit", async (e) => {
     e.preventDefault(); 
@@ -26,7 +28,7 @@ document.getElementById("addTransactionForm").addEventListener("submit", async (
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRFToken": "{{ csrf_token }}"  // Include CSRF token
+                "X-CSRFToken": getCookie('csrftoken')  // Include CSRF token from cookie
             },
             body: JSON.stringify({transaction, id})
         });

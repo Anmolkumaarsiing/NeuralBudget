@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from home.utils.python.firebase_service import add_transaction, get_transactions, delete_transaction
+from home.utils.firebase_service import add_transaction, get_transactions, delete_transaction
 from django.shortcuts import render
 import json
 

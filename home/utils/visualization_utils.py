@@ -1,4 +1,4 @@
-from home.utils.python.firebase_service import get_transactions
+from home.utils.firebase_service import get_transactions
 from home.utils.python.ml_util import preprocess_data, predict_future_income, categorize_spending, generate_visualizations
 
 def generate_visualizations_data(user_id):
