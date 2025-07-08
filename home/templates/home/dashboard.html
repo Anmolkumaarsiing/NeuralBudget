@@ -8,6 +8,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="{% static 'home/css/dashboard.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script>
+      // Firebase configuration
+      const firebaseConfig = {
+          apiKey: "{{ FIREBASE_API_KEY }}",
+          authDomain: "neuralbudgetai.firebaseapp.com",
+          projectId: "neuralbudgetai",
+          storageBucket: "neuralbudgetai.appspot.com",
+          messagingSenderId: "1070300712000",
+          appId: "1:1070300712000:web:1234567890abcdef"
+      };
+
+      // Initialize Firebase
+      if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+        window.firebase = firebase; // Expose firebase globally for module scripts
+    }
+    </script>
     <script type="module" src="{% static 'home/js/dashboard.js' %}"></script>
     <script type="module" src="{% static 'home/js/darkmode.js' %}"></script>
     <script type="module" src="{% static 'home/js/signOut.js' %}"></script>
@@ -93,22 +112,30 @@
                     <div class="dashboard-cards">
                         <div class="card">
                             <h3>Total Expenses</h3>
-                            <p id="totalExpenses">₹0.00</p>
+                            <p id="totalExpenses">₹{{ total_expenses|floatformat:2 }}</p>
                         </div>
                          <div class="card">
                             <h3>Savings</h3>
-                            <p id="savings">₹0.00</p>
+                            <p id="savings">₹{{ savings|floatformat:2 }}</p>
                         </div>
                         <div class="card">
                             <h3>Budget Left</h3>
-                            <p id="budgetLeft">₹0.00</p>
+                            <p id="budgetLeft">₹{{ budget_left|floatformat:2 }}</p>
                         </div>
                     </div>
             
                     <div class="recent-transactions">
                         <h3>Recent Transactions</h3>
                         <ul id="transactionList">
+                            {% for transaction in recent_transactions %}
+                            <li>
+                                <span class="txn-name">{{ transaction.name }}:</span> 
+                                <span class="txn-amount">₹{{ transaction.amount|floatformat:2 }}</span> 
+                                <span class="txn-type">{{ transaction.type }}</span>
+                            </li>
+                            {% empty %}
                             <li>No recent transactions</li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
@@ -123,4 +150,8 @@
         </main>
     </div>
 </body>
+<script>
+    // Pass chart data to JavaScript
+    const expenseChartData = {{ expense_chart_data|safe }};
+</script>
 </html>
