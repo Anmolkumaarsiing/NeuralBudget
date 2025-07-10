@@ -7,3 +7,4 @@ db.sqlite3
 /neural_budget/migrations/__pycache__/
 /home/__pycache__
 /home/migrations/__pycache__/
+database_schema_recommendations.md
