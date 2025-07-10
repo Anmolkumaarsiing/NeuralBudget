@@ -18,7 +18,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'home',
+    'apps.core',
+    'apps.accounts',
+    'apps.transactions',
+    'apps.budgets',
+    'apps.reports',
+    'apps.ml_features',
+    'apps.common_utils',
 ]
 
 MIDDLEWARE = [
@@ -37,7 +43,7 @@ ROOT_URLCONF = "neural_budget.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [ BASE_DIR / 'home/templates'],
+        "DIRS": [ BASE_DIR / 'apps'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -99,4 +105,4 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CSRF_TRUSTED_ORIGINS = ['https://*.127.0.0.1', 'https://*.localhost']
-GOOGLE_APPLICATION_CREDENTIALS="/firebase_auth_key.json"
+# GOOGLE_APPLICATION_CREDENTIALS="/firebase_auth_key.json"
