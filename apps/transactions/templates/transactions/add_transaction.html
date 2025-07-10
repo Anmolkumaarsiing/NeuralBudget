@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Bud‌get AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'reports/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'transactions/css/add_transaction.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="{% static 'core/js/darkmode.js' %}"></script>
+    <script type="module" src="{% static 'transactions/js/add_transaction.js' %}"></script>
+    <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
+    <style>
+        .incomeTable tbody {
+    display: table-row-group !important;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- SIDEBAR SECTION -->
+
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="{% static 'core/img/logo.png' %}" alt="Neural Budget AI Logo" class="logo-img">
+                <span class="logo-text">Neural Budget AI</span>
+            </div>            
+            <nav>
+                <ul>
+                    <li class="dropdown">
+                        <button class="drop-btn"><i class="fas fa-receipt"></i>Expense Tracking
+                            <i class="fas fa-angle-right dropdown-icon"></i>
+                        </button>
+                        <ul class="dropdown-content">
+                            <li><a href="{% url 'reports:dashboard' %}"><i class="fas fa-tachometer-alt"></i> Overview</a></li>
+                            <li><a href="{% url 'transactions:add_transaction' %}"><i class="fas fa-plus-circle"></i> Add Expense</a></li>
+                            <li><a href="{% url 'transactions:income_tracker' %}"><i class="fas fa-eye"></i> View Expenses</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <button class="drop-btn"><i class="fas fa-wallet"></i>Budgeting Tools
+                            <i class="fas fa-angle-right dropdown-icon"></i>
+                        </button>
+                        <ul class="dropdown-content">
+                            <li><a href="{% url 'budgets:set_budget' %}"><i class="fas fa-coins"></i>Set Budget</a></li>
+                            <li><a href="#"><i class="fas fa-piggy-bank"></i> Savings Goals</a></li>
+                            <li><a href="#"><i class="fas fa-chart-pie"></i> Spending Insights</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <button class="drop-btn"><i class="fas fa-chart-line"></i>AI Insights
+                            <i class="fas fa-angle-right dropdown-icon"></i>
+                        </button>
+                        <ul class="dropdown-content"> 
+                            <li><a href="{% url 'reports:visualize' %}"><i class="fas fa-brain"></i> Predictive Analysis</a></li>
+                            <li><a href="#"><i class="fas fa-layer-group"></i> Smart Categorization</a></li>
+                            <li><a href="#"><i class="fas fa-chart-line"></i> Expense Forecasting</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <button class="drop-btn"><i class="fas fa-cog"></i>Settings
+                            <i class="fas fa-angle-right dropdown-icon"></i>
+                        </button>
+                        <ul class="dropdown-content">
+                            <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+                            <li><a href="#" id="signOutLink"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="content">
+            
+            <!-- TOPBAR SECTION -->
+    
+                <header class="topbar">
+                    <div class="greeting">
+                        <h3>Hi, {{email}} <i class="fas fa-smile"></i></h3>
+                    </div>
+                    
+                    <div class="actions">
+                        <label class="switch">
+                            <input type="checkbox" id="darkModeToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </header>
+                
+    <!-- Add_Transaction Section -->
+
+    <section class="add-transaction">
+        <h2>Add Transaction</h2>
+        <form method="POST" action="" id="addTransactionForm">
+            {% csrf_token %}
+            
+            <!-- Name Field -->
+            <label for="name">Transaction Name:</label>
+            <input type="text" id="name" name="name" required>
+    
+            <!-- Category Dropdown -->
+            <label for="category">Category:</label>
+            <select id="category" name="category" required onchange="toggleOtherCategory()">
+                <option value="Housing">Housing</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Groceries">Groceries</option>
+                <option value="Transportation">Transportation</option>
+                <option value="Debt Payments">Debt Payments</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Savings & Investments">Savings & Investments</option>
+                <option value="Entertainment & Dining">Entertainment & Dining</option>
+                <option value="Shopping & Personal Care">Shopping & Personal Care</option>
+                <option value="Education & Self-Development">Education & Self-Development</option>
+                <option value="Other">Other</option>
+            </select>
+    
+            <!-- Other Category Input (Hidden Initially) -->
+            <div id="other-category-container" style="display: none;">
+                <label for="other-category">Specify Category:</label>
+                <input type="text" id="other-category" name="other_category">
+            </div>
+    
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" required>
+    
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+    
+            <label for="status">Status:</label>
+            <select id="status" name="status" required>
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
+                <option value="Failed">Failed</option>
+                <option value="Cancelled">Cancelled</option>
+                <option value="Partially Paid">Partially Paid</option>
+                <option value="Due">Due</option>
+            </select>
+    
+            <button type="submit">Add Transaction</button>
+        </form>
+    </section>
+    </main>
+    </div>
+</body>
+</html>
