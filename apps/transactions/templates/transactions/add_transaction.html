@@ -12,6 +12,7 @@
     <script type="module" src="{% static 'core/js/darkmode.js' %}"></script>
     <script type="module" src="{% static 'transactions/js/add_transaction.js' %}"></script>
     <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
+    <script type="module" src="{% static 'budgets/js/budget.js' %}"></script>
     <style>
         .incomeTable tbody {
     display: table-row-group !important;
@@ -105,16 +106,9 @@
             <!-- Category Dropdown -->
             <label for="category">Category:</label>
             <select id="category" name="category" required onchange="toggleOtherCategory()">
-                <option value="Housing">Housing</option>
-                <option value="Utilities">Utilities</option>
-                <option value="Groceries">Groceries</option>
-                <option value="Transportation">Transportation</option>
-                <option value="Debt Payments">Debt Payments</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Savings & Investments">Savings & Investments</option>
-                <option value="Entertainment & Dining">Entertainment & Dining</option>
-                <option value="Shopping & Personal Care">Shopping & Personal Care</option>
-                <option value="Education & Self-Development">Education & Self-Development</option>
+                {% for category in categories %}
+                    <option value="{{ category }}">{{ category }}</option>
+                {% endfor %}
                 <option value="Other">Other</option>
             </select>
     
@@ -122,6 +116,7 @@
             <div id="other-category-container" style="display: none;">
                 <label for="other-category">Specify Category:</label>
                 <input type="text" id="other-category" name="other_category">
+            <button type="button" id="add-category-btn">Add New Category</button>
             </div>
     
             <label for="amount">Amount:</label>

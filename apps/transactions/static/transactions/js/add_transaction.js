@@ -2,7 +2,7 @@ import { getCookie } from '/static/core/js/help.js';
 
 // Handle form submission
 document.getElementById("addTransactionForm").addEventListener("submit", async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     const name = document.getElementById("name").value;
     const category = document.getElementById("category").value;
     const otherCategory = document.getElementById("other-category").value;
@@ -11,7 +11,9 @@ document.getElementById("addTransactionForm").addEventListener("submit", async (
     const status = document.getElementById("status").value;
     const finalCategory = category === "Other" ? otherCategory : category;
     const id = localStorage.getItem("uid");
-    
+
+    checkBudget(finalCategory, amount);
+
     const transaction = {
         name,
         category: finalCategory,
@@ -24,13 +26,13 @@ document.getElementById("addTransactionForm").addEventListener("submit", async (
 
     try {
         // Submit transaction to Django
-        const response = await fetch("/add_transaction/", {
+        const response = await fetch("/transactions/add_transaction/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRFToken": getCookie('csrftoken')  // Include CSRF token from cookie
             },
-            body: JSON.stringify({transaction, id})
+            body: JSON.stringify({ transaction, id })
         });
 
         const data = await response.json();
@@ -64,24 +66,54 @@ function toggleOtherCategory() {
 // Add event listener for category dropdown change
 document.getElementById("category").addEventListener("change", toggleOtherCategory);
 
+// Handle add category button click
+document.getElementById("add-category-btn").addEventListener("click", async () => {
+    const newCategoryName = document.getElementById("other-category").value.trim();
+    if (newCategoryName) {
+        try {
+            const response = await fetch("/transactions/add_category/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie('csrftoken'),
+                },
+                body: JSON.stringify({ category_name: newCategoryName }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                alert("Category added successfully!");
+                // Optionally, refresh categories in the dropdown
+                location.reload(); // Simple reload to refresh categories
+            } else {
+                throw new Error(data.error || "Failed to add category");
+            }
+        } catch (error) {
+            console.error("Error adding category:", error);
+            alert(error.message);
+        }
+    } else {
+        alert("Please enter a category name.");
+    }
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     const dropdownButtons = document.querySelectorAll(".drop-btn");
-        dropdownButtons.forEach(button => {
-            button.addEventListener("click", function () {
-                const dropdownContent = this.nextElementSibling;
-                const icon = this.querySelector(".dropdown-icon");
-    
-                dropdownContent.classList.toggle("active");
-    
-                if (dropdownContent.classList.contains("active")) {
-                    dropdownContent.style.display = "block";
-                    icon.classList.remove("fa-angle-right");
-                    icon.classList.add("fa-angle-down");
-                } else {
-                    dropdownContent.style.display = "none";
-                    icon.classList.remove("fa-angle-down");
-                    icon.classList.add("fa-angle-right");
-                }
-            });
+    dropdownButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const dropdownContent = this.nextElementSibling;
+            const icon = this.querySelector(".dropdown-icon");
+
+            dropdownContent.classList.toggle("active");
+
+            if (dropdownContent.classList.contains("active")) {
+                dropdownContent.style.display = "block";
+                icon.classList.remove("fa-angle-right");
+                icon.classList.add("fa-angle-down");
+            } else {
+                dropdownContent.style.display = "none";
+                icon.classList.remove("fa-angle-down");
+                icon.classList.add("fa-angle-right");
+            }
+        });
     });
 });

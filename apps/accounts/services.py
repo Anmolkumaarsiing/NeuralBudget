@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from firebase_admin import auth
 from django.contrib.auth import logout
+from apps.common_utils.firebase_service import copy_default_categories_to_user
 
 def register_user(data):
     try:
@@ -14,6 +15,8 @@ def register_user(data):
             display_name=username
         )
         uid = user.uid
+
+        copy_default_categories_to_user(uid)
 
         return {"message": "Registration successful", "uid": uid, "redirect_url": "/dashboard/"}
 
@@ -36,6 +39,6 @@ def logout_user(request):
         logout(request)
         request.session.flush()
         
-        return {"message": "Logged out successfully", "redirect_url": "/home/login/"}
+        return {"message": "Logged out successfully", "redirect_url": "/accounts/login/"}
     except Exception as e:
         return {"error": str(e)}

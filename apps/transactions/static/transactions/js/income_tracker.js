@@ -1,6 +1,6 @@
 import { getCookie } from '/static/core/js/help.js';
 const csrftoken = getCookie('csrftoken');
-let itemCount = 5; // Initial batch size
+let itemCount = 10; // Initial batch size
 let lastDocId = null; // To store the ID of the last document fetched
 
 async function fetchAndDisplayIncomes(append = false) {

@@ -94,19 +94,29 @@
         <section class="Set_Budget">
             <div class="budget-container">
                 <h2>Set Your Monthly Budget</h2>
-    
-                <div class="budget-input">
-                    <label for="budget-amount">Enter Budget Amount:</label>
-                    <input type="number" id="budget-amount" placeholder="₹ Enter amount">
-                </div>
-    
-                <div class="budget-progress">
-                    <span>Budget Spent</span>
-                    <progress id="budget-progress-bar" value="30" max="100"></progress>
-                    <span id="budget-percentage">30%</span>
-                </div>
-    
-                <button class="set-budget-btn">Save Budget</button>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="budget-input">
+                        <label for="category">Select Category:</label>
+                        <select id="category" name="category">
+                            {% for category in categories %}
+                                <option value="{{ category }}">{{ category }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="budget-input">
+                        <label for="budget-amount">Enter Budget Amount:</label>
+                        <input type="number" id="budget-amount" name="budget" placeholder="₹ Enter amount">
+                    </div>
+        
+                    <div class="budget-progress">
+                        <span>Budget Spent</span>
+                        <progress id="budget-progress-bar" value="30" max="100"></progress>
+                        <span id="budget-percentage">30%</span>
+                    </div>
+        
+                    <button type="submit" class="set-budget-btn">Save Budget</button>
+                </form>
             </div>
         </section>
     </main>

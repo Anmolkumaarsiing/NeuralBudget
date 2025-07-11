@@ -6,11 +6,36 @@ from apps.common_utils.firebase_config import FIREBASE_API_KEY
 
 FIREBASE_SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
 
-def get_categories():
-    """Fetch categories from Firestore."""
-    categories_ref = db.collection("categories")
+def get_user_categories(user_id):
+    """Fetch categories for a specific user."""
+    print(f"[DEBUG] get_user_categories called for user_id: {user_id}")
+    categories_ref = db.collection("categories").where(filter=FieldFilter("userId", "==", user_id))
     docs = categories_ref.stream()
-    return [doc.to_dict()["name"] for doc in docs]
+    categories = [doc.to_dict()["name"] for doc in docs]
+    print(f"[DEBUG] Fetched categories: {categories}")
+    return categories
+
+def copy_default_categories_to_user(user_id):
+    """Copies default categories to a new user."""
+    print(f"[DEBUG] Attempting to copy default categories for user: {user_id}")
+    default_categories_ref = db.collection('default_categories').stream()
+    categories_copied = 0
+    for category in default_categories_ref:
+        category_data = category.to_dict()
+        db.collection('categories').add({
+            'name': category_data['name'],
+            'userId': user_id
+        })
+        print(f"[DEBUG] Added category '{category_data['name']}' to user {user_id}'s collection.")
+        categories_copied += 1
+    print(f"[DEBUG] Finished copying. Total categories copied: {categories_copied}")
+
+def add_category(user_id, category_name):
+    """Adds a new category for a user."""
+    db.collection('categories').add({
+        'name': category_name,
+        'userId': user_id
+    })
 
 def add_transaction(user_id, transaction_data,collection):
     """Add a transaction to Firestore."""
@@ -28,7 +53,7 @@ def get_transactions(user_id,collection,limit=10, start_after_doc_id=None):
     except Exception as e:
         print(e)
         return []
-    
+    # copy_default_categories_to_user(user_id)
     query = transactions_ref.where(filter=FieldFilter("userId", "==", user_id))
     
     if start_after_doc_id:
@@ -62,9 +87,12 @@ def firebase_login(email, password):
         "password": password,
         "returnSecureToken": True
     }
+    headers = {
+        "Content-Type": "application/json"
+    }
     params = {"key": FIREBASE_API_KEY}
     try:
-        response = requests.post(FIREBASE_SIGN_IN_URL, json=payload, params=params)
+        response = requests.post(FIREBASE_SIGN_IN_URL, json=payload, params=params, headers=headers)
         response.raise_for_status()  # Raise an exception for bad status codes
         return response.json()
     except requests.exceptions.RequestException as e:
