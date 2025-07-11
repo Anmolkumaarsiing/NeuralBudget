@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 logOut()
                     .then(() => {
                         console.log("Logged out successfully!");
-                        window.location.href = "/login/"; // Redirect to login page
                     })
                     .catch(error => {
                         console.error("Logout error:", error);

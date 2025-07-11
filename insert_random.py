@@ -38,7 +38,7 @@ def generate_random_transaction():
     }
 
 USER_ID = "PZWaO69zDjfivyIwPX4wi1KK6Pp2"  # User ID for deletion
-collection = 'transactions'
+collection = 'incomes'
 def insert_random_data(user_id, num_records=20):
     """Insert random transactions into Firestore."""
     incomes_ref = db.collection(collection)

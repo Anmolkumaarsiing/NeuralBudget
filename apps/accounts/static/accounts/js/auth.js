@@ -96,7 +96,7 @@ export function register() {
 
 // Logout function
 export function logOut() {
-    fetch(LOGOUT_URL, {
+    return fetch('/accounts/logout/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -104,15 +104,18 @@ export function logOut() {
         },
         credentials: 'include'
     })
-        .then(response => {
+        .then(async response => {
+            const data = await response.json(); // Parse the JSON response
             if (response.ok) {
-                window.location.href = '/accounts/login/';
+                console.log("Logout successful! Redirecting to:", data.redirect_url);
+                window.location.href = data.redirect_url; // Use the URL from the response
             } else {
-                throw new Error('Logout failed');
+                throw new Error(data.error || 'Logout failed');
             }
         })
         .catch(error => {
             console.error("Logout error:", error);
             alert('Failed to logout. Please try again.');
+            throw error; // Re-throw the error so it can be caught by signOut.js
         });
 }

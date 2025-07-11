@@ -80,6 +80,10 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+import mongoengine
+
+mongoengine.connect(db='your-mongodb-database-name', host='localhost', port=27017) #TODO: Replace with your database name
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
