@@ -1,11 +1,20 @@
 from pathlib import Path
 from firebase_admin import credentials
 import firebase_admin
-import os
-
+import dotenv,os
+dotenv.load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = "django-insecure-dpo0dectr+pe25z_2h-gdy*5ib2fz5_$#twj7^(5)rh-rm+b-8"
+SECRET_KEY = os.getenv("SECRET_KEY")
+# print(SECRET_KEY)
+
+# Session Security Settings
+if(os.getenv('ENVIRONMENT')=='production'):
+    SESSION_COOKIE_SECURE = not DEBUG # Set to True in production (when DEBUG is False)
+else:
+    SESSION_COOKIE_SECURE=False
+
+SESSION_COOKIE_HTTPONLY = True
 DEBUG = True
 ALLOWED_HOSTS = []
 

@@ -6,7 +6,7 @@ from firebase_admin import exceptions as firebase_exceptions
 import json,requests
 from apps.common_utils.firebase_config import FIREBASE_API_KEY
 from apps.common_utils.auth_utils import get_user_id, get_email
-from apps.common_utils.firebase_service import firebase_login, verify_firebase_token
+from apps.common_utils.firebase_service import firebase_login, verify_firebase_token, get_user_profile, create_user_profile
 from apps.common_utils.auth_utils import is_authenticated
 from apps.accounts.services import register_user, logout_user
 
@@ -32,15 +32,27 @@ def login_view(request):
 
             decoded_token = verify_firebase_token(id_token)
             uid = decoded_token['uid']
+            display_name = decoded_token.get('name', email.split('@')[0]) # Get display name from token or default to email prefix
+
+            # Fetch or create user profile
+            user_profile = get_user_profile(uid)
+            if not user_profile:
+                create_user_profile(uid, email, display_name)
+                user_profile = get_user_profile(uid) # Fetch again to get the newly created profile
+            
+            # Use display name from profile if available
+            display_name_from_profile = user_profile.get('display_name', display_name)
 
             request.session['user_id'] = uid
             request.session['email'] = email
             request.session['id_token'] = id_token
+            request.session['display_name'] = display_name_from_profile # Store display name in session
 
             return JsonResponse({
                 'message': 'Login successful',
                 'email': email,
                 'uid': uid,
+                'display_name': display_name_from_profile
             })
 
         except requests.exceptions.RequestException as e:
@@ -61,7 +73,15 @@ def register_view(request):
     if request.method == "POST":
         data = json.loads(request.body)
         response = register_user(data)
-        return JsonResponse(response)
+        if "error" in response:
+            status_code = 400 
+            if "Email already exists" in response["error"]:
+                status_code = 409
+            elif "An unexpected error occurred" in response["error"]:
+                status_code = 500
+            return JsonResponse(response, status=status_code)
+        else:
+            return JsonResponse(response, status=201) # 201 Created for successful registration
     
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
