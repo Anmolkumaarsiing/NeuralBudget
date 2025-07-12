@@ -8,3 +8,6 @@ db.sqlite3
 /home/__pycache__
 /home/migrations/__pycache__/
 database_schema_recommendations.md
+seed_categories.py
+migrate_user_profiles.py
+move_dash_image.py

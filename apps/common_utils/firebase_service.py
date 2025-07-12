@@ -46,6 +46,28 @@ def add_transaction(user_id, transaction_data,collection):
         **transaction_data
     })
 
+def create_user_profile(uid, email, display_name):
+    """Creates an initial user profile document in Firestore."""
+    user_profile_ref = db.collection('user_profiles').document(uid)
+    user_profile_ref.set({
+        'email': email,
+        'display_name': display_name,
+        'created_at': firestore.SERVER_TIMESTAMP # Add a timestamp
+    })
+
+def get_user_profile(uid):
+    """Retrieves a user profile document from Firestore."""
+    user_profile_ref = db.collection('user_profiles').document(uid)
+    doc = user_profile_ref.get()
+    if doc.exists:
+        return doc.to_dict()
+    return None
+
+def update_user_profile(uid, data):
+    """Updates a user profile document in Firestore."""
+    user_profile_ref = db.collection('user_profiles').document(uid)
+    user_profile_ref.update(data)
+
 def get_transactions(user_id,collection,limit=10, start_after_doc_id=None):
     print(f"get_transactions: user_id={user_id}, collection={collection}, limit={limit}, start_after_doc_id={start_after_doc_id}")
     try:

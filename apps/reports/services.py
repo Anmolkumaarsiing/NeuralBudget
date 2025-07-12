@@ -67,9 +67,9 @@ def get_dashboard_data(request):
         'labels': list(expense_categories.keys()),
         'data': list(expense_categories.values())
     }
-    print(f"Total Expenses: {total_expenses}, Total Income: {total_income}, Savings: {total_income - total_expenses}, Budget Left: {budget_left}")
+    # print(f"Total Expenses: {total_expenses}, Total Income: {total_income}, Savings: {total_income - total_expenses}, Budget Left: {budget_left}")
     # print(f"Recent Transactions: {recent_transactions}")
-    print(f"Expense Chart Data: {chart_data}")
+    # print(f"Expense Chart Data: {chart_data}")
 
     return {
         'total_expenses': total_expenses,

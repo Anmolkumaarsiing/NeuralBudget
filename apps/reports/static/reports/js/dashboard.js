@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Chart rendering using dynamic data
     const ctx = document.getElementById("expenseChart").getContext("2d");
     if (ctx && typeof expenseChartData !== 'undefined') {
         new Chart(ctx, {

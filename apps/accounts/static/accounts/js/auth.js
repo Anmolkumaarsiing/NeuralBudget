@@ -10,7 +10,7 @@ export function login(email, password) {
 
     console.log("Attempting login with:", { email, password });
 
-    fetch(LOGIN_URL, {
+    fetch('/accounts/login/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ export function register() {
 
     console.log("Sending registration data to backend...");
 
-    fetch('/signup/', {
+    fetch('/accounts/signup/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -79,13 +79,13 @@ export function register() {
         },
         body: JSON.stringify({ username, email, password: password1 })
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message === 'Registration successful') {
-                console.log("User created in Firebase! UID:", data.uid);
-                window.location.href = "/dashboard/";
+        .then(async response => {
+            const data = await response.json(); // Parse the JSON response
+            if (response.ok) {
+                console.log("Logout successful! Redirecting to:", data.redirect_url);
+                window.location.href = data.redirect_url; // Use the URL from the response
             } else {
-                throw new Error(data.error || 'Registration failed');
+                throw new Error(data.error || 'Logout failed');
             }
         })
         .catch(error => {

@@ -17,8 +17,9 @@ def register_user(data):
         uid = user.uid
 
         copy_default_categories_to_user(uid)
+        create_user_profile(uid, email, username) # Create user profile
 
-        return {"message": "Registration successful", "uid": uid, "redirect_url": "/dashboard/"}
+        return {"message": "Registration successful", "uid": uid, "redirect_url": "/reports/dashboard/"}
 
     except auth.EmailAlreadyExistsError:
         return {"error": "Email already exists"}
@@ -27,7 +28,13 @@ def register_user(data):
 
 def logout_user(request):
     try:
-        # Clear Firebase session
+        user_id = request.session.get('user_id')
+        if user_id:
+            # Revoke Firebase refresh tokens for the user
+            auth.revoke_refresh_tokens(user_id)
+            print(f"[DEBUG] Firebase refresh tokens revoked for user: {user_id}")
+
+        # Clear Firebase session info from Django session
         if 'id_token' in request.session:
             del request.session['id_token']
         if 'user_id' in request.session:
