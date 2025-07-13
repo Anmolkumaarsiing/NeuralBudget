@@ -80,12 +80,12 @@ export function register() {
         body: JSON.stringify({ username, email, password: password1 })
     })
         .then(async response => {
-            const data = await response.json(); // Parse the JSON response
+            const data = await response.json();
             if (response.ok) {
-                console.log("Logout successful! Redirecting to:", data.redirect_url);
-                window.location.href = data.redirect_url; // Use the URL from the response
+                console.log("Registration successful! UID:", data.uid);
+                window.location.href = data.redirect_url; // Redirect to dashboard or login
             } else {
-                throw new Error(data.error || 'Logout failed');
+                throw new Error(data.error || 'Registration failed');
             }
         })
         .catch(error => {

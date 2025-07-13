@@ -1,34 +1,29 @@
 from google.cloud.firestore_v1.base_query import FieldFilter
 from apps.common_utils.firebase_config import db
-from firebase_admin import auth, exceptions as firebase_exceptions
+from firebase_admin import auth, exceptions as firebase_exceptions, firestore
 import requests
 from apps.common_utils.firebase_config import FIREBASE_API_KEY
+from django.conf import settings
+import os
 
 FIREBASE_SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
+DEFAULT_PROFILE_PIC_URL = os.path.join(settings.MEDIA_URL, 'profile_photos', 'default_profile.jpg') # Assuming .jpeg
 
 def get_user_categories(user_id):
     """Fetch categories for a specific user."""
-    print(f"[DEBUG] get_user_categories called for user_id: {user_id}")
     categories_ref = db.collection("categories").where(filter=FieldFilter("userId", "==", user_id))
     docs = categories_ref.stream()
-    categories = [doc.to_dict()["name"] for doc in docs]
-    print(f"[DEBUG] Fetched categories: {categories}")
-    return categories
+    return [doc.to_dict()["name"] for doc in docs]
 
 def copy_default_categories_to_user(user_id):
     """Copies default categories to a new user."""
-    print(f"[DEBUG] Attempting to copy default categories for user: {user_id}")
     default_categories_ref = db.collection('default_categories').stream()
-    categories_copied = 0
     for category in default_categories_ref:
         category_data = category.to_dict()
         db.collection('categories').add({
             'name': category_data['name'],
             'userId': user_id
         })
-        print(f"[DEBUG] Added category '{category_data['name']}' to user {user_id}'s collection.")
-        categories_copied += 1
-    print(f"[DEBUG] Finished copying. Total categories copied: {categories_copied}")
 
 def add_category(user_id, category_name):
     """Adds a new category for a user."""
@@ -52,7 +47,8 @@ def create_user_profile(uid, email, display_name):
     user_profile_ref.set({
         'email': email,
         'display_name': display_name,
-        'created_at': firestore.SERVER_TIMESTAMP # Add a timestamp
+        'created_at': firestore.SERVER_TIMESTAMP,
+        'photo_url': DEFAULT_PROFILE_PIC_URL # Set default profile picture
     })
 
 def get_user_profile(uid):
@@ -60,7 +56,11 @@ def get_user_profile(uid):
     user_profile_ref = db.collection('user_profiles').document(uid)
     doc = user_profile_ref.get()
     if doc.exists:
-        return doc.to_dict()
+        profile_data = doc.to_dict()
+        # Ensure photo_url exists, default if not
+        if 'photo_url' not in profile_data or not profile_data['photo_url']:
+            profile_data['photo_url'] = DEFAULT_PROFILE_PIC_URL
+        return profile_data
     return None
 
 def update_user_profile(uid, data):
@@ -68,8 +68,13 @@ def update_user_profile(uid, data):
     user_profile_ref = db.collection('user_profiles').document(uid)
     user_profile_ref.update(data)
 
+def update_user_profile_picture(uid, photo_url):
+    """Updates only the profile picture URL in a user's profile."""
+    user_profile_ref = db.collection('user_profiles').document(uid)
+    user_profile_ref.update({'photo_url': photo_url})
+
 def get_transactions(user_id,collection,limit=10, start_after_doc_id=None):
-    print(f"get_transactions: user_id={user_id}, collection={collection}, limit={limit}, start_after_doc_id={start_after_doc_id}")
+    # print(f"get_transactions: user_id={user_id}, collection={collection}, limit={limit}, start_after_doc_id={start_after_doc_id}")
     try:
         transactions_ref = db.collection(collection)
     except Exception as e:
@@ -80,7 +85,7 @@ def get_transactions(user_id,collection,limit=10, start_after_doc_id=None):
     
     if start_after_doc_id:
         start_after_doc = transactions_ref.document(start_after_doc_id).get()
-        print(f"start_after_doc exists: {start_after_doc.exists}")
+        # print(f"start_after_doc exists: {start_after_doc.exists}")
         query = query.start_after(start_after_doc)
 
     query = query.limit(limit).get()
