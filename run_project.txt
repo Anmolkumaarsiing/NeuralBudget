@@ -1,0 +1,8 @@
+Firebase Configuration Instructions
+===================================
+
+1. Place your Firebase service account key file named `firebase_key.json` inside the `apps` directory of your project.
+
+2. Make sure your `.env` file contains the correct `FIREBASE_API_KEY` if you plan to use it.
+
+3. Add `firebase_key.json` to your `.gitignore` to avoid uploading secrets to version control.
