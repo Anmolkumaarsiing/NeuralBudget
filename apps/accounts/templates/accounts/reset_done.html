@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Email Sent | Neural Budget AI</title>
+  <link rel="stylesheet" href="{% static 'accounts/css/reset.css' %}">
+</head>
+<body>
+  <div class="reset-container">
+    <div class="card success">
+      <h2>Reset Link Sent</h2>
+      <p>If your email is registered, you’ll receive a link shortly.</p>
+      <p>Please check your inbox and follow the instructions to reset your password.</p>
+
+      <div class="navigation-links">
+        <a href="{% url 'accounts:login' %}">Return to Login</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

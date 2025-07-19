@@ -12,4 +12,7 @@ urlpatterns =[
     path('update_profile/', views.update_profile_view, name='update_profile'),
     path('upload_profile_picture/', views.upload_profile_picture_view, name='upload_profile_picture'),
     path('send_password_reset_email/', views.send_password_reset_email_view, name='send_password_reset_email'),
+    path('forgot-password/', views.reset_password_form_view, name='reset_password_form'),
+    path('reset-done/', views.reset_done_view, name='reset_done'),
+
 ]

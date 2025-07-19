@@ -200,3 +200,9 @@ def send_password_reset_email_view(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({"error": "Method not allowed"}, status=405)
+
+def reset_password_form_view(request):
+    return render(request, 'accounts/reset_password_form.html')
+
+def reset_done_view(request):
+    return render(request, 'accounts/reset_done.html')

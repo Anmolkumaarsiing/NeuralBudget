@@ -146,6 +146,28 @@ form.sign-in-form {
   cursor: pointer;
   transition: 0.5s;
 }
+.forgot-password {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.forgot-password button {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 0;
+}
+
+.forgot-password button:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+
 
 .btn:hover {
   background-color: #4d84e2;
