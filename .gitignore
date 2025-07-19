@@ -11,4 +11,4 @@ db.sqlite3
 database_schema_recommendations.md
 seed_categories.py
 migrate_user_profiles.py
-move_dash_image.py
+move_dash_image.pyvenv/
