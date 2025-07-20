@@ -19,8 +19,3 @@ def get_ocr_text(image_path):
         res_text += line + "\n"
 
     return res_text.strip()  # Return without trailing newline
-
-# For standalone testing (remove if you're importing this module elsewhere)
-if __name__ == "__main__":
-    text = get_ocr_text("image.png")
-    print(text)

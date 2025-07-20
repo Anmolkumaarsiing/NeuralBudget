@@ -11,3 +11,5 @@ paddlepaddle
 mongoengine==0.23.1
 pymongo==3.12.3
 dotenv
+setuptools
+langchain_huggingface

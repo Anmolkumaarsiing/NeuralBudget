@@ -10,7 +10,7 @@ urlpatterns = [
     path('transactions/', include('apps.transactions.urls')), # Transactions app URLs
     path('budgets/', include('apps.budgets.urls')), # Budgets app URLs
     path('reports/', include('apps.reports.urls')), # Reports app URLs
-    path('ml-features/', include('apps.ml_features.urls')), # ML Features app URLs
+    path('ml_features/', include('apps.ml_features.urls')), # ML Features app URLs
 ]
 
 if settings.DEBUG:
