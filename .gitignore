@@ -12,3 +12,8 @@ database_schema_recommendations.md
 seed_categories.py
 migrate_user_profiles.py
 move_dash_image.pyvenv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+GEMINI.md
