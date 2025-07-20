@@ -1,0 +1,85 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f8f9fa;
+}
+
+.reset-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.card {
+  background-color: white;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.card h2 {
+  margin-bottom: 10px;
+  color: #2a2a72;
+}
+
+.card p {
+  font-size: 14px;
+  color: #555;
+}
+
+form input[type="email"] {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+form button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+  font-size: 15px;
+  background-color: #2a2a72;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #1e1e60;
+}
+
+.navigation-links {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.navigation-links a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.navigation-links a:hover {
+  text-decoration: underline;
+}
+
+.message {
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.message.error {
+  color: red;
+}
+
+.success {
+  color: #2a2a72;
+}
