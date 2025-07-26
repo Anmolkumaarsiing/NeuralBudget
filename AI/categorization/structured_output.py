@@ -26,13 +26,6 @@ CATEGORY_KEYWORDS = {
     "Other": []
 }
 
-def categorize_transaction(name: str) -> str:
-    name = name.lower()
-    for category, keywords in CATEGORY_KEYWORDS.items():
-        if any(keyword in name for keyword in keywords):
-            return category
-    return "Other"
-
 def process_transaction_text(ocr_text: str, user_id: str) -> dict:
     # === LLM Setup ===
     llm = HuggingFaceEndpoint(
@@ -45,49 +38,96 @@ def process_transaction_text(ocr_text: str, user_id: str) -> dict:
 
     model = ChatHuggingFace(llm=llm)
 
+    # === Get Categories ===
+    categories = list(CATEGORY_KEYWORDS.keys())
+
     # === Prompt the model ===
     prompt = f"""
-You are an AI assistant that processes OCR UPI transaction data.
+    You are a specialized AI for converting raw text from a transaction receipt into a structured JSON object. 
+    Your ONLY output should be a single, valid JSON object. Do not include any other text, explanations, or markdown.
 
-Here is the unstructured OCR text:
-\"\"\"{ocr_text}\"\"\"
+    The user has provided the following text extracted from a transaction:
+    ---
+    {ocr_text}
+    ---
 
-Extract and return the following JSON format:
-{{
-  "transaction": {{
-    "amount": number,
-    "category": "string (you can leave it empty)",
-    "date": "YYYY-MM-DD",
-    "name": "string (receiver/sender name)",
-    "status": "Pending"
-  }}
-}}
+    Analyze the text and extract the required information.
 
-- Always use "Pending" as status.
-- Amount should be numeric (no ₹ or commas).
-- Date format must be YYYY-MM-DD.
-- Return only valid JSON.
-"""
+    Available categories for the "category" field are:
+    {categories}
+
+    **Instructions:**
+    1.  **Parse the text:** Identify the transaction amount, date, and the name of the merchant or recipient.
+    2.  **Categorize:** Assign the most appropriate category from the provided list. If no category fits, use "Other".
+    3.  **Generate Name:** Create a short, descriptive name for the transaction based on its context (e.g., "Dinner at restaurant", "Monthly grocery shopping", "Taxi fare").
+    4.  **Format Output:** Structure the data into the JSON format below.
+
+    **JSON Output Format:**
+    {{
+      "transaction": {{
+        "amount": <number>,
+        "category": "<string, from the list>",
+        "date": "YYYY-MM-DD",
+        "name": "<string, descriptive name>",
+        "status": "Pending"
+      }}
+    }}
+
+    **IMPORTANT:**
+    - If the provided text is empty, unreadable, or clearly not a financial transaction, you MUST return the following specific JSON object and nothing else:
+      {{
+        "error": "Invalid or unreadable transaction text."
+      }}
+    - The "amount" must be a number, without any currency symbols or commas.
+    - The "date" must be in YYYY-MM-DD format.
+    - The "category" MUST be one of the provided categories.
+    - Your entire response must be ONLY the JSON object.
+    """
 
     response = model.invoke(prompt)
 
     # === Parse JSON ===
     try:
-        raw_data = json.loads(response.content if hasattr(response, "content") else response)
-        transaction = raw_data.get("transaction", {})
-    except Exception as e:
-        print("Error parsing response:", e)
-        transaction = {
-            "amount": 0,
-            "category": "",
-            "date": "1970-01-01",
-            "name": "Unknown",
-            "status": "Pending"
-        }
+        response_text = response.content if hasattr(response, 'content') else str(response)
+        if '```json' in response_text:
+            response_text = response_text.split('```json')[1].split('```')[0]
+        
+        raw_data = json.loads(response_text.strip())
 
-    transaction["category"] = categorize_transaction(transaction.get("name", ""))
+        # Check if the LLM returned a structured error
+        if raw_data.get("error"):
+            print(f"LLM returned a structured error: {raw_data['error']}")
+            transaction = {{
+                "amount": 0,
+                "category": "Other",
+                "date": datetime.now().strftime('%Y-%m-%d'),
+                "name": "Unreadable Transaction",
+                "status": "Failed"
+            }}
+        else:
+            transaction = raw_data.get("transaction", {})
+            # Ensure all expected keys are present
+            for key in ["amount", "category", "date", "name", "status"]:
+                if key not in transaction:
+                    transaction[key] = ""
+
+    except (json.JSONDecodeError, IndexError) as e:
+        print(f"Error parsing LLM response: {e}")
+        print(f"Raw response: {response_text}")
+        transaction = {{
+            "amount": 0,
+            "category": "Other",
+            "date": datetime.now().strftime('%Y-%m-%d'),
+            "name": "Processing Error",
+            "status": "Failed"
+        }}
+
+    # Final validation and timestamping
+    if transaction.get("category") not in categories:
+        transaction["category"] = "Other"
+        
     transaction["timestamp"] = datetime.now().isoformat()
-    transaction["user_id"] = user_id # Add user_id to the transaction data
+    transaction["user_id"] = user_id
 
     return transaction
 

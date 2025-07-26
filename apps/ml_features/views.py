@@ -12,8 +12,17 @@ from apps.common_utils.firebase_service import add_transaction
 
 @csrf_exempt
 def categorize_expense_view(request):
-    if request.method == 'POST' and request.FILES.get('image'):
-        uploaded_image = request.FILES['image']
+    if request.method == 'POST':
+        if not request.FILES:
+            return JsonResponse({'error': 'No image uploaded.'}, status=400)
+
+        if len(request.FILES.getlist('image')) > 1:
+            return JsonResponse({'error': 'Please upload only one image at a time.'}, status=400)
+        
+        uploaded_image = request.FILES.get('image')
+        if not uploaded_image:
+            return JsonResponse({'error': 'Invalid image field.'}, status=400)
+
         user_id = request.session.get('user_id') # Get user ID from session
 
         if not user_id:
@@ -30,9 +39,14 @@ def categorize_expense_view(request):
 
         try:
             ocr_text = get_ocr_text(temp_image_path)
+            
+            # If OCR text is empty, return a standard error
+            if not ocr_text.strip():
+                return JsonResponse({'error': 'Could not extract text from the image. Please upload a clear image of a transaction.'}, status=400)
+
             transaction_data = process_transaction_text(ocr_text, user_id)
 
-            add_transaction(user_id, transaction_data, 'transactions')
+            # add_transaction(user_id, transaction_data, 'transactions')
 
             return JsonResponse({'message': 'Image processed successfully', 'transaction': transaction_data})
         except Exception as e:
