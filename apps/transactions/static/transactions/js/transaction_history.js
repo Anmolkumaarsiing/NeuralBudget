@@ -3,9 +3,9 @@ const csrftoken = getCookie('csrftoken');
 let itemCount = 10; // Initial batch size
 let lastDocId = null; // To store the ID of the last document fetched
 
-async function fetchAndDisplayIncomes(append = false) {
+async function fetchAndDisplayTransactions(append = false) {
     try {
-        let url = `/transactions/get_incomes/?itemCount=${itemCount}`;
+        let url = `/transactions/get_transactions/?itemCount=${itemCount}`;
         if (lastDocId) {
             url += `&lastDocId=${lastDocId}`;
         }
@@ -19,7 +19,7 @@ async function fetchAndDisplayIncomes(append = false) {
         }
 
         const data = await response.json();
-        const incomes = data.incomes || [];
+        const transactions = data.transactions || [];
         const tbody = document.querySelector(".incomeTable tbody");
         const loadMoreButton = document.getElementById("LoadMore");
 
@@ -32,29 +32,29 @@ async function fetchAndDisplayIncomes(append = false) {
             tbody.innerHTML = ""; // Clear existing rows only if not appending
         }
 
-        if (incomes.length === 0 && !append) {
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center;">No income records found.</td></tr>`;
+        if (transactions.length === 0 && !append) {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center;">No transaction records found.</td></tr>`;
             if (loadMoreButton) loadMoreButton.style.display = "none"; // Hide if no records at all
             return;
         }
 
         const fragment = document.createDocumentFragment();
 
-        incomes.forEach(income => {
-            const transaction = income.transaction;
+        transactions.forEach(transaction => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
-            <tr data-id="${income.id}">
-                <td>${transaction.name || "No Name"}</td>
-                <td>${transaction.category || "No Source"}</td>
+            <tr data-id="${transaction.id}">
+                <td>${transaction.name || transaction.source || "No Name"}</td>
+                <td>${transaction.category || "-"}</td>
                 <td>₹${transaction.amount.toFixed(2) || 0}</td>
                 <td>${new Date(transaction.date).toLocaleDateString()}</td>
                 <td class="status-${transaction.status.toLowerCase()}">${transaction.status}</td>
+                <td>${transaction.type}</td>
                 <td>
-                    <button class="delete-btn" data-id="${income.id}">Delete</button>
+                    <button class="delete-btn" data-id="${transaction.id}">Delete</button>
                 </td>
                 <td>
-            <button class="edit-btn" data-id="${income.id}">Edit</button>
+            <button class="edit-btn" data-id="${transaction.id}">Edit</button>
         </td>
             </tr>
             `;
@@ -62,14 +62,14 @@ async function fetchAndDisplayIncomes(append = false) {
         });
         tbody.appendChild(fragment);
 
-        // Update lastDocId with the ID of the last fetched income
-        if (incomes.length > 0) {
-            lastDocId = incomes[incomes.length - 1].id;
+        // Update lastDocId with the ID of the last fetched transaction
+        if (transactions.length > 0) {
+            lastDocId = transactions[transactions.length - 1].id;
         }
 
         // Control Load More button visibility
         if (loadMoreButton) {
-            if (incomes.length < itemCount) { // If fewer records than requested, no more to load
+            if (transactions.length < itemCount) { // If fewer records than requested, no more to load
                 loadMoreButton.style.display = "none";
             } else {
                 loadMoreButton.style.display = "block"; // Ensure it's visible if there might be more
@@ -84,13 +84,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Reset lastDocId and itemCount for initial load
     lastDocId = null;
     itemCount = 5; // Initial batch size
-    fetchAndDisplayIncomes();
+    fetchAndDisplayTransactions();
 });
 
 document.addEventListener("click", async (e) => {
     if (e.target.id === "LoadMore") {
         // itemCount remains the batch size (5)
-        await fetchAndDisplayIncomes(true); // Pass true to append
+        await fetchAndDisplayTransactions(true); // Pass true to append
     }
 });
 
@@ -119,11 +119,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 document.addEventListener("click", async (e) => {
     if (e.target.classList.contains("delete-btn")) {
-        const incomeId = e.target.getAttribute("data-id");
-        console.log(incomeId);
+        const transactionId = e.target.getAttribute("data-id");
+        const transactionType = e.target.closest('tr').querySelector('td:nth-child(6)').textContent; // Get the type (Income/Expense)
+        const collectionName = transactionType === 'Income' ? 'incomes' : 'transactions';
+
+        console.log(`Attempting to delete ID: ${transactionId} from collection: ${collectionName}`);
+
         if (confirm("Are you sure you want to delete this transaction?")) {
             try {
-                const response = await fetch(`/transactions/delete_income/?income_id=${incomeId}`, {
+                const response = await fetch(`/transactions/delete_transaction/?transaction_id=${transactionId}&collection=${collectionName}`, {
                     method: "DELETE",
                     headers: {
                         "X-CSRFToken": csrftoken,

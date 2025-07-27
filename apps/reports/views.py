@@ -7,22 +7,21 @@ from apps.reports.services import get_dashboard_data, generate_visualizations_da
 
 def dashboard_view(request):
     if not is_authenticated(request):
+        print("[DEBUG] dashboard_view: User not authenticated, redirecting to login.")
         return redirect('accounts:login')
-    try:    
-        email = get_email(request)
-        dashboard_data = get_dashboard_data(request)
-        context = {
-            "email": email,
-            "FIREBASE_API_KEY": FIREBASE_API_KEY,
-            "total_expenses": dashboard_data['total_expenses'],
-            "savings": dashboard_data['savings'],
-            "budget_left": dashboard_data['budget_left'],
-            "recent_transactions": dashboard_data['recent_transactions'],
-            "expense_chart_data": dashboard_data['expense_chart_data'],
-        }
-        return render(request, 'reports/dashboard.html', context)
-    except Exception:
-        return redirect('accounts:login')  # Redirect if token is invalid
+    
+    email = get_email(request)
+    dashboard_data = get_dashboard_data(request)
+    context = {
+        "email": email,
+        "FIREBASE_API_KEY": FIREBASE_API_KEY,
+        "total_expenses": dashboard_data['total_expenses'],
+        "savings": dashboard_data['savings'],
+        "budget_left": dashboard_data['budget_left'],
+        "recent_transactions": dashboard_data['recent_transactions'],
+        "expense_chart_data": dashboard_data['expense_chart_data'],
+    }
+    return render(request, 'reports/dashboard.html', context)
 
 @csrf_exempt
 def visualize(request):

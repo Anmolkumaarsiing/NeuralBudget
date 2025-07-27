@@ -74,7 +74,7 @@ def update_user_profile_picture(uid, photo_url):
     user_profile_ref.update({'photo_url': photo_url})
 
 def get_transactions(user_id,collection,limit=10, start_after_doc_id=None):
-    # print(f"get_transactions: user_id={user_id}, collection={collection}, limit={limit}, start_after_doc_id={start_after_doc_id}")
+
     try:
         transactions_ref = db.collection(collection)
     except Exception as e:
@@ -85,7 +85,8 @@ def get_transactions(user_id,collection,limit=10, start_after_doc_id=None):
     
     if start_after_doc_id:
         start_after_doc = transactions_ref.document(start_after_doc_id).get()
-        # print(f"start_after_doc exists: {start_after_doc.exists}")
+        if not start_after_doc.exists:
+            return [] # No more documents to fetch
         query = query.start_after(start_after_doc)
 
     query = query.limit(limit).get()

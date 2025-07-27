@@ -217,7 +217,7 @@ input:checked + .slider:before {
 }
 
 .track-income th {
-    background-color: #f8f9fa;
+    background-color: #000000;
     font-weight: bold;
 }
 

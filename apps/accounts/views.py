@@ -10,7 +10,7 @@ from apps.common_utils.firebase_service import firebase_login, verify_firebase_t
 from apps.common_utils.auth_utils import is_authenticated
 from apps.accounts.services import register_user, logout_user,update_profile_service,upload_profile_picture_service, send_password_reset_email_service
 
-@csrf_exempt
+# @csrf_exempt
 def login_view(request):
     if is_authenticated(request):
         return redirect('reports:dashboard')
@@ -48,6 +48,7 @@ def login_view(request):
             request.session['email'] = email
             request.session['id_token'] = id_token
             request.session['display_name'] = display_name_from_profile # Store display name in session
+            # request.session.save() # Explicitly save the session
 
             return JsonResponse({
                 'message': 'Login successful',

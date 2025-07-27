@@ -1,5 +1,8 @@
 def is_authenticated(request):
-    return request.session.get('id_token') is not None
+    id_token = request.session.get('id_token')
+    # print(id_token)
+    print(f"[DEBUG] is_authenticated called. id_token in session: {id_token is not None}")
+    return id_token is not None
 
 from django.core.exceptions import ValidationError
 from firebase_admin import auth
