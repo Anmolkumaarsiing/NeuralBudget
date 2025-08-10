@@ -3,6 +3,7 @@ document.getElementById("darkModeToggle").addEventListener("change", function ()
 });
 
 
+
 //For dropdown
 document.addEventListener("DOMContentLoaded", function () {
     const dropdownButtons = document.querySelectorAll(".drop-btn");

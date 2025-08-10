@@ -16,6 +16,23 @@
     
 </head>
 <body>
+  
+  
+  <!-- Sidebar -->
+<div id="sidebar" style="position:fixed; top:0; left:-250px; height:100%; width:250px; background:#111; overflow-x:hidden; transition:0.3s; padding-top:60px; z-index:1000;">
+  <a href="#features">FEATURES</a>
+  <a href="#comparison">COMPARISON</a>
+  <a href="#Team">OUR TEAM</a>
+  <a href="{% url 'accounts:login' %}"><i class="fas fa-user-plus userIcon"></i>Login/Signup</a>
+</div>
+
+<!-- Toggle Button placed before NeuralBudget -->
+<div style="position:fixed; top:10px; left:10px; z-index:1100;">
+  <button id="toggleBtn" style="font-size:18px; padding:8px 12px; cursor:pointer;">☰</button>
+</div>
+
+
+
     <header>
         <section>
             <div id="container">
@@ -256,6 +273,7 @@
 
 
 <script>
+
 document.querySelectorAll('.faq-item').forEach((faq) => {
   const questionButton = faq.querySelector('.faq-question');
 
@@ -273,5 +291,19 @@ document.querySelectorAll('.faq-item').forEach((faq) => {
 
 
 </script>
+<script>
+  // Sidebar toggle logic
+  const sidebar = document.getElementById('sidebar');
+  const toggleBtn = document.getElementById('toggleBtn');
+
+  toggleBtn.addEventListener('click', () => {
+    if (sidebar.style.left === '0px') {
+      sidebar.style.left = '-250px';
+    } else {
+      sidebar.style.left = '0px';
+    }
+  });
+</script>
+
 </body>
 </html>

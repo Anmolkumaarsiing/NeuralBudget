@@ -451,3 +451,71 @@ body
 {
     transform: rotate(180deg);
 }
+
+
+/* =========================
+   SIDEBAR
+   ========================= */
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px; /* Hidden by default */
+  height: 100%;
+  width: 250px;
+  background-color: #fff !important; /* Force white background */
+  overflow-x: hidden;
+  transition: left 0.3s ease;
+  padding-top: 60px;
+  z-index: 1000;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* Subtle shadow */
+}
+
+/* =========================
+   SIDEBAR
+   ========================= */
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  height: 100%;
+  width: 250px;
+  background-color: rgba(255, 255, 255, 0.2); /* Same as header */
+  backdrop-filter: blur(12px); /* Frosted glass effect */
+  -webkit-backdrop-filter: blur(12px);
+  overflow-x: hidden;
+  transition: left 0.3s ease;
+  padding-top: 60px;
+  z-index: 1000;
+}
+
+#sidebar a {
+  display: block;
+  padding: 12px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #000000;
+  transition: background-color 0.3s ease;
+}
+
+#sidebar a:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+#toggleBtn {
+  position: fixed;
+  top: 12px;
+  left: 15px;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 1100;
+  background: none;
+  border: none;
+  outline: none;
+  color: #000;
+  font-weight: bold;
+}
+
+#sidebar.active {
+  left: 0;
+}
