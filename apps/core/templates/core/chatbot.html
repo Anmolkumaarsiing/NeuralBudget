@@ -1,0 +1,235 @@
+<div id="chatbot-container">
+    <div id="chatbot-icon" onclick="toggleChatbot()">
+        <i class="uil uil-comment-alt-dots"></i>
+    </div>
+
+    <div id="chatbot-popup">
+        <div id="chatbot-header">
+            <h3>AI Financial Assistant</h3>
+            <span class="close-btn" onclick="toggleChatbot()">✖</span>
+        </div>
+        <div id="chatbot-messages"></div>
+
+        <form id="chatbot-form" onsubmit="sendMessage(event)">
+            {% csrf_token %}
+            <input type="text" id="chatbot-input" placeholder="Ask about finance..." required autocomplete="off">
+            <button type="submit">
+                <i class="uil uil-message"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Floating Button */
+    #chatbot-icon {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        background-color: #007bff;
+        color: white;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        cursor: pointer;
+        box-shadow: 0 4px Spx rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    #chatbot-icon:hover {
+        transform: scale(1.1);
+    }
+
+    /* Popup */
+    #chatbot-popup {
+        position: fixed;
+        bottom: 100px;
+        right: 25px;
+        width: 320px;
+        max-width: 90vw;
+        height: 450px;
+        max-height: 80vh;
+        background: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+        display: none; /* Initially hidden */
+        flex-direction: column;
+        z-index: 10000;
+        overflow: hidden;
+    }
+
+    #chatbot-header {
+        background: #007bff;
+        color: white;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 15px 15px 0 0;
+    }
+    
+    #chatbot-header h3 {
+        margin: 0;
+        font-size: 16px;
+    }
+
+    #chatbot-header .close-btn {
+        cursor: pointer;
+        font-size: 20px;
+    }
+
+    #chatbot-messages {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        font-size: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    /* Form and Inputs */
+    #chatbot-form {
+        display: flex;
+        border-top: 1px solid #ddd;
+    }
+
+    #chatbot-form input {
+        flex: 1;
+        border: none;
+        padding: 15px;
+        font-size: 14px;
+        outline: none;
+    }
+
+    #chatbot-form button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 0 15px;
+        cursor: pointer;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Message Bubbles */
+    .user-msg, .bot-msg {
+        padding: 10px 15px;
+        margin: 0;
+        border-radius: 18px;
+        max-width: 80%;
+        word-wrap: break-word;
+        line-height: 1.4;
+    }
+
+    .user-msg {
+        background: #e9f5ff;
+        color: #333;
+        align-self: flex-end;
+        border-bottom-right-radius: 4px;
+    }
+
+    .bot-msg {
+        background: #f1f1f1;
+        color: #333;
+        align-self: flex-start;
+        border-bottom-left-radius: 4px;
+    }
+</style>
+
+<script>
+    function toggleChatbot() {
+        const popup = document.getElementById("chatbot-popup");
+        const isFlex = popup.style.display === "flex";
+        popup.style.display = isFlex ? "none" : "flex";
+    }
+
+    // Securely creates and appends a message element to the chat
+    function appendMessage(text, className) {
+        const messagesContainer = document.getElementById("chatbot-messages");
+        const messageDiv = document.createElement("div");
+        messageDiv.className = className;
+        // Use textContent to prevent XSS attacks. This is a critical security fix.
+        messageDiv.textContent = text;
+        messagesContainer.appendChild(messageDiv);
+        // Scroll to the latest message
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        return messageDiv; // Return the element to update it later (for loading messages)
+    }
+
+    async function sendMessage(e) {
+        e.preventDefault(); // Prevent the form from reloading the page
+
+        const input = document.getElementById("chatbot-input");
+        const form = document.getElementById("chatbot-form");
+        const userMessage = input.value.trim();
+
+        if (!userMessage) {
+            return;
+        }
+
+        // Get the API URL from the data-api-url attribute in the parent wrapper
+        const container = document.getElementById("chatbot-container").closest("#chatbot-component");
+        if (!container) {
+            console.error("Chatbot parent component with id '#chatbot-component' not found.");
+            appendMessage("Error: Chatbot is misconfigured (no parent component).", "bot-msg");
+            return;
+        }
+
+        const apiUrl = container.dataset.apiUrl;
+        if (!apiUrl) {
+            console.error("Chatbot API URL not found in data-api-url attribute.");
+            appendMessage("Error: Chatbot is misconfigured (no API URL).", "bot-msg");
+            return;
+        }
+
+        // Display the user's message immediately
+        appendMessage(userMessage, "user-msg");
+
+        // Clear the input field
+        input.value = "";
+
+        // Show a "thinking..." message
+        const loadingIndicator = appendMessage("Thinking...", "bot-msg");
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Get the CSRF token from the form
+                    "X-CSRFToken": form.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({ message: userMessage })
+            });
+
+            if (!response.ok) {
+                // If the server returns an error, display a helpful message
+                const errorData = await response.json().catch(() => ({}));
+                const errorMessage = errorData.error || `HTTP error! Status: ${response.status}`;
+                throw new Error(errorMessage);
+            }
+
+            const data = await response.json();
+
+            // Replace the "thinking..." message with the bot's actual reply
+            loadingIndicator.textContent = data.reply || "Sorry, I received an empty response.";
+
+        } catch (error) {
+            console.error("Error sending message:", error);
+            // Update the loading indicator to show the error
+            loadingIndicator.textContent = `Error: ${error.message}`;
+        } finally {
+            // Ensure the chat is scrolled to the bottom
+            const messagesContainer = document.getElementById("chatbot-messages");
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    }
+</script>
