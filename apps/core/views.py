@@ -11,31 +11,31 @@ genai.configure(api_key=settings.GEMINI_API_KEY)
 def home(request):
     return render(request, 'core/index.html')
 
-@csrf_exempt
 def chatbot_api(request):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            user_msg = data.get("message", "")
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid request method. Please use POST."}, status=405)
 
-            if not user_msg:
-                return JsonResponse({"error": "No message provided"}, status=400)
+    try:
+        data = json.loads(request.body)
+        user_msg = data.get("message", "").strip()
 
-            # Call Gemini
-            model = genai.GenerativeModel("gemini-pro")
-            response = model.generate_content(
-                f"Give me financial suggestions for: {user_msg}"
-            )
+        if not user_msg:
+            return JsonResponse({"error": "No message provided."}, status=400)
 
-            # Extract reply safely
-            reply = ""
-            if hasattr(response, "text"):
-                reply = response.text
-            elif hasattr(response, "candidates"):
-                reply = response.candidates[0].content.parts[0].text
+        prompt = (
+            "You are a helpful and friendly financial assistant for an app called Neural Budget AI. "
+            "Provide clear, safe, and general financial advice. Do not give personalized investment advice. "
+            f"The user's query is: {user_msg}"
+        )
 
-            return JsonResponse({"reply": reply})
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
-
-    return JsonResponse({"error": "Invalid request method"}, status=405)
+        # Use the latest, recommended model
+        model = genai.GenerativeModel("gemini-1.5-flash-latest")
+        response = model.generate_content(prompt)
+        
+        return JsonResponse({"reply": response.text})
+    
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON in request body."}, status=400)
+    except Exception as e:
+        print(f"An error occurred in chatbot_api: {e}") 
+        return JsonResponse({"error": "An internal server error occurred."}, status=500)
