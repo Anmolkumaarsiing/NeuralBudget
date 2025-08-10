@@ -13,6 +13,8 @@
     <script type="module" src="{% static 'transactions/js/add_transaction.js' %}"></script>
     <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
     <script type="module" src="{% static 'budgets/js/budget.js' %}"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <style>
         .incomeTable tbody {
     display: table-row-group !important;
@@ -20,6 +22,9 @@
     </style>
 </head>
 <body>
+      <div id="chatbot-component" data-api-url="{% url 'core:chatbot_api' %}">
+      {% include 'core/chatbot.html' %}
+  </div>
     <div class="container">
 
         <!-- SIDEBAR SECTION -->
