@@ -130,3 +130,5 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CSRF_TRUSTED_ORIGINS = ['https://*.127.0.0.1', 'https://*.localhost']
 # GOOGLE_APPLICATION_CREDENTIALS="/firebase_auth_key.json"
+
+GEMINI_API_KEY = "AIzaSyD-2oOFUFTRmfPL7Yx354sb_zJzPVuJrTs"

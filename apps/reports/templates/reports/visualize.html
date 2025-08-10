@@ -11,8 +11,12 @@
     <script type="module" src="{% static 'reports/js/dashboard.js' %}"></script>
     <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
     <script type="module" src="{% static 'core/js/darkmode.js' %}"></script>
+    
 </head>
 <body>
+      <div id="chatbot-component" data-api-url="{% url 'core:chatbot_api' %}">
+      {% include 'core/chatbot.html' %}
+  </div>
     <div class="container">
 
         <!-- SIDEBAR SECTION -->

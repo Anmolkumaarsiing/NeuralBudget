@@ -3,6 +3,7 @@ from . import views
 
 app_name = 'core'
 
-urlpatterns =[
+urlpatterns = [
     path('', views.home, name='home'),
+    path('chatbot-api/', views.chatbot_api, name='chatbot_api'),
 ]
