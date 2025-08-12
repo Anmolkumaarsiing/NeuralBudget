@@ -52,7 +52,7 @@ def register_user(request, data):
         return {"error": "Email already exists"}
     except Exception as e:
         return {"error": str(e)}
-
+#CSRF_Exempt
 def logout_user(request):
     try:
         user_id = request.session.get('user_id')

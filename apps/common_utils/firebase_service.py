@@ -105,8 +105,14 @@ def add_category(category_name):
         "name": category_name
     })
 
-def delete_transaction(transaction_id, collection):
-    """Delete a transaction from Firestore."""
+def delete_transaction(transaction_id, collection, user_id):
+    """
+    Delete a transaction from Firestore.
+    
+    Note: user_id is included for future security checks to ensure
+    the user owns the transaction they are trying to delete.
+    """
+    # TODO: Add a security rule or check to verify user_id owns the transaction_id
     db.collection(collection).document(transaction_id).delete()
 
 def firebase_login(email, password):
