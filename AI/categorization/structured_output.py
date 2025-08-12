@@ -105,11 +105,22 @@ def process_transaction_text(ocr_text: str, user_id: str) -> dict:
                 "status": "Failed"
             }}
         else:
-            transaction = raw_data.get("transaction", {})
-            # Ensure all expected keys are present
-            for key in ["amount", "category", "date", "name", "status"]:
-                if key not in transaction:
-                    transaction[key] = ""
+            # Initialize with defaults to ensure structure
+            transaction = {
+                "amount": 0,
+                "category": "Other",
+                "date": datetime.now().strftime('%Y-%m-%d'),
+                "name": "Unnamed Transaction",
+                "status": "Pending"
+            }
+            llm_transaction = raw_data.get("transaction", {})
+            
+            # Ensure llm_transaction is a dict before updating
+            if isinstance(llm_transaction, dict):
+                transaction.update(llm_transaction)
+            else:
+                # Log if the transaction format is not a dict, and use defaults
+                print(f"Warning: LLM returned 'transaction' but it was not a dictionary. Using defaults.")
 
     except (json.JSONDecodeError, IndexError) as e:
         print(f"Error parsing LLM response: {e}")
@@ -127,7 +138,6 @@ def process_transaction_text(ocr_text: str, user_id: str) -> dict:
         transaction["category"] = "Other"
         
     transaction["timestamp"] = datetime.now().isoformat()
-    transaction["user_id"] = user_id
 
     return transaction
 

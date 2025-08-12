@@ -121,3 +121,41 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const ocrForm = document.getElementById('ocrForm');
+    if (ocrForm) {
+        ocrForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(ocrForm);
+            const receiptFile = formData.get('image');
+
+            if (!receiptFile || receiptFile.size === 0) {
+                alert('Please select an image to upload.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/ml_features/categorize_expense/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Transaction extracted and added successfully!');
+                    window.location.href = "/transactions/transaction_history/";
+                } else {
+                    throw new Error(data.error || 'Failed to process image.');
+                }
+            } catch (error) {
+                console.error('Error processing image:', error);
+                alert(error.message);
+            }
+        });
+    }
+});

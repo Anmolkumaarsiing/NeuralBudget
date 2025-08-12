@@ -148,10 +148,10 @@
   </form>
 
   <!-- OCR Upload Form -->
-  <form method="POST" enctype="multipart/form-data" class="entry-form" id="ocrForm" style="display: none;" action="#">
+  <form method="POST" enctype="multipart/form-data" class="entry-form" id="ocrForm" style="display: none;">
     {% csrf_token %}
     <label for="receipt">Upload Receipt:</label>
-    <input type="file" id="receipt" name="receipt" accept="image/*" required>
+    <input type="file" id="receipt" name="image" accept="image/*" required>
     <button type="submit">Upload & Extract</button>
   </form>
 </section>

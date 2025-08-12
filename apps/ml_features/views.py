@@ -46,7 +46,7 @@ def categorize_expense_view(request):
 
             transaction_data = process_transaction_text(ocr_text, user_id)
 
-            # add_transaction(user_id, transaction_data, 'transactions')
+            add_transaction(user_id, transaction_data, 'transactions')
 
             return JsonResponse({'message': 'Image processed successfully', 'transaction': transaction_data})
         except Exception as e:
