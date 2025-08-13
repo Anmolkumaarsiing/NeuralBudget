@@ -4,16 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neural Budget AI</title>
+    <title>Smart Saver - Neural Budget AI</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link rel="stylesheet" href="{% static 'reports/css/dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'reports/css/sidebar-new.css' %}">
+
     
     <script type="module" src="{% static 'reports/js/dashboard.js' %}"></script>
     <script type="module" src="{% static 'core/js/darkmode.js' %}"></script>
     <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="{% static 'budgets/css/smart_saver.css' %}">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script type="module" src="{% static 'core/js/main.js' %}"></script>
+    <script type="module" src="{% static 'core/js/darkmode.js' %}"></script>
+    <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
+    <script type="module" src="{% static 'budgets/js/smart_saver.js' %}"></script>
 </head>
 <body>
       <div id="chatbot-component" data-api-url="{% url 'core:chatbot_api' %}">
@@ -38,7 +47,7 @@
                             <i class="fas fa-angle-right dropdown-icon"></i>
                         </button>
                         <ul class="dropdown-content">
-                            <li><a href=#><i class="fas fa-tachometer-alt"></i> Overview</a></li>
+                            <li><a href="{% url 'reports:dashboard' %}"><i class="fas fa-tachometer-alt"></i> Overview</a></li>
                             <li><a href="{% url 'transactions:add_transaction' %}"><i class="fas fa-plus-circle"></i> Add Expense</a></li>
                             <li><a href="{% url 'transactions:transaction_history' %}"><i class="fas fa-eye"></i> View Transactions</a></li>
                         </ul>
@@ -93,48 +102,63 @@
                     </label>
                 </div>
             </header>
-            
-        <!-- DASHBOARD CONTENTS SECTION -->
-
-
-            <section class="dashboard">
-                <div class="dashboard-left">
-                    <div class="dashboard-cards">
-                        <div class="card">
-                            <h3>Total Expenses</h3>
-                            <p id="totalExpenses">₹{{ total_expenses|floatformat:2 }}</p>
-                        </div>
-                         <div class="card">
-                            <h3>Savings</h3>
-                            <p id="savings">₹{{ savings|floatformat:2 }}</p>
-                        </div>
-                        <div class="card">
-                            <h3>Budget Left</h3>
-                            <p id="budgetLeft">₹{{ budget_left|floatformat:2 }}</p>
-                        </div>
+            <section class="smart-saver-page">
+                <div class="smart-saver-form-container">
+                    <div class="form-header">
+                        <h2>Create Your Smart Saver Plan</h2>
+                        <p>Tell us about your goal, and our AI will create a personalized plan for you.</p>
                     </div>
-            
-                    <div class="recent-transactions">
-                        <h3>Recent Transactions</h3>
-                        <ul id="transactionList">
-                            {% for transaction in recent_transactions %}
-                            <li>
-                                <span class="txn-name">{{ transaction.name }}:</span> 
-                                <span class="txn-amount">₹{{ transaction.amount|floatformat:2 }}</span> 
-                                <span class="txn-type">{{ transaction.type }}</span>
-                            </li>
-                            {% empty %}
-                            <li>No recent transactions</li>
-                            {% endfor %}
-                        </ul>
+                    <form id="smart-saver-form">
+                        {% csrf_token %}
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="goal-name"><i class="fas fa-bullseye"></i> What are you saving for?</label>
+                                <input type="text" id="goal-name" name="goal_name" placeholder="e.g., A New Phone" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="goal-amount"><i class="fas fa-rupee-sign"></i> What is the target amount?</label>
+                                <input type="number" id="goal-amount" name="goal_amount" placeholder="e.g., 80000" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="income"><i class="fas fa-wallet"></i> Your Monthly Income</label>
+                                <input type="number" id="income" name="income" placeholder="e.g., 50000" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="expenses"><i class="fas fa-receipt"></i> Your Monthly Expenses</label>
+                                <input type="number" id="expenses" name="expenses" placeholder="e.g., 35000" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="timeframe"><i class="fas fa-calendar-alt"></i> How many months to save?</label>
+                                <input type="number" id="timeframe" name="timeframe" placeholder="e.g., 12" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="risk"><i class="fas fa-sliders-h"></i> Your Saving Style</label>
+                                <select id="risk" name="risk">
+                                    <option value="Steady">Steady & Consistent</option>
+                                    <option value="Balanced">Balanced Approach</option>
+                                    <option value="Aggressive">Aggressive & Fast</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="generate-btn">
+                            <i class="fas fa-magic"></i> Generate My Plan
+                        </button>
+                    </form>
+                </div>
+
+                <div id="plan-display" class="plan-display-container" style="display: none;">
+                    <h2 id="plan-title"></h2>
+                    <p id="plan-summary"></p>
+                    <div class="plan-timeline" id="plan-steps"></div>
+                    <div class="chart-container">
+                        <h3>Your Savings Journey</h3>
+                        <canvas id="savings-chart"></canvas>
                     </div>
                 </div>
-            
-        <!-- CHART SECTION -->
 
-                <div class="chart-section">
-                    <h3>Expense Category Distribution</h3>
-                    <canvas id="expenseChart"></canvas>
+                <div id="loading-spinner" class="spinner-container" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>SAVI is crafting your personal plan...</p>
                 </div>
             </section>
         </main>

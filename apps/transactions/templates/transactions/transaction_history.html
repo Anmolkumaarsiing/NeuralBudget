@@ -10,6 +10,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
     <link rel="stylesheet" href="{% static 'reports/css/dashboard.css' %}" />
+        <link rel="stylesheet" href="{% static 'reports/css/sidebar-new.css' %}">
+
     <link rel="stylesheet" href="{% static 'transactions/css/transaction_history.css' %}" />
      
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -80,7 +82,7 @@
                   >
                 </li>
                 <li>
-                  <a href="#"
+                  <a href="{% url 'budgets:savings_goals' %}"
                     ><i class="fas fa-piggy-bank"></i> Savings Goals</a
                   >
                 </li>

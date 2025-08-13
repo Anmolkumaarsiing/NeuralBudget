@@ -1,0 +1,235 @@
+/* budgets/static/budgets/css/savings_goals.css */
+
+.savings-goals-page .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.savings-goals-page h1 {
+    font-size: 28px;
+    margin: 0;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover-color);
+}
+
+.goals-container {
+    margin-bottom: 2rem;
+}
+
+.goals-container h2 {
+    font-size: 22px;
+    margin-bottom: 1rem;
+    color: var(--header-color);
+}
+
+.goals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Goal Card Styles */
+.goal-card {
+    background: var(--background-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+    display: flex;
+    flex-direction: column;
+}
+
+.goal-card .card-header {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.goal-card .goal-name {
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.priority-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+}
+.priority-badge.high { background-color: #e74c3c; }
+.priority-badge.medium { background-color: #f39c12; }
+.priority-badge.low { background-color: #3498db; }
+
+.goal-card .card-body {
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.progress-bar-container {
+    background-color: var(--border-color);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-bar {
+    background-color: var(--primary-color);
+    height: 100%;
+}
+
+.days-remaining {
+    font-size: 13px;
+    color: var(--text-secondary-color);
+}
+
+.goal-card .card-footer {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn-quick-add {
+    background-color: #e9f5ff;
+    color: #3498db;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: var(--text-secondary-color);
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* Completed Goals Section */
+.collapsible-section summary {
+    cursor: pointer;
+    outline: none;
+    display: flex;
+    align-items: center;
+}
+.collapsible-section summary h2 { margin: 0; }
+.collapsible-section[open] summary h2 i { transform: rotate(90deg); }
+.collapsible-section summary h2 i { transition: transform 0.2s ease; }
+
+.goal-card.completed {
+    background-color: #f0fff4;
+    border-left: 5px solid #28a745;
+}
+.dark-mode .goal-card.completed {
+    background-color: #2c4a3a;
+}
+.goal-card.completed .goal-name {
+    text-decoration: line-through;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+.dark-mode .modal-content {
+    background: #34495e;
+}
+
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h2 { margin: 0; }
+
+.close-btn {
+    background: none; border: none;
+    font-size: 28px; font-weight: bold;
+    cursor: pointer; color: #aaa;
+}
+.dark-mode .close-btn { color: #ccc; }
+
+#goal-form .form-row {
+    display: flex;
+    gap: 20px;
+}
+
+#goal-form .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    flex: 1;
+}
+
+#goal-form label {
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+#goal-form input, #goal-form select, #goal-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-sizing: border-box; /* Important for flexbox layout */
+}
+
+#goal-form textarea {
+    resize: vertical;
+}
+
+#goal-form button {
+    width: 100%;
+    margin-top: 10px;
+}

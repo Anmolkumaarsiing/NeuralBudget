@@ -2,6 +2,7 @@ from pathlib import Path
 from firebase_admin import credentials
 import firebase_admin
 import dotenv,os
+from decouple import config
 dotenv.load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -131,4 +132,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CSRF_TRUSTED_ORIGINS = ['https://*.127.0.0.1', 'https://*.localhost']
 # GOOGLE_APPLICATION_CREDENTIALS="/firebase_auth_key.json"
 
-GEMINI_API_KEY = "AIzaSyD-2oOFUFTRmfPL7Yx354sb_zJzPVuJrTs"
+GEMINI_API_KEY = config('GEMINI_API_KEY')
