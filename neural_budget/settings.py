@@ -2,8 +2,8 @@ from pathlib import Path
 from firebase_admin import credentials
 import firebase_admin
 import dotenv,os
-from decouple import config
 dotenv.load_dotenv()
+from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
