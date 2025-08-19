@@ -1,233 +1,169 @@
-/* General Styles */
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f7f6;
-    margin: 0;
-    padding: 0;
-    color: #333;
-}
 
-.dashboard-container {
-    display: flex;
-    min-height: 100vh;
-}
-
-
-/* Main Content Styles */
-.main-content {
-    flex: 1;
-    padding: 20px;
-    background-color: #fff;
-}
-
-/* Topbar Styles */
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.topbar .greeting h3 {
-    font-size: 22px;
-    margin: 0;
-}
-
-.topbar .greeting span {
-    color: #3498db;
-}
-
-.topbar .actions {
-    display: flex;
-    align-items: center;
-}
-
-/* Dark Mode Toggle */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 24px;
-}
-
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: 0.4s;
-    border-radius: 24px;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 20px;
-    width: 20px;
-    left: 2px;
-    bottom: 2px;
-    background-color: white;
-    transition: 0.4s;
-    border-radius: 50%;
-}
-
-input:checked + .slider {
-    background-color: #3498db;
-}
-
-input:checked + .slider:before {
-    transform: translateX(26px);
-}
-
-/* Add Income Section */
-.add-income {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-}
-
-.add-income h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #2c3e50;
-}
-
-.add-income form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.add-income label {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-}
-
-.add-income input,
-.add-income select,
-.add-income button {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    outline: none;
-    transition: border-color 0.3s ease;
-}
-
-.add-income input:focus,
-.add-income select:focus {
-    border-color: #3498db;
-}
-
-.add-income button {
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.add-income button:hover {
-    background-color: #2980b9;
-}
 
 /* Track Income Section */
 .track-income {
-    background-color: #fff;
+    background-color: rgb(255, 249, 244);
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
+
+/* --- 2. Header and Title --- */
 .track-income h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #2c3e50;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #2a2a72; /* Your theme's dark blue */
 }
 
-.track-income table {
+/* --- 3. Modern Table Design --- */
+.incomeTable {
     width: 100%;
     border-collapse: collapse;
+    font-size: 15px;
 }
 
-.track-income th,
-.track-income td {
-    padding: 12px;
+.incomeTable thead {
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.incomeTable th {
+    padding: 16px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: transparent; /* No heavy background */
 }
 
-.track-income th {
-    background-color: #000000;
-    font-weight: bold;
+.incomeTable tbody tr {
+    border-bottom: 1px solid #f0f0f0; /* Softer row dividers */
+    transition: background-color 0.2s ease;
 }
 
-.track-income tr:hover {
-    background-color: #f1f1f1;
+.incomeTable tbody tr:last-child {
+    border-bottom: none;
 }
 
-/* Status Colors */
-.status-received {
+.incomeTable tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.incomeTable td {
+    padding: 16px;
+    vertical-align: middle;
+}
+
+/* --- 4. Status Badges --- */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 12px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.status-completed {
+    background-color: #eaf8ee;
     color: #28a745;
 }
-
 .status-pending {
+    background-color: #fff8e1;
     color: #ffc107;
 }
-
-.status-failed {
+.status-failed, .status-cancelled {
+    background-color: #fdecea;
     color: #dc3545;
 }
-
-/* Dark Mode Styles */
-body.dark-mode {
-    background-color: #1a1a1a;
-    color: #f4f7f6;
+.status-due, .status-partially.paid {
+    background-color: #e3f2fd;
+    color: #0d6efd;
 }
 
-
-
-.dark-mode .main-content {
-    background-color: #2c3e50;
-    color: #f4f7f6;
+/* --- 5. Action Buttons --- */
+.delete-btn, .edit-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
 }
 
-.dark-mode .add-income,
-.dark-mode .track-income {
-    background-color: #34495e;
-    color: #f4f7f6;
+.delete-btn {
+    background-color: #fdecea;
+    color: #dc3545;
+}
+.delete-btn:hover {
+    background-color: #dc3545;
+    color: #fff;
 }
 
-.dark-mode .add-income label,
-.dark-mode .track-income th {
-    color: #f4f7f6;
+.edit-btn {
+    background-color: #fff8e1;
+    color: #ffc107;
+}
+.edit-btn:hover {
+    background-color: #ffc107;
+    color: #fff;
 }
 
-.dark-mode .add-income input,
-.dark-mode .add-income select {
-    background-color: #2c3e50;
-    color: #f4f7f6;
-    border-color: #555;
+/* --- 6. "Load More" Button --- */
+#LoadMore {
+    display: block;
+    width: auto; /* Not full width */
+    min-width: 200px;
+    margin: 30px auto 0 auto; /* Center the button */
+    padding: 14px;
+    background-color: rgb(36, 167, 145);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
-.dark-mode .add-income button {
-    background-color: #2980b9;
+/* --- 7. Responsive Table-to-Card --- */
+@media (max-width: 992px) {
+    .incomeTable thead {
+        display: none; /* Hide the header on mobile */
+    }
+
+    .incomeTable tr {
+        display: block; /* Each row becomes a block */
+        margin-bottom: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        border: 1px solid #eee;
+    }
+
+    .incomeTable td {
+        display: flex; /* Use flex for label-value alignment */
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        text-align: right; /* Align value to the right */
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .incomeTable tr td:last-child {
+        border-bottom: none;
+    }
+    
+    .incomeTable td::before {
+        content: attr(data-label); /* Use the data-label for the title */
+        font-weight: bold;
+        text-align: left;
+        margin-right: 15px;
+        color: #333;
+    }
+
+    /* Stack buttons on mobile */
+    .incomeTable td:nth-child(7),
+    .incomeTable td:nth-child(8) {
+        justify-content: center;
+    }
 }
-
-.dark-mode .add-income button:hover {
-    background-color: #3498db;
-}
-
-

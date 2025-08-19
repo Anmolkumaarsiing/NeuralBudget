@@ -1,0 +1,154 @@
+/* in apps/budgets/static/budgets/css/set_budget.css */
+
+/* --- 1. MAIN PAGE LAYOUT (FIXES OVERLAPPING) --- */
+/* This rule positions the entire page content correctly */
+.set-budget {
+    margin-left: 380px;
+    margin-top: 80px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* --- 2. MAIN CONTAINER REDESIGN --- */
+/* This is the main card for the "Set Budget" feature */
+.budget-container {
+    background: rgb(255, 249, 244);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 550px;
+    margin-left: 0; /* Override any old margin from dashboard.css */
+    border: 1px solid #eee;
+}
+
+/* --- 3. UI IMPROVEMENTS FOR FORM ELEMENTS --- */
+
+/* Title */
+.budget-container h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #2a2a72; /* Your theme's dark blue */
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+/* Input Fields & Labels */
+.budget-input {
+    text-align: left;
+    margin-bottom: 25px;
+}
+
+.budget-input label {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.budget-input input,
+.budget-input select {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    background: #fff;
+    color: #333;
+    box-sizing: border-box;
+    transition: all 0.2s ease-in-out;
+}
+
+.budget-input input:focus,
+.budget-input select:focus {
+    border-color: rgb(36, 167, 145); /* Your theme's teal */
+    box-shadow: 0 0 0 3px rgba(36, 167, 145, 0.2);
+}
+
+/* Progress Bar */
+.budget-progress {
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+.budget-progress span {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+    display: block;
+}
+
+progress {
+    width: 100%;
+    height: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+}
+
+progress::-webkit-progress-bar {
+    background: #e0e0e0;
+}
+
+progress::-webkit-progress-value {
+    background: rgb(36, 167, 145); /* Your theme's teal */
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+#budget-percentage {
+    text-align: right;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 8px;
+    color: var(--primary-text);
+}
+
+/* "Save Budget" Button */
+.set-budget-btn {
+    width: 100%;
+    padding: 16px;
+    background: rgb(36, 167, 145);
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.set-budget-btn:hover {
+    background: #1f8a79; /* Darker teal */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(36, 167, 145, 0.3);
+}
+
+
+/* --- 4. RESPONSIVE STYLES --- */
+
+/* For Tablets and smaller screens */
+@media (max-width: 992px) {
+    .set-budget {
+        margin-left: 220px; /* Adjust for smaller sidebar */
+    }
+}
+
+/* For Mobile Phones */
+@media (max-width: 768px) {
+    .set-budget {
+        margin-left: 0; /* Remove margin when sidebar stacks */
+        margin-top: 20px;
+        padding: 15px;
+        align-items: flex-start;
+    }
+    .budget-container {
+        padding: 25px;
+    }
+}

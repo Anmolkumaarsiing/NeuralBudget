@@ -1,91 +1,149 @@
-/* ---------- Add Expense Section ---------- */
+/* in apps/transactions/static/transactions/css/add_transaction.css */
+
+/* --- 1. Main Layout & Container --- */
+/* This positions the entire section correctly on the page */
 .add-expense-section {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 30px;
-  background-color: #fff;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  border-radius: 12px;
-  font-family: 'Segoe UI', sans-serif;
-
-  /* 🛠 Fix: Prevent internal scrolling */
-  overflow: visible;
-  height: auto;
+    max-width: 600px;
+    /* These margins position the content next to your fixed sidebar and below your fixed topbar */
+    margin: 80px auto 40px 680px;
+    padding: 40px;
+    background-color: rgb(255, 249, 244);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    border: 1px solid #eee;
 }
 
-/* Heading */
+/* --- 2. Header and Title --- */
 .add-expense-section h2 {
-  text-align: center;
-  margin-bottom: 24px;
-  color: #2a2a72;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #2a2a72; /* Your theme's dark blue */
 }
 
-/* Toggle Buttons (Manual / OCR) */
+/* --- 3. Modern Toggle Buttons (Manual / OCR) --- */
 .entry-toggle {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 24px;
+    display: flex;
+    justify-content: center;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    padding: 5px;
+    margin-bottom: 30px;
 }
 
 .entry-toggle button {
-  padding: 10px 20px;
-  border: none;
-  background-color: #ddd;
-  cursor: pointer;
-  border-radius: 6px;
-  font-weight: 600;
-  transition: 0.3s ease;
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    background-color: transparent;
+    color: #555;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
 .entry-toggle button.active {
-  background-color: #2a2a72;
-  color: white;
+    background-color: #ffffff;
+    color: rgb(36, 167, 145); /* Your theme's teal */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Form fields */
+/* --- 4. Form Fields & Inputs --- */
+.entry-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
 .entry-form label {
-  display: block;
-  margin-top: 12px;
-  margin-bottom: 6px;
-  font-weight: 500;
-  color: #333;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 15px;
 }
 
 .entry-form input,
 .entry-form select {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-  background-color: #fff;
-  color: #000;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #fff;
+    color: #333;
+    box-sizing: border-box;
+    transition: all 0.2s ease-in-out;
 }
 
-/* Submit Button */
+.entry-form input:focus,
+.entry-form select:focus {
+    outline: none;
+    border-color: rgb(36, 167, 145);
+    box-shadow: 0 0 0 3px rgba(36, 167, 145, 0.2);
+}
+
+/* --- 5. "Other Category" Section --- */
+#other-category-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background-color: #f7f7f7;
+    padding: 15px;
+    border-radius: 8px;
+}
+#other-category-container label {
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+#other-category-container input {
+    margin-bottom: 0;
+}
+#add-category-btn {
+    padding: 12px 15px;
+    background-color: #555;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+#add-category-btn:hover {
+    background-color: #333;
+}
+
+
+/* --- 6. Submit Buttons --- */
 .entry-form button[type="submit"] {
-  background-color: #2a2a72;
-  color: white;
-  border: none;
-  padding: 12px;
-  width: 100%;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 10px;
-  transition: background-color 0.3s ease;
+    background-color: rgb(36, 167, 145);
+    color: white;
+    border: none;
+    padding: 15px;
+    width: 100%;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: all 0.2s ease;
 }
 
 .entry-form button[type="submit"]:hover {
-  background-color: #1d1d5c;
+    background-color: #1f8a79; /* Darker teal */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(36, 167, 145, 0.3);
 }
 
-/* ---------- Optional: Responsive Adjustment ---------- */
-@media (max-width: 640px) {
-  .add-expense-section {
-    margin: 20px 16px;
-    padding: 20px;
-  }
+/* --- 7. Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .add-expense-section {
+        /* Remove margins for mobile view */
+        margin: 20px 15px;
+        padding: 25px;
+    }
 }

@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function () {
     const dropdownButtons = document.querySelectorAll(".drop-btn");
     dropdownButtons.forEach(button => {

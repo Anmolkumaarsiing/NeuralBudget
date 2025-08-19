@@ -1,20 +1,18 @@
 /*-----------SIDEBAR---------------*/
 
 .sidebar {
-    width: 350px;
-    background-color: rgb(255, 249, 244);
+    width: 300px;
+    background-color: #111827; /* CHANGED: Professional dark background */
     padding: 20px;
-    height: 100vh; /* Full viewport height */
-    position: fixed; /* Keeps it in place */
+    height: 100vh;
+    position: fixed;
     top: 0;
     left: 0;
-    overflow-y: auto; /* Enables scrolling inside the sidebar */
-    box-sizing: border-box; /* Ensures padding doesn't affect width */
+    overflow-y: auto;
+    box-sizing: border-box;
 }
 
-
-.logo
-{
+.logo {
     display: flex;
     margin-top: 40px;
     align-items: center;
@@ -24,35 +22,30 @@
     font-family: ui-sans-serif, system-ui, sans-serif, 
                  "Apple Color Emoji", "Segoe UI Emoji", 
                  "Segoe UI Symbol", "Noto Color Emoji";
-    color:rgb(36 167 145);
+    color: rgb(36 167 145); /* UNCHANGED: Kept your brand color */
 }
 
-.logo-img
-{
+.logo-img {
     width: 40px;
     height: 40px;
 }
 
-nav ul
-{
+nav ul {
     list-style: none;
     padding: 0;
 }
 
-nav ul li
-{
+nav ul li {
     margin-bottom: 10px;
 }
 
-.sidebar nav
-{
+.sidebar nav {
     margin-top: 30px;
 }
 
 /*-----------SIDEBAR DROPDOWN---------------*/
 
-.dropdown-content
-{
+.dropdown-content {
     display: none;
     flex-direction: column; 
     padding-left: 20px; 
@@ -63,36 +56,31 @@ nav ul li
     list-style: none;
 }
 
-.dropdown-content li
-{
+.dropdown-content li {
     padding: 10px;
     transition: all 0.3s ease-in-out;
 }
 
-.dropdown-content li:hover
-{
-    background-color: rgb(36, 167, 145);
-    color: #fff;
+.dropdown-content li:hover {
+    background-color: #374151; /* CHANGED: Darker grey for hover */
+    color: #ffffff; /* CHANGED: White text */
     border-radius: 10px;
     max-width: 250px;
 }
 
-.dropdown-content li a
-{
+.dropdown-content li a {
     text-decoration: none;
-    color: #2a2a72;
+    color: #d1d5db; /* CHANGED: Soft grey for readability */
     display: block;
     width: 100%;
     cursor: pointer;
 }
 
-.dropdown-content li:hover a
-{
-    color: #fff;
+.dropdown-content li:hover a {
+    color: #ffffff; /* CHANGED: White text on hover */
 }
 
-.drop-btn
-{
+.drop-btn {
     display: flex;
     gap: 20px;
     align-items: center;
@@ -104,24 +92,16 @@ nav ul li
     border: none;
     cursor: pointer;
     margin-bottom: 5px;
+    color: #d1d5db; /* CHANGED: Default text color */
 }
 
-.drop-btn:hover
-{
-    background-color:rgb(36 167 145);
-    color: #fff;
+.drop-btn:hover {
+    background-color: #374151; /* CHANGED: Darker grey for hover */
+    color: #ffffff; /* CHANGED: White text */
     border-radius: 10px;
     max-width: 250px;
 }
 
-.dropdown-icon
-{
+.dropdown-icon {
     font-size: 14px;
-}
-
-
-.dropdown-content li a
-{
-    text-decoration: none;
-    color: #333;
 }
