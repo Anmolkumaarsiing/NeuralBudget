@@ -75,6 +75,11 @@ async function fetchAndDisplayTransactions(append = false) {
     }
 }
 
+function reloadTransactions() {
+    lastDocId = null; // Reset pagination
+    fetchAndDisplayTransactions(false); // Call with append=false to clear the table
+}
+
 // --- Combined Event Listeners for cleaner code ---
 document.addEventListener("DOMContentLoaded", function () {
     // Initial load
@@ -118,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const data = await response.json();
                     if (response.ok) {
                         alert("Transaction deleted successfully!");
-                        e.target.closest('tr').remove(); // Remove row without reloading
+                        reloadTransactions();  // Remove row by reloading
                     } else {
                         throw new Error(data.error || "Failed to delete transaction");
                     }
