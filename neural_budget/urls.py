@@ -11,6 +11,7 @@ urlpatterns = [
     path('budgets/', include('apps.budgets.urls')), # Budgets app URLs
     path('reports/', include('apps.reports.urls')), # Reports app URLs
     path('ml_features/', include('apps.ml_features.urls')), # ML Features app URLs
+    path('datagen/', include('apps.datagen.urls')), # datagen app URLs
 ]
 
 if settings.DEBUG:

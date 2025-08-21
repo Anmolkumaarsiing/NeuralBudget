@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Data Generator - Neural Budget AI</title>
+    
+    <!-- Icon Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+
+    <!-- Main Stylesheets -->
+    <link rel="stylesheet" href="{% static 'reports/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'layouts/css/sidebar.css' %}">
+    
+    <!-- Page-Specific Stylesheet -->
+    <link rel="stylesheet" href="{% static 'datagen/css/data_generator.css' %}">
+</head>
+<body>
+    <div id="chatbot-component" data-api-url="{% url 'core:chatbot_api' %}">
+        {% include 'core/chatbot.html' %}
+    </div>
+
+    <div class="container">
+        <!-- SIDEBAR SECTION (Included directly) -->
+
+
+        <main class="content">
+            <!-- TOPBAR SECTION (Included directly) -->
+            <header class="topbar">
+                <div class="greeting">
+                    <h3>Hi, {{email}} <i class="fas fa-smile"></i></h3>
+                </div>
+                <div class="actions">
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </header>
+            
+            <div class="page-container">
+                <div class="tool-container">
+                    <div class="tool-header">
+                        <h1>AI Data Generator ✨</h1>
+                        <p>Instantly populate your account with realistic transaction data for testing and demos.</p>
+                    </div>
+
+                    <div class="generator-form card-style">
+                        <div class="form-group">
+                            <label for="num-transactions">Number of Transactions to Generate (1-100)</label>
+                            <input type="number" id="num-transactions" min="1" max="100" value="20">
+                        </div>
+                        <button id="generate-btn" class="btn-generate">
+                            <i class="fas fa-magic"></i> Generate Data
+                        </button>
+                    </div>
+
+                    <div id="status-message" class="status-message" style="display: none;"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Your JavaScript Files -->
+    <script type="module" src="{% static 'reports/js/dashboard.js' %}"></script>
+    <script type="module" src="{% static 'core/js/darkmode.js' %}"></script>
+    <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
+    <script type="module" src="{% static 'datagen/js/data_generator.js' %}"></script>
+</body>
+</html>

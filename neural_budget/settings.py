@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'apps.budgets',
     'apps.reports',
     'apps.ml_features',
+    'apps.datagen',
     'apps.common_utils',
 ]
 

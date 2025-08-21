@@ -1,0 +1,64 @@
+/* --- Data Generator Tool Styles --- */
+.tool-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+.tool-header { 
+    text-align: center; 
+    margin-bottom: 2rem; 
+}
+.tool-header h1 { 
+    font-size: 28px; 
+    color: #1f2937; 
+}
+.tool-header p { 
+    color: #555; 
+}
+
+.card-style {
+    background: #fff; 
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+}
+.generator-form .form-group { 
+    margin-bottom: 1.5rem; 
+}
+.generator-form label { 
+    display: block; 
+    font-weight: 600; 
+    margin-bottom: 10px; 
+}
+.generator-form input {
+    width: 100%; 
+    padding: 12px; 
+    font-size: 16px;
+    border: 1px solid #ddd; 
+    border-radius: 8px;
+}
+.btn-generate {
+    width: 100%; 
+    padding: 15px; 
+    font-size: 18px;
+    font-weight: 700; 
+    background-color: rgb(36, 167, 145);
+    color: white; 
+    border: none; 
+    border-radius: 10px; 
+    cursor: pointer;
+}
+.status-message {
+    margin-top: 1.5rem; 
+    padding: 15px;
+    border-radius: 8px; 
+    text-align: center; 
+    font-weight: 600;
+}
+.status-message.success { 
+    background-color: #eaf8ee; 
+    color: #28a745; 
+}
+.status-message.error { 
+    background-color: #fdecea; 
+    color: #dc3545; 
+}
