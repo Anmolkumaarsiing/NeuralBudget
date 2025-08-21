@@ -1,0 +1,158 @@
+/* --- 1. Main Page Layout & Container --- */
+.smart-categorization-page {
+    max-width: 960px;
+    margin: 40px auto;
+    margin-left: 540px;
+    padding: 20px;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    color: #333;
+}
+
+/* --- 2. Page Header --- */
+.page-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.page-header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #24a791, #2a2a72);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+}
+
+.page-header p {
+    font-size: 17px;
+    color: #666;
+    line-height: 1.7;
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+/* --- 3. "Analyze" Button --- */
+.analysis-controls {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.btn-analyze {
+    padding: 16px 36px;
+    font-size: 18px;
+    font-weight: 700;
+    background: linear-gradient(135deg, rgb(36, 167, 145), rgb(42, 42, 114));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.btn-analyze:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(36, 167, 145, 0.35);
+}
+
+.btn-analyze:disabled {
+    background: #b8b8b8;
+    cursor: not-allowed;
+}
+
+/* --- 4. AI Results Section --- */
+.results-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+}
+
+/* --- Category Cards --- */
+.category-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.07);
+    border: 1px solid #eee;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    overflow: hidden;
+}
+
+.category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+}
+
+.category-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    cursor: pointer;
+    background: #fafafa;
+    transition: background-color 0.2s ease;
+}
+.category-card-header:hover {
+    background-color: #f2f8f8;
+}
+
+.category-info { display: flex; align-items: center; gap: 15px; }
+.category-icon { font-size: 22px; color: rgb(36, 167, 145); }
+.category-name { font-size: 19px; font-weight: 700; }
+.category-total { font-size: 19px; font-weight: 700; color: #2a2a72; }
+
+/* --- Collapsible Details --- */
+.category-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    border-top: 1px solid #eee;
+    background: #fff;
+}
+.category-details.show {
+    max-height: 600px;
+    padding: 15px 20px 20px;
+}
+
+.breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 15px;
+}
+.breakdown-item:last-child { border-bottom: none; }
+
+/* --- 5. Spinner & Error Message --- */
+.spinner-container { 
+    text-align: center; 
+    padding: 2rem; 
+    color: #444;
+}
+
+.spinner {
+    width: 56px;
+    height: 56px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #24a791;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+/* Spinner Animation */
+@keyframes spin { 
+    0% { transform: rotate(0deg); } 
+    100% { transform: rotate(360deg); } 
+}
+
+.spinner-container p {
+    font-size: 16px;
+    font-weight: 500;
+    color: #555;
+    margin-top: 8px;
+}
+
+.error-message {
+    color: #dc3545;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+}

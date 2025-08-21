@@ -44,3 +44,21 @@ def smart_saver(request):
     # For GET requests, just render the page
     email = get_email(request)
     return render(request, "budgets/Smart_saver.html", {"email": email})
+
+
+# Add these two new views to your budgets/views.py file
+
+def smart_categorization(request):
+    """Renders the main page for the Smart Categorization feature."""
+    email = get_email(request)
+    return render(request, 'budgets/smart_categorization.html', {'email': email})
+
+def get_smart_analysis_data(request):
+    """API endpoint that returns the AI-generated spending analysis."""
+    if request.method == "GET":
+        user_id = get_user_id(request)
+        analysis_data = services.generate_smart_categorization(user_id)
+        if "error" in analysis_data:
+            return JsonResponse(analysis_data, status=400)
+        return JsonResponse(analysis_data)
+    return JsonResponse({"error": "Invalid request method"}, status=405)

@@ -4,6 +4,7 @@ import json
 import google.generativeai as genai
 from django.conf import settings
 from apps.common_utils.firebase_service import get_user_categories, add_transaction, get_transactions
+from datetime import datetime # Import the datetime module
 
 # --- Service functions for Budgeting ---
 
@@ -114,3 +115,61 @@ def create_smart_saver_plan(data):
     return plan_data
 
 
+# Smart Categorization
+
+def generate_smart_categorization(user_id):
+    """
+    Fetches all user expenses and uses the Gemini API to generate a
+    hierarchical spending analysis.
+    """
+    # 1. Fetch all expense transactions from Firestore
+    all_expenses = get_transactions(user_id, 'expenses', limit=500)
+
+    if not all_expenses:
+        return {"error": "No transactions found to analyze."}
+
+    # --- THIS IS THE FIX ---
+    # 2. Convert any datetime objects into JSON-serializable strings
+    for transaction in all_expenses:
+        if 'date' in transaction and isinstance(transaction['date'], datetime):
+            # Convert the datetime object to a standard ISO 8601 string format
+            transaction['date'] = transaction['date'].isoformat()
+    # --- END OF FIX ---
+
+    # 3. Construct a detailed prompt for the Gemini API
+    prompt = f"""
+    You are an expert financial analyst for the "Neural Budget AI" app. Your task is to perform a detailed, hierarchical analysis of a user's spending.
+
+    Analyze the following list of transactions. For each transaction, first determine a general spending category (e.g., "Food & Dining", "Subscriptions & OTT", "Shopping", "Transport"). Then, within each category, identify specific merchants or sub-types (e.g., "Netflix", "Zomato", "Uber") by looking at the transaction name.
+
+    Your final output must be a single, valid JSON object with one key: "analysis_results".
+    The value of "analysis_results" should be an array of objects, where each object represents a main category.
+
+    Each main category object must have these keys:
+    - "category_name": The general category name (e.g., "Subscriptions & OTT").
+    - "icon": A relevant Font Awesome icon class (e.g., "fas fa-rss-square").
+    - "total_spend": The sum of all spending in this category.
+    - "breakdown": An array of sub-category objects.
+
+    Each sub-category object in the "breakdown" array must have these keys:
+    - "name": The specific merchant or sub-type (e.g., "Netflix").
+    - "transaction_count": The number of transactions for this specific merchant.
+    - "amount": The total amount spent on this specific merchant.
+
+    Here is the user's transaction data:
+    {json.dumps(all_expenses, indent=2)}
+    """
+
+    # 4. Call the Gemini API and parse the response
+    try:
+        genai.configure(api_key=settings.GEMINI_API_KEY)
+        model = genai.GenerativeModel("gemini-1.5-flash-latest")
+        response = model.generate_content(prompt)
+        
+        result_text = response.text.strip().replace("```json", "").replace("```", "")
+        analysis_data = json.loads(result_text)
+        
+        return analysis_data
+    except Exception as e:
+        print(f"Gemini API Error: {e}")
+        return {"error": "The AI is currently busy and could not analyze your spending. Please try again later."}

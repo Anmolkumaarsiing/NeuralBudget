@@ -4,20 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neural Budget AI</title>
+    <title>Smart Categorization - Neural Budget AI</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link rel="stylesheet" href="{% static 'reports/css/dashboard.css' %}">
-    <link rel="stylesheet" href="{% static 'budgets/css/set_budget.css' %}">
-        <link rel="stylesheet" href="{% static 'reports/css/sidebar-new.css' %}">
+    <link rel="stylesheet" href="{% static 'reports/css/sidebar-new.css' %}">
 
     
     <script type="module" src="{% static 'reports/js/dashboard.js' %}"></script>
     <script type="module" src="{% static 'core/js/darkmode.js' %}"></script>
     <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'budgets/css/smart_categorization.css' %}">
     
-    <script type="module" src="{% static 'budgets/js/budget.js' %}"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script type="module" src="{% static 'core/js/main.js' %}"></script>
+    <script type="module" src="{% static 'core/js/darkmode.js' %}"></script>
+    <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
+    <script type="module" src="{% static 'budgets/js/smart_categorization.js' %}"></script>
 </head>
 <body>
       <div id="chatbot-component" data-api-url="{% url 'core:chatbot_api' %}">
@@ -97,34 +102,26 @@
                     </label>
                 </div>
             </header>
-            <section class="set-budget">
-                <div class="budget-container">
-                    <h2>Set Your Monthly Budget</h2>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <div class="budget-input">
-                            <label for="category">Select Category:</label>
-                            <select id="category" name="category">
-                                {% for category in categories %}
-                                    <option value="{{ category }}">{{ category }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="budget-input">
-                            <label for="budget-amount">Enter Budget Amount:</label>
-                            <input type="number" id="budget-amount" name="budget" placeholder="₹ Enter amount">
-                        </div>
-                
-                        <div class="budget-progress">
-                            <span>Budget Spent</span>
-                            <progress id="budget-progress-bar" value="30" max="100"></progress>
-                            <span id="budget-percentage">30%</span>
-                        </div>
-                
-                        <button type="submit" class="set-budget-btn">Save Budget</button>
-                    </form>
-                </div>
-            </section>
+<div class="smart-categorization-page">
+    <div class="page-header">
+        <h1>AI Smart Categorization ✨</h1>
+        <p>Let SAVI analyze your expenses and automatically group them into clear categories. Get a visual breakdown of where your money really goes.</p>
+    </div>
+
+    <div class="analysis-controls">
+        <button id="analyze-btn" class="btn-analyze">
+            <i class="fas fa-magic"></i> Analyze My Expenses
+        </button>
+    </div>
+
+    <div id="loading-spinner" class="spinner-container" style="display: none;">
+        <div class="spinner"></div>
+        <p>SAVI is analyzing your transactions...</p>
+    </div>
+
+    <div id="results-container" class="results-container"></div>
+</div>
+
         </main>
     </div>
 </body>
