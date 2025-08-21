@@ -2,7 +2,7 @@
 
 .sidebar {
     width: 300px;
-    background-color: #111827; /* CHANGED: Professional dark background */
+    background-color: #ffffff; /* CHANGED: Professional dark background */
     padding: 20px;
     height: 100vh;
     position: fixed;
@@ -70,7 +70,7 @@ nav ul li {
 
 .dropdown-content li a {
     text-decoration: none;
-    color: #d1d5db; /* CHANGED: Soft grey for readability */
+    color: #000000; /* CHANGED: Soft grey for readability */
     display: block;
     width: 100%;
     cursor: pointer;
@@ -92,7 +92,7 @@ nav ul li {
     border: none;
     cursor: pointer;
     margin-bottom: 5px;
-    color: #d1d5db; /* CHANGED: Default text color */
+    color: #000000; /* CHANGED: Default text color */
 }
 
 .drop-btn:hover {
