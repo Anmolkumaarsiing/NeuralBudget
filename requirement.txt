@@ -15,3 +15,9 @@ setuptools
 langchain_huggingface
 python-decouple
 google.generativeai
+langchain
+langchain-core
+langchain-google-firestore
+chromadb
+sentence-transformers
+huggingface-hub
