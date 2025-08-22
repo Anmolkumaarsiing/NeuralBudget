@@ -1,121 +1,96 @@
+{% extends 'core/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile | Neural Budget AI</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+{% block title %}My Profile{% endblock %}
+
+{% block extra_css %}
     <link rel="stylesheet" href="{% static 'accounts/css/profile.css' %}">
-    <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
-</head>
-<body>
-    <!-- Header -->
-    <div id="container">
-        <div id="neuralbudget"><a href="#">NeuralBudget</a></div>
-        <div></div>
-        <div></div>
-        <div id="navbar">
-            <a href="{% url 'reports:dashboard' %}"><i class="fas fa-home"></i> Home</a>
-            <a href="{% url 'reports:dashboard' %}"><i class="fas fa-chart-line"></i> Dashboard</a>
-            <a href="{% url 'accounts:profile' %}" class="active"><i class="fas fa-user"></i> Profile</a>
-            <a href="#" id="signOutLink"><i class="fas fa-sign-out-alt"></i> Logout</a>
-        </div>
-    </div>
+{% endblock %}
 
-    <!-- Profile Content -->
-    <main class="profile-main">
-        <!-- Sidebar -->
-        <aside class="profile-sidebar">
-            <div class="profile-header">
-                <div class="profile-pic-container">
-                    <img src="{{ profile.photo_url }}" alt="Profile Picture" class="profile-pic" id="profileImage">
-                    <div class="profile-pic-edit" id="editProfilePic">
-                        <i class="fas fa-camera"></i>
-                        <input type="file" id="profilePicUpload" accept="image/*" style="display: none;">
-                    </div>
-                </div>
-                <h2 class="profile-name" id="profileName">{{ profile.display_name|default:profile.email }}</h2>
-                <div class="profile-email" id="profileEmail">{{ profile.email }}</div>
-                <div class="member-since">Member since {{ profile.created_at|date:"F Y" }}</div>
-            </div>
-
-            <div class="financial-score">
-                <div class="score-label">Financial Health Score</div>
-                <div class="score-value">82</div>
-                <div class="score-label">Excellent</div>
-            </div>
-
-            <nav class="profile-nav">
-                <a href="#" class="active"><i class="fas fa-user-circle"></i> Personal Info</a>
-                <a href="#"><i class="fas fa-wallet"></i> Budgets</a>
-                <a href="#"><i class="fas fa-receipt"></i> Transactions</a>
-                <a href="#"><i class="fas fa-chart-pie"></i> Analytics</a>
-                <a href="#"><i class="fas fa-bell"></i> Notifications</a>
-                <a href="#"><i class="fas fa-cog"></i> Settings</a>
-            </nav>
-        </aside>
-
-        <!-- Main Content -->
-        <div class="profile-content">
-            <h2 class="section-title">
-                Personal Information
-                <button class="edit-toggle" id="editToggle">
-                    <i class="fas fa-edit"></i> Edit Profile
-                </button>
-            </h2>
-            
-            <form id="profileForm">
-                <div class="form-group">
-                    <label for="first-name">First Name</label>
-                    <input type="text" id="first-name" value="{{ profile.first_name|default:'' }}" disabled>
-                </div>
-                
-                <div class="form-group">
-                    <label for="last-name">Last Name</label>
-                    <input type="text" id="last-name" value="{{ profile.last_name|default:'' }}" disabled>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" value="{{ profile.email }}" disabled>
-                </div>
-
-                <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" value="{{ profile.phone_number|default:'' }}" disabled>
-                </div>
-
-                <div class="form-group">
-                    <label for="dob">Date of Birth</label>
-                    <input type="date" id="dob" value="{{ profile.date_of_birth|date:'Y-m-d'|default:'' }}" disabled>
-                </div>
-
-                <div class="form-group">
-                    <label for="goals">Financial Goals</label>
-                    <textarea id="goals" disabled>{{ profile.financial_goals|default:'' }}</textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="risk">Risk Tolerance</label>
-                    <input type="range" id="risk" min="1" max="10" value="{{ profile.risk_tolerance|default:5 }}" class="risk-slider" disabled>
-                    <div class="risk-labels">
-                        <span>Conservative</span>
-                        <span>Balanced</span>
-                        <span>Aggressive</span>
-                    </div>
-                </div>
-
-                <div class="form-actions" style="display: none;">
-                    <button type="button" class="btn btn-cancel" id="cancelEdit">Cancel</button>
-                    <button type="submit" class="btn btn-save">Save Changes</button>
-                </div>
-            </form>
-        </div>
-    </main>
-
+{% block extra_js %}
     <script type="module" src="{% static 'accounts/js/profile.js' %}"></script>
-    <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
-</body>
-</html>
+{% endblock %}
+
+{% block content %}
+<main class="profile-main">
+    <!-- Sidebar -->
+    <aside class="profile-sidebar">
+        <div class="profile-header">
+            <div class="profile-pic-container">
+                <img src="{{ profile.photo_url }}" alt="Profile Picture" class="profile-pic" id="profileImage">
+                <div class="profile-pic-edit" id="editProfilePic">
+                    <i class="fas fa-camera"></i>
+                    <input type="file" id="profilePicUpload" accept="image/*" style="display: none;">
+                </div>
+            </div>
+            <h2 class="profile-name" id="profileName">{{ full_name }}</h2>
+            <div class="profile-email-truncate" id="profileEmail">{{ profile.email }}</div>
+            <div class="member-since">Member since {{ profile.created_at|date:"F Y" }}</div>
+        </div>
+
+        <div class="financial-score">
+            <div class="score-label">Financial Health Score</div>
+            <div class="score-value">82</div>
+            <div class="score-label">Excellent</div>
+        </div>
+
+    </aside>
+
+    <!-- Main Content -->
+    <div class="profile-content">
+        <h2 class="section-title">
+            Personal Information
+            <button class="edit-toggle" id="editToggle">
+                <i class="fas fa-edit"></i> Edit Profile
+            </button>
+        </h2>
+        
+        <form id="profileForm">
+            <div class="form-group">
+                <label for="first-name">First Name</label>
+                <input type="text" id="first-name" value="{{ profile.first_name|default:'' }}" disabled>
+            </div>
+            
+            <div class="form-group">
+                <label for="last-name">Last Name</label>
+                <input type="text" id="last-name" value="{{ profile.last_name|default:'' }}" disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" value="{{ profile.email }}" disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" value="{{ profile.phone_number|default:'' }}" disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="dob">Date of Birth</label>
+                <input type="date" id="dob" value="{{ profile.date_of_birth|date:'Y-m-d'|default:'' }}" disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="goals">Financial Goals</label>
+                <textarea id="goals" disabled>{{ profile.financial_goals|default:'' }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="risk">Risk Tolerance</label>
+                <input type="range" id="risk" min="1" max="10" value="{{ profile.risk_tolerance|default:5 }}" class="risk-slider" disabled>
+                <div class="risk-labels">
+                    <span>Conservative</span>
+                    <span>Balanced</span>
+                    <span>Aggressive</span>
+                </div>
+            </div>
+
+            <div class="form-actions" style="display: none;">
+                <button type="button" class="btn btn-cancel" id="cancelEdit">Cancel</button>
+                <button type="submit" class="btn btn-save">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</main>
+{% endblock %}

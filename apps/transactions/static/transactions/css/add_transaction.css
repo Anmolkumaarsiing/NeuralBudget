@@ -292,9 +292,7 @@
     background-color: #1dd882;
 }
 
-.dark-mode .entry-form button[type="submit"] {
-    background-color: var(--accent-green);
-}
+
 
 .dark-mode .entry-form button[type="submit"]:hover {
     background-color: #1dd882;

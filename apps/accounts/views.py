@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from firebase_admin import exceptions as firebase_exceptions
 import json,requests
 from apps.common_utils.firebase_config import FIREBASE_API_KEY
-from apps.common_utils.auth_utils import get_user_id, get_email
+from apps.common_utils.auth_utils import get_user_id, get_email,get_user_full_name
 from apps.common_utils.firebase_service import firebase_login, verify_firebase_token, get_user_profile, create_user_profile
 from apps.common_utils.auth_utils import is_authenticated
 from apps.accounts.services import register_user, logout_user,update_profile_service,upload_profile_picture_service, send_password_reset_email_service
@@ -47,8 +47,6 @@ def login_view(request):
             request.session['user_id'] = uid
             request.session['email'] = email
             request.session['id_token'] = id_token
-            request.session['display_name'] = display_name_from_profile # Store display name in session
-            # request.session.save() # Explicitly save the session
 
             return JsonResponse({
                 'message': 'Login successful',
@@ -58,14 +56,16 @@ def login_view(request):
                 'redirect_url': '/reports/dashboard' # Add redirect URL
             })
 
-        except requests.exceptions.RequestException as e:
+        except ValueError as e:
             return JsonResponse({'error': str(e)}, status=401)
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({'error': 'Network error or invalid request.'}, status=401)
         except firebase_exceptions.FirebaseError as e:
             return JsonResponse({'error': f'Firebase error: {str(e)}'}, status=401)
         except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON in request body'}, status=400)
+            return JsonResponse({'error': 'Invalid JSON in request body.'}, status=400)
         except Exception as e:
-            return JsonResponse({'error': 'An unexpected error occurred'}, status=500)
+            return JsonResponse({'error': 'An unexpected error occurred.'}, status=500)
 
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
@@ -104,9 +104,11 @@ def profile_view(request):
     
     user_id = get_user_id(request)
     user_profile = get_user_profile(user_id)
+    # print("User Profile:", user_profile)
 
     context = {
         'email': get_email(request),
+        'full_name': get_user_full_name(user_profile),
         'profile': user_profile
     }
     return render(request, 'accounts/profile.html', context)

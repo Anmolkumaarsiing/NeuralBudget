@@ -18,5 +18,17 @@ def validate_input(data):
 def get_user_id(request):
     return request.session.get('user_id')
 
+
 def get_email(request):
     return request.session.get('email')
+
+def get_user_full_name(user_profile):
+    first_name = user_profile.get('first_name', '')
+    last_name = user_profile.get('last_name', '')
+    
+    full_name = f"{first_name} {last_name}".strip()
+    
+    print(f"[DEBUG] get_user_full_name called. Full name: {full_name}")
+    if not full_name:
+        return user_profile.get('display_name', user_profile.get('email', 'User'))
+    return full_name

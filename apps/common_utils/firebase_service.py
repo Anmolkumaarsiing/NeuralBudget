@@ -129,8 +129,14 @@ def firebase_login(email, password):
         response = requests.post(FIREBASE_SIGN_IN_URL, json=payload, params=params, headers=headers)
         response.raise_for_status()  # Raise an exception for bad status codes
         return response.json()
+    except requests.exceptions.HTTPError as e:
+        error_json = e.response.json()
+        error_message = error_json.get('error', {}).get('message', 'An unknown error occurred')
+        # Map Firebase error messages to more user-friendly ones
+        if error_message:
+            raise ValueError(f"{error_message}")
     except requests.exceptions.RequestException as e:
-        raise e
+        raise ValueError(f"Network error or invalid request: {str(e)}")
 
 def verify_firebase_token(id_token):
     try:
