@@ -1,21 +1,24 @@
-/* in apps/budgets/static/budgets/css/smart_saver.css */
+/* apps/budgets/static/budgets/css/smart_saver.css */
 
-/* --- Main container --- */
+/* Main container */
 .smart-saver-page {
     padding: 20px;
-    margin-left: 380px;
-    max-width: calc(100% - 420px);
-    width: auto;
-    margin-top: 80px;
+    width: 100%;
+    background-color: var(--light-surface);
+    transition: background-color var(--transition-standard);
 }
 
-/* --- Form Container (No Changes) --- */
+/* Form Container */
 .smart-saver-form-container {
-    background: rgb(255, 249, 244);
+    background: var(--light-bg);
     padding: 30px;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--light-border);
     margin-bottom: 30px;
+    transition: background-color var(--transition-standard), 
+                border-color var(--transition-standard),
+                box-shadow var(--transition-standard);
 }
 
 .form-header {
@@ -25,13 +28,15 @@
 
 .form-header h2 {
     font-size: 24px;
-    color: #2a2a72;
+    color: var(--theme-secondary);
     margin: 0 0 10px 0;
+    transition: color var(--transition-standard);
 }
 
 .form-header p {
     font-size: 16px;
-    color: #333;
+    color: var(--light-text);
+    transition: color var(--transition-standard);
 }
 
 #smart-saver-form .form-grid {
@@ -44,13 +49,15 @@
 #smart-saver-form .form-group label {
     display: block;
     font-size: 16px;
-    font-weight: bold;
-    color: #333;
+    font-weight: 600;
+    color: var(--light-text);
     margin-bottom: 8px;
+    transition: color var(--transition-standard);
 }
+
 #smart-saver-form .form-group i {
     margin-right: 8px;
-    color: rgb(36, 167, 145);
+    color: var(--theme-primary);
 }
 
 #smart-saver-form input,
@@ -59,15 +66,23 @@
     box-sizing: border-box;
     padding: 12px;
     font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    border: 2px solid var(--light-border);
+    border-radius: 8px;
     outline: none;
-    transition: border-color 0.3s ease;
+    background: var(--light-surface);
+    color: var(--light-text);
+    transition: all var(--transition-standard);
 }
 
 #smart-saver-form input:focus,
 #smart-saver-form select:focus {
-    border-color: rgb(36, 167, 145);
+    border-color: var(--theme-primary);
+    box-shadow: 0 0 0 3px rgba(36, 167, 145, 0.1);
+}
+
+#smart-saver-form input:hover,
+#smart-saver-form select:hover {
+    border-color: var(--theme-primary);
 }
 
 .generate-btn {
@@ -75,63 +90,69 @@
     width: 100%;
     padding: 15px;
     font-size: 18px;
-    font-weight: bold;
+    font-weight: 600;
     border: none;
     border-radius: 8px;
-    background-color: rgb(36, 167, 145);
+    background-color: var(--theme-primary);
     color: white;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all var(--transition-standard);
 }
+
 .generate-btn:hover {
-    background-color: #1f8a79;
+    background-color: #2a9e80;
 }
+
 .generate-btn i {
     margin-right: 10px;
 }
 
-
-/* --- Plan Display Styles --- */
+/* Plan Display Styles */
 .plan-display-container {
     background: transparent;
     padding: 0;
     box-shadow: none;
-    margin-top: 80px; /* <-- THIS IS THE FIX: Increased from 40px to 80px */
+    margin-top: 40px;
 }
 
 #plan-title {
     font-size: 28px;
     font-weight: 700;
-    color: #2a2a72;
+    color: var(--theme-secondary);
     text-align: center;
+    transition: color var(--transition-standard);
 }
 
 #plan-summary {
     font-size: 16px;
-    color: #555;
+    color: var(--light-text-secondary);
     text-align: center;
     max-width: 600px;
     margin: 1rem auto 2.5rem auto;
+    transition: color var(--transition-standard);
 }
 
 .plan-timeline {
-    border-left: 3px solid #e0e0e0;
+    border-left: 3px solid var(--light-border);
     padding-left: 2.5rem;
     margin: 2rem 0;
+    transition: border-color var(--transition-standard);
 }
 
 .step-card {
-    background: #ffffff;
+    background: var(--light-surface);
+    border: 1px solid var(--light-border);
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 2rem;
     position: relative;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-light);
+    transition: all var(--transition-standard);
 }
 
 .step-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 25px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(36, 167, 145, 0.15);
 }
 
 .step-card::before {
@@ -141,8 +162,8 @@
     top: 28px;
     width: 20px;
     height: 20px;
-    background: white;
-    border: 4px solid rgb(36, 167, 145);
+    background: var(--light-surface);
+    border: 4px solid var(--theme-primary);
     border-radius: 50%;
     transform: translateX(-50%);
     z-index: 1;
@@ -155,59 +176,177 @@
     gap: 1rem;
     margin-bottom: 0.75rem;
 }
+
 .step-icon { 
     font-size: 24px;
-    color: rgb(36, 167, 145);
+    color: var(--theme-primary);
     width: 30px;
     text-align: center;
 }
+
 .step-title { 
     font-size: 1.25rem;
     font-weight: 700;
-    color: #2a2a72;
+    color: var(--theme-secondary);
+    transition: color var(--transition-standard);
 }
+
 .step-savings { 
     margin-left: auto;
     font-weight: 700;
     font-size: 1.1rem;
-    color: #28a745;
-    background-color: #eaf8ee;
+    color: #22c55e;
+    background-color: rgba(34, 197, 94, 0.1);
+    border: 1px solid #22c55e;
     padding: 5px 12px;
     border-radius: 20px;
 }
+
 .step-card p {
     padding-left: 55px;
-    color: #666;
+    color: var(--light-text-secondary);
     line-height: 1.6;
+    transition: color var(--transition-standard);
 }
 
 .chart-container { 
     margin-top: 2.5rem;
-    background: rgb(255, 249, 244);
+    background: var(--light-bg);
+    border: 1px solid var(--light-border);
     padding: 30px;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+    transition: background-color var(--transition-standard), 
+                border-color var(--transition-standard),
+                box-shadow var(--transition-standard);
 }
+
 .chart-container h3 {
     text-align: center;
     font-size: 22px;
-    color: #2a2a72;
+    color: var(--theme-secondary);
     margin-bottom: 1.5rem;
+    transition: color var(--transition-standard);
 }
 
-.spinner-container { text-align: center; padding: 3rem; }
+.spinner-container { 
+    text-align: center; 
+    padding: 3rem; 
+}
+
 .spinner {
     width: 50px;
     height: 50px;
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid rgb(36, 167, 145);
+    border: 5px solid var(--light-border);
+    border-top: 5px solid var(--theme-primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
 }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-/* --- Responsive Styles --- */
+@keyframes spin { 
+    0% { transform: rotate(0deg); } 
+    100% { transform: rotate(360deg); } 
+}
+
+/* Dark Mode Support */
+.dark-mode .smart-saver-page {
+    background-color: var(--dark-surface);
+}
+
+.dark-mode .smart-saver-form-container {
+    background: var(--dark-bg);
+    border-color: var(--dark-border);
+    box-shadow: var(--shadow-dark);
+}
+
+.dark-mode .form-header h2,
+.dark-mode #plan-title,
+.dark-mode .step-title {
+    color: var(--dark-text);
+}
+
+.dark-mode .form-header p,
+.dark-mode #plan-summary {
+    color: var(--dark-text-secondary);
+}
+
+.dark-mode #smart-saver-form .form-group label {
+    color: var(--dark-text);
+}
+
+.dark-mode #smart-saver-form input,
+.dark-mode #smart-saver-form select {
+    background: var(--dark-surface);
+    color: var(--dark-text);
+    border-color: var(--dark-border);
+}
+
+.dark-mode #smart-saver-form input:focus,
+.dark-mode #smart-saver-form select:focus {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 0 3px rgba(42, 245, 161, 0.1);
+}
+
+.dark-mode #smart-saver-form input:hover,
+.dark-mode #smart-saver-form select:hover {
+    border-color: var(--accent-green);
+}
+
+.dark-mode .generate-btn {
+    background-color: var(--accent-green);
+    color: var(--dark-bg);
+}
+
+.dark-mode .generate-btn:hover {
+    background-color: #1dd882;
+}
+
+.dark-mode .plan-timeline {
+    border-color: var(--dark-border);
+}
+
+.dark-mode .step-card {
+    background: var(--dark-bg);
+    border-color: var(--dark-border);
+    box-shadow: var(--shadow-dark);
+}
+
+.dark-mode .step-card::before {
+    background: var(--dark-bg);
+    border-color: var(--accent-green);
+}
+
+.dark-mode .step-icon {
+    color: var(--accent-green);
+}
+
+.dark-mode .step-savings {
+    color: var(--accent-green);
+    background-color: rgba(42, 245, 161, 0.1);
+    border-color: var(--accent-green);
+}
+
+.dark-mode .step-card p {
+    color: var(--dark-text-secondary);
+}
+
+.dark-mode .chart-container {
+    background: var(--dark-bg);
+    border-color: var(--dark-border);
+    box-shadow: var(--shadow-dark);
+}
+
+.dark-mode .chart-container h3 {
+    color: var(--dark-text);
+}
+
+.dark-mode .spinner {
+    border-color: var(--dark-border);
+    border-top-color: var(--accent-green);
+}
+
+/* Responsive Styles */
 @media (max-width: 1200px) {
     #smart-saver-form .form-grid {
         grid-template-columns: 1fr;
@@ -216,19 +355,117 @@
 
 @media (max-width: 768px) {
     .smart-saver-page {
-        margin-left: 0;
-        max-width: 100%;
         padding: 15px;
-        margin-top: 20px;
     }
-    .smart-saver-form-container, .plan-display-container, .chart-container {
+    
+    .smart-saver-form-container, 
+    .chart-container {
         padding: 20px;
+        border-radius: 10px;
     }
-    .form-header h2, #plan-title {
+    
+    .form-header h2, 
+    #plan-title {
         font-size: 22px;
     }
-    .step-card { padding: 1rem; }
-    .step-card::before { left: -2.1rem; }
-    .plan-timeline { padding-left: 2rem; }
-    .step-card p { padding-left: 0; }
+    
+    .step-card { 
+        padding: 1rem; 
+    }
+    
+    .step-card::before { 
+        left: -2.1rem; 
+    }
+    
+    .plan-timeline { 
+        padding-left: 2rem; 
+    }
+    
+    .step-card p { 
+        padding-left: 0; 
+    }
+    
+    .step-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .step-savings {
+        margin-left: 0;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .smart-saver-page {
+        padding: 10px;
+    }
+    
+    .smart-saver-form-container, 
+    .chart-container {
+        padding: 15px;
+    }
+    
+    .form-header h2, 
+    #plan-title {
+        font-size: 20px;
+    }
+    
+    #smart-saver-form .form-grid {
+        gap: 1rem;
+    }
+    
+    #smart-saver-form input,
+    #smart-saver-form select {
+        padding: 10px;
+        font-size: 15px;
+    }
+    
+    .generate-btn {
+        padding: 12px;
+        font-size: 16px;
+    }
+    
+    .step-card {
+        padding: 0.75rem;
+    }
+    
+    .step-title {
+        font-size: 1.1rem;
+    }
+}
+
+/* Loading State */
+.generate-btn.loading {
+    opacity: 0.7;
+    pointer-events: none;
+    position: relative;
+}
+
+.generate-btn.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border: 2px solid white;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translate(-50%, -50%);
+}
+
+/* Success/Error States */
+.form-group.success input,
+.form-group.success select {
+    border-color: var(--accent-green);
+    background-color: rgba(42, 245, 161, 0.05);
+}
+
+.form-group.error input,
+.form-group.error select {
+    border-color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.05);
 }

@@ -1,39 +1,39 @@
-/* in apps/budgets/static/budgets/css/set_budget.css */
+/* apps/budgets/static/budgets/css/set_budget.css */
 
-/* --- 1. MAIN PAGE LAYOUT (FIXES OVERLAPPING) --- */
-/* This rule positions the entire page content correctly */
 .set-budget {
-    margin-left: 380px;
-    margin-top: 80px;
     padding: 20px;
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    min-height: 100vh;
+    background-color: var(--light-surface);
+    transition: background-color var(--transition-standard);
 }
 
-/* --- 2. MAIN CONTAINER REDESIGN --- */
-/* This is the main card for the "Set Budget" feature */
+/* Main Container */
 .budget-container {
-    background: rgb(255, 249, 244);
+    background: var(--light-bg);
     padding: 40px;
     border-radius: 15px;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--light-border);
     text-align: center;
     width: 100%;
     max-width: 550px;
-    margin-left: 0; /* Override any old margin from dashboard.css */
-    border: 1px solid #eee;
+    margin: 0 auto;
+    transition: background-color var(--transition-standard), 
+                border-color var(--transition-standard),
+                box-shadow var(--transition-standard);
 }
-
-/* --- 3. UI IMPROVEMENTS FOR FORM ELEMENTS --- */
 
 /* Title */
 .budget-container h2 {
     font-size: 26px;
     font-weight: 700;
-    /* color: #ffffff; Your theme's dark blue */
+    color: var(--theme-secondary);
     margin-top: 0;
     margin-bottom: 30px;
+    transition: color var(--transition-standard);
 }
 
 /* Input Fields & Labels */
@@ -46,28 +46,34 @@
     display: block;
     font-size: 16px;
     font-weight: 600;
-    /* color: #333; */
+    color: var(--light-text);
     margin-bottom: 10px;
+    transition: color var(--transition-standard);
 }
 
 .budget-input input,
 .budget-input select {
     width: 100%;
     padding: 14px;
-    border: 1px solid #ddd;
+    border: 2px solid var(--light-border);
     border-radius: 8px;
     font-size: 16px;
     outline: none;
-    /* background: #fff; */
-    color: #333;
+    background: var(--light-surface);
+    color: var(--light-text);
     box-sizing: border-box;
-    transition: all 0.2s ease-in-out;
+    transition: all var(--transition-standard);
 }
 
 .budget-input input:focus,
 .budget-input select:focus {
-    border-color: rgb(36, 167, 145); /* Your theme's teal */
-    box-shadow: 0 0 0 3px rgba(36, 167, 145, 0.2);
+    border-color: var(--theme-primary);
+    box-shadow: 0 0 0 3px rgba(36, 167, 145, 0.1);
+}
+
+.budget-input input:hover,
+.budget-input select:hover {
+    border-color: var(--theme-primary);
 }
 
 /* Progress Bar */
@@ -79,9 +85,10 @@
 .budget-progress span {
     font-size: 16px;
     font-weight: 600;
-    /* color: #ffffff; */
+    color: var(--light-text);
     margin-bottom: 10px;
     display: block;
+    transition: color var(--transition-standard);
 }
 
 progress {
@@ -89,17 +96,24 @@ progress {
     height: 12px;
     border-radius: 10px;
     overflow: hidden;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--light-border);
+    background-color: var(--light-border);
 }
 
 progress::-webkit-progress-bar {
-    background: #e0e0e0;
+    background: var(--light-border);
+    border-radius: 10px;
 }
 
 progress::-webkit-progress-value {
-    background: rgb(36, 167, 145); /* Your theme's teal */
+    background: var(--theme-primary);
     border-radius: 10px;
     transition: width 0.5s ease;
+}
+
+progress::-moz-progress-bar {
+    background: var(--theme-primary);
+    border-radius: 10px;
 }
 
 #budget-percentage {
@@ -107,48 +121,200 @@ progress::-webkit-progress-value {
     font-size: 14px;
     font-weight: bold;
     margin-top: 8px;
-    color: var(--primary-text);
+    color: var(--light-text);
+    transition: color var(--transition-standard);
 }
 
-/* "Save Budget" Button */
+/* Save Budget Button */
 .set-budget-btn {
     width: 100%;
     padding: 16px;
-    background: rgb(36, 167, 145);
+    background: var(--theme-primary);
     border: none;
     border-radius: 8px;
     font-size: 18px;
     font-weight: bold;
     color: white;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--transition-standard);
 }
 
 .set-budget-btn:hover {
-    background: #1f8a79; /* Darker teal */
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(36, 167, 145, 0.3);
+    background: #2a9e80;
 }
 
-
-/* --- 4. RESPONSIVE STYLES --- */
-
-/* For Tablets and smaller screens */
-@media (max-width: 992px) {
-    .set-budget {
-        margin-left: 220px; /* Adjust for smaller sidebar */
-    }
+.set-budget-btn:active {
+    background: #238a6f;
 }
 
-/* For Mobile Phones */
+/* Dark Mode Support */
+.dark-mode .set-budget {
+    background-color: var(--dark-surface);
+}
+
+.dark-mode .budget-container {
+    background: var(--dark-bg);
+    border-color: var(--dark-border);
+    box-shadow: var(--shadow-dark);
+}
+
+.dark-mode .budget-container h2 {
+    color: var(--dark-text);
+}
+
+.dark-mode .budget-input label {
+    color: var(--dark-text);
+}
+
+.dark-mode .budget-input input,
+.dark-mode .budget-input select {
+    background: var(--dark-surface);
+    color: var(--dark-text);
+    border-color: var(--dark-border);
+}
+
+.dark-mode .budget-input input:focus,
+.dark-mode .budget-input select:focus {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 0 3px rgba(42, 245, 161, 0.1);
+}
+
+.dark-mode .budget-input input:hover,
+.dark-mode .budget-input select:hover {
+    border-color: var(--accent-green);
+}
+
+.dark-mode .budget-progress span {
+    color: var(--dark-text);
+}
+
+.dark-mode progress {
+    border-color: var(--dark-border);
+    background-color: var(--dark-border);
+}
+
+.dark-mode progress::-webkit-progress-bar {
+    background: var(--dark-border);
+}
+
+.dark-mode progress::-webkit-progress-value {
+    background: var(--accent-green);
+}
+
+.dark-mode progress::-moz-progress-bar {
+    background: var(--accent-green);
+}
+
+.dark-mode #budget-percentage {
+    color: var(--dark-text);
+}
+
+.dark-mode .set-budget-btn {
+    background: var(--accent-green);
+    color: var(--dark-bg);
+}
+
+.dark-mode .set-budget-btn:hover {
+    background: #1dd882;
+}
+
+/* Responsive Styles */
 @media (max-width: 768px) {
     .set-budget {
-        margin-left: 0; /* Remove margin when sidebar stacks */
-        margin-top: 20px;
         padding: 15px;
-        align-items: flex-start;
     }
+    
     .budget-container {
-        padding: 25px;
+        padding: 25px 20px;
+        border-radius: 12px;
     }
+    
+    .budget-container h2 {
+        font-size: 22px;
+        margin-bottom: 25px;
+    }
+    
+    .budget-input {
+        margin-bottom: 20px;
+    }
+    
+    .budget-input label {
+        font-size: 15px;
+    }
+    
+    .budget-input input,
+    .budget-input select {
+        padding: 12px;
+        font-size: 15px;
+    }
+    
+    .set-budget-btn {
+        padding: 14px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .set-budget {
+        padding: 10px;
+    }
+    
+    .budget-container {
+        padding: 20px 15px;
+    }
+    
+    .budget-container h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .budget-input input,
+    .budget-input select {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .set-budget-btn {
+        padding: 12px;
+        font-size: 15px;
+    }
+}
+
+/* Success/Error States */
+.budget-input.success input,
+.budget-input.success select {
+    border-color: var(--accent-green);
+    background-color: rgba(42, 245, 161, 0.05);
+}
+
+.budget-input.error input,
+.budget-input.error select {
+    border-color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.05);
+}
+
+/* Loading State */
+.set-budget-btn.loading {
+    opacity: 0.7;
+    pointer-events: none;
+    position: relative;
+}
+
+.set-budget-btn.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border: 2px solid white;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
