@@ -31,7 +31,7 @@
 .budget-container h2 {
     font-size: 26px;
     font-weight: 700;
-    color: #2a2a72; /* Your theme's dark blue */
+    /* color: #ffffff; Your theme's dark blue */
     margin-top: 0;
     margin-bottom: 30px;
 }
@@ -46,7 +46,7 @@
     display: block;
     font-size: 16px;
     font-weight: 600;
-    color: #333;
+    /* color: #333; */
     margin-bottom: 10px;
 }
 
@@ -58,7 +58,7 @@
     border-radius: 8px;
     font-size: 16px;
     outline: none;
-    background: #fff;
+    /* background: #fff; */
     color: #333;
     box-sizing: border-box;
     transition: all 0.2s ease-in-out;
@@ -79,7 +79,7 @@
 .budget-progress span {
     font-size: 16px;
     font-weight: 600;
-    color: #333;
+    /* color: #ffffff; */
     margin-bottom: 10px;
     display: block;
 }

@@ -1,118 +1,28 @@
-<!DOCTYPE html>
+{% extends 'core/base.html' %}
 {% load static %}
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Transaction History</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
-    <link rel="stylesheet" href="{% static 'reports/css/dashboard.css' %}" />
-        <link rel="stylesheet" href="{% static 'reports/css/sidebar-new.css' %}">
 
+{% block title %}Transaction History{% endblock %}
+
+{% block extra_css %}
     <link rel="stylesheet" href="{% static 'transactions/css/transaction_history.css' %}" />
-     
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="module" src="{% static 'core/js/darkmode.js' %}"></script>
-    <script
-      type="module"
-      src="{% static 'transactions/js/transaction_history.js' %}"
-    ></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-
-
-    <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
     <style>
       .incomeTable tbody {
         display: table-row-group !important;
       }
     </style>
-  </head>
-  <body>
-      <div id="chatbot-component" data-api-url="{% url 'core:chatbot_api' %}">
-      {% include 'core/chatbot.html' %}
-  </div>
-    <div class="container">
-      <aside class="sidebar">
-        <div class="logo">
-          <img
-            src="{% static 'core/img/logo.png' %}"
-            alt="Neural Budget AI Logo"
-            class="logo-img"
-          />
-          <span class="logo-text">Neural Budget AI</span>
-        </div>
-        <nav>
-                <ul>
-                    <li class="dropdown">
-                        <button class="drop-btn"><i class="fas fa-receipt"></i>Expense Tracking
-                            <i class="fas fa-angle-right dropdown-icon"></i>
-                        </button>
-                        <ul class="dropdown-content">
-                            <li><a href="{% url 'reports:dashboard' %}"><i class="fas fa-tachometer-alt"></i> Overview</a></li>
-                            <li><a href="{% url 'transactions:add_transaction' %}"><i class="fas fa-plus-circle"></i> Add Expense</a></li>
-                            <li><a href="{% url 'transactions:transaction_history' %}"><i class="fas fa-eye"></i> View Transactions</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <button class="drop-btn"><i class="fas fa-wallet"></i>Budgeting Tools
-                            <i class="fas fa-angle-right dropdown-icon"></i>
-                        </button>
-                        <ul class="dropdown-content">
-                            <li><a href="{% url 'budgets:set_budget' %}"><i class="fas fa-coins"></i>Set Budget</a></li>
-                            <li><a href="{% url 'budgets:smart_saver' %}"><i class="fas fa-magic"></i> Smart Saver</a></li>
-                            <li><a href="{% url 'budgets:smart_categorization' %}"><i class="fas fa-layer-group"></i> Smart Categorization</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <button class="drop-btn"><i class="fas fa-chart-line"></i>AI Insights
-                            <i class="fas fa-angle-right dropdown-icon"></i>
-                        </button>
-                        <ul class="dropdown-content"> 
-                            <li><a href="{% url 'reports:visualize' %}"><i class="fas fa-brain"></i> Predictive Analysis</a></li>
-                            <li><a href="#"><i class="fas fa-chart-pie"></i> Spending Insights</a></li>
-                            <li><a href="#"><i class="fas fa-chart-line"></i> Expense Forecasting</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <button class="drop-btn"><i class="fas fa-cog"></i>Settings
-                            <i class="fas fa-angle-right dropdown-icon"></i>
-                        </button>
-                        <ul class="dropdown-content">
-                            <li><a href="/accounts/profile"><i class="fas fa-user"></i> Profile</a></li>
-                            <li><a href="#" id="signOutLink"><i class="fas fa-sign-out-alt"></i> Logoutt</a></li>
-                        </ul>
-                    </li>
-                
-                </ul>
-            </nav>
-      </aside>
+{% endblock %}
 
-      <main class="content">
-        <!-- TOPBAR SECTION -->
+{% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="{% static 'transactions/js/transaction_history.js' %}"></script>
+{% endblock %}
 
-        <header class="topbar">
-          <div class="greeting">
-            <h3>Hi, {{email}} <i class="fas fa-smile"></i></h3>
-          </div>
-
-          <div class="actions">
-            <label class="switch">
-              <input type="checkbox" id="darkModeToggle" />
-              <span class="slider round"></span>
-            </label>
-          </div>
-        </header>
-
-        <!-- TRANSACTION HISTORY SECTION -->
-        <section class="track-income">
-          <h2>Transaction History</h2>
-          <table class="incomeTable">
-            <thead>
-              <tr>
+{% block content %}
+<section class="track-income">
+    <h2>Transaction History</h2>
+    <table class="incomeTable">
+        <thead>
+            <tr>
                 <th>Name</th>
                 <th>Category</th>
                 <th>Amount</th>
@@ -121,13 +31,10 @@
                 <th>Type</th>
                 <th>Delete</th>
                 <th>Edit</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-          <button id="LoadMore">Load More +5 ..</button>
-        </section>
-      </main>
-    </div>
-  </body>
-</html>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <button id="LoadMore">Load More +5 ..</button>
+</section>
+{% endblock %}
