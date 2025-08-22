@@ -3,7 +3,9 @@
 import json
 import google.generativeai as genai
 from django.conf import settings
-from apps.common_utils.firebase_service import get_user_categories, add_transaction, get_transactions
+from apps.common_utils.firebase_service import get_user_categories, add_transaction, get_transactions, set_document
+from google.cloud.firestore_v1.base_query import FieldFilter
+from apps.common_utils.firebase_config import db # Import db
 from datetime import datetime # Import the datetime module
 
 # --- Service functions for Budgeting ---
@@ -11,11 +13,45 @@ from datetime import datetime # Import the datetime module
 def get_categories(user_id):
     return get_user_categories(user_id)
 
-def set_budget(user_id, category, budget):
-    add_transaction(user_id, {"category": category, "budget": budget}, "budgets")
+def set_budget(user_id, category, budget, period):
+    budgets_ref = db.collection("budgets")
+    
+    # Query for an existing budget for this user and category
+    query = budgets_ref.where(filter=FieldFilter("userId", "==", user_id)).where(filter=FieldFilter("category", "==", category)).limit(1)
+    docs = query.get()
+
+    doc_id = None
+    for doc in docs:
+        doc_id = doc.id
+        break # Should only be one, due to limit(1)
+
+    budget_data = {
+        "userId": user_id,
+        "category": category,
+        "budget": budget,
+        "period": period
+    }
+
+    if doc_id:
+        # Update existing budget
+        set_document("budgets", doc_id, budget_data)
+    else:
+        # Create new budget (Firestore will auto-generate ID)
+        add_transaction(user_id, budget_data, "budgets") # Re-using add_transaction for new entries
 
 def get_budgets(user_id):
-    return get_transactions(user_id, "budgets")
+    all_budgets = get_transactions(user_id, "budgets")
+    latest_budgets = {}
+
+    for budget_doc in all_budgets:
+        category = budget_doc.get('category')
+        doc_id = budget_doc.get('id') # Assuming 'id' field is added by get_transactions
+
+        if category:
+            if category not in latest_budgets or (doc_id and doc_id > latest_budgets[category].get('id', '')):
+                latest_budgets[category] = budget_doc
+    
+    return list(latest_budgets.values())
 
 # --- Service functions for Smart Saver (Stateless) ---
 

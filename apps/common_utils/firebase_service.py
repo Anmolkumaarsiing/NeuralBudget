@@ -10,20 +10,39 @@ FIREBASE_SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signI
 DEFAULT_PROFILE_PIC_URL = os.path.join(settings.MEDIA_URL, 'profile_photos', 'default_profile.jpg') # Assuming .jpeg
 
 def get_user_categories(user_id):
-    """Fetch categories for a specific user."""
+    """Fetch categories for a specific user from the single document storage."""
+    user_categories_doc_ref = db.collection("user_categories").document(user_id)
+    doc = user_categories_doc_ref.get()
+
+    if doc.exists:
+        categories_data = doc.to_dict()
+        categories = categories_data.get('categories', [])
+        return categories
+    else:
+        return []
+
+def delete_user_categories(user_id):
+    """Delete all categories for a specific user."""
     categories_ref = db.collection("categories").where(filter=FieldFilter("userId", "==", user_id))
     docs = categories_ref.stream()
-    return [doc.to_dict()["name"] for doc in docs]
+    print("Categories to be deleted:", [doc.to_dict() for doc in docs])  # Debugging line
+    for doc in docs:
+        doc.reference.delete()
+    
 
 def copy_default_categories_to_user(user_id):
-    """Copies default categories to a new user."""
+    """Copies default categories to a new user, storing them in a single document."""
     default_categories_ref = db.collection('default_categories').stream()
+    default_category_names = []
     for category in default_categories_ref:
-        category_data = category.to_dict()
-        db.collection('categories').add({
-            'name': category_data['name'],
-            'userId': user_id
-        })
+        default_category_names.append(category.to_dict()['name'])
+
+    # Store all categories in a single document for the user
+    user_categories_doc_ref = db.collection('user_categories').document(user_id)
+    user_categories_doc_ref.set({
+        'categories': default_category_names,
+        'userId': user_id # Keep userId for potential future queries
+    })
 
 def add_category(user_id, category_name):
     """Adds a new category for a user."""
@@ -40,6 +59,13 @@ def add_transaction(user_id, transaction_data,collection):
         "userId": user_id,
         **transaction_data
     })
+
+def set_document(collection_name, doc_id, data):
+    """
+    Sets (creates or updates) a document in a specified collection with a given ID.
+    """
+    doc_ref = db.collection(collection_name).document(doc_id)
+    doc_ref.set(data)
 
 def create_user_profile(uid, email, display_name):
     """Creates an initial user profile document in Firestore."""

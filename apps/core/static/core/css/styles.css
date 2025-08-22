@@ -85,8 +85,8 @@ body {
 
 .content {
   flex-grow: 1;
-  padding: 20px;
-  padding-top: calc(var(--topbar-height) + 20px);
+  /* padding: 20px; */
+  /* padding-top: calc(var(--topbar-height) + 20px); */
   background-color: var(--light-surface);
   transition: background-color var(--transition-standard), padding var(--transition-standard);
 }

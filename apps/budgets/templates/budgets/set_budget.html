@@ -1,7 +1,7 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Set Budget{% endblock %}
+{% block title %}Budget Dashboard - Neural Budget AI{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'budgets/css/set_budget.css' %}">
@@ -9,35 +9,160 @@
 
 {% block extra_js %}
     <script type="module" src="{% static 'budgets/js/budget.js' %}"></script>
+    {{ categories|json_script:"processed_categories_json" }}
 {% endblock %}
 
 {% block content %}
-<section class="set-budget">
-    <div class="budget-container">
-        <h2>Set Your Monthly Budget</h2>
-        <form method="POST">
-            {% csrf_token %}
-            <div class="budget-input">
-                <label for="category">Select Category:</label>
-                <select id="category" name="category">
-                    {% for category in categories %}
-                        <option value="{{ category }}">{{ category }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="budget-input">
-                <label for="budget-amount">Enter Budget Amount:</label>
-                <input type="number" id="budget-amount" name="budget" placeholder="₹ Enter amount">
-            </div>
+<div class="budget-dashboard">
     
-            <div class="budget-progress">
-                <span>Budget Spent</span>
-                <progress id="budget-progress-bar" value="30" max="100"></progress>
-                <span id="budget-percentage">30%</span>
-            </div>
+
     
-            <button type="submit" class="set-budget-btn">Save Budget</button>
-        </form>
+    <!-- Main Budget Display Area -->
+    <div class="budget-main">
+
+
+        <div class="budget-stats">
+            <div class="stat-card total">
+                <div class="stat-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>₹{{ total_budget|default:"0" }}</h3>
+                    <p>Total Budget</p>
+                </div>
+            </div>
+            <div class="stat-card spent">
+                <div class="stat-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>₹{{ total_spent|default:"0" }}</h3>
+                    <p>Total Spent</p>
+                </div>
+            </div>
+            <div class="stat-card remaining">
+                <div class="stat-icon">
+                    <i class="fas fa-piggy-bank"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>₹{{ total_remaining|default:"0" }}</h3>
+                    <p>Remaining</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="budget-grid">
+            {% for category in categories %}
+            <div class="budget-card" data-category="{{ category.name }}">
+                <div class="budget-card-header">
+                    <div class="category-info">
+                        <i class="fas {{ category.icon }}"></i>
+                        <h3>{{ category.display_name }}</h3>
+                    </div>
+                    <div class="budget-amount">
+                        ₹{{ category.budget_amount|default:"0" }}
+                    </div>
+                </div>
+                
+                <div class="budget-progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill {% if category.progress_percentage <= 50 %}green{% elif category.progress_percentage <= 80 %}yellow{% else %}red{% endif %}" style="width: {{ category.progress_percentage|default:0 }}%"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span class="spent">₹{{ category.spent_amount|default:"0" }}</span>
+                        <span class="percentage {% if category.progress_percentage <= 50 %}green-text{% elif category.progress_percentage <= 80 %}yellow-text{% else %}red-text{% endif %}">{{ category.progress_percentage|default:0 }}%</span>
+                    </div>
+                </div>
+
+                <div class="budget-card-footer">
+                    <span class="remaining">₹{{ category.remaining|default:"0" }} left</span>
+                    <button class="edit-btn" onclick="editBudget('{{ category.name }}', {{ category.budget_amount|default:0 }})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-budgets">
+                <i class="fas fa-plus-circle"></i>
+                <h3>No budgets set yet</h3>
+                <p>Use the form on the right to create your first budget</p>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-</section>
+
+    <!-- Sidebar Budget Form -->
+    <div class="budget-sidebar">
+        <div class="form-container">
+            <h2>Set Budget</h2>
+            
+            <form method="POST" id="budgetForm">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="category">
+                        <i class="fas fa-list"></i>
+                        Select Category
+                    </label>
+                    <select id="category" name="category" required>
+                        <option value="">Choose category</option>
+                        {% for cat in user_available_categories %}
+                            <option value="{{ cat.value }}">{{ cat.display }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="budget-amount">
+                        <i class="fas fa-rupee-sign"></i>
+                        Budget Amount
+                    </label>
+                    <input type="number" 
+                           id="budget-amount" 
+                           name="budget" 
+                           placeholder="Enter amount"
+                           min="1"
+                           step="0.01"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="period">
+                        <i class="fas fa-calendar"></i>
+                        Budget Period
+                    </label>
+                    <select id="period" name="period" required>
+                        <option value="monthly" selected>Monthly</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+
+                <!-- Current Progress Display -->
+                <div class="current-progress" id="currentProgress" style="display: none;">
+                    <h4>Current Progress</h4>
+                    <div class="mini-progress">
+                        <div class="mini-progress-bar">
+                            <div class="mini-progress-fill" id="miniProgressFill"></div>
+                        </div>
+                        <div class="mini-progress-text">
+                            <span id="miniSpent">₹0</span> / <span id="miniBudget">₹0</span>
+                        </div>
+                    </div>
+                    <div class="mini-percentage" id="miniPercentage">0% used</div>
+                </div>
+
+                <button type="submit" class="save-btn">
+                    <i class="fas fa-save"></i>
+                    Save Budget
+                </button>
+
+                <button type="button" class="reset-btn" id="resetForm">
+                    <i class="fas fa-refresh"></i>
+                    Reset Form
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
