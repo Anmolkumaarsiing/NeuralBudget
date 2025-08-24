@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Logout confirmation
-    c// Handle logout confirmation (Fetch API version)
+    // Handle logout confirmation (Fetch API version)
     document.addEventListener('DOMContentLoaded', function () {
         const signOutLink = document.getElementById('signOutLink');
         if (signOutLink) {

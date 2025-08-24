@@ -1,11 +1,11 @@
 import os
 import sys
 import warnings
+import logging
+from datetime import datetime
 from dotenv import load_dotenv
 from requests.exceptions import ReadTimeout
-from google.cloud.firestore import Client
 from google.api_core.exceptions import GoogleAPIError
-from google.cloud.firestore_v1 import FieldFilter
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
@@ -20,12 +20,22 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 # --- Project Path Setup ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
-# --- Firestore Client ---
-from apps.common_utils.firebase_config import db
+# --- Firebase Service ---
 from apps.common_utils.firebase_service import get_transactions
 
 # --- CONFIGURATION ---
 load_dotenv()
+
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('chatbot.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 LLM_REPO_ID = "mistralai/Mixtral-8x7B-Instruct-v0.1"
@@ -34,93 +44,115 @@ VECTOR_COLLECTION_NAME = "user_transaction_vectors"
 CHROMA_PERSIST_DIR = "./chroma_db"
 
 # --- INIT SERVICES ---
-print("Initializing AI services...")
+_initialized_services = {
+    "embedding_service": None,
+    "llm": None,
+    "vector_store": None
+}
 
-try:
-    embedding_service = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
-    print("✅ Embedding service initialized.")
-except Exception as e:
-    print(f"❌ Error initializing embedding service: {e}")
-    sys.exit(1)
+def _initialize_ai_services():
+    """Initialize AI services with proper error handling and logging"""
+    global _initialized_services
+    
+    if all(_initialized_services.values()):
+        logger.info("AI services already initialized. Reusing existing instances.")
+        return _initialized_services["embedding_service"], _initialized_services["llm"], _initialized_services["vector_store"]
 
-try:
-    llm_endpoint = HuggingFaceEndpoint(
-        repo_id=LLM_REPO_ID,
-        huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN"),
-        max_new_tokens=128,
-        temperature=0.1,
-        timeout=60,
-    )
-    llm = ChatHuggingFace(llm=llm_endpoint)
-    print("✅ LLM initialized with ChatHuggingFace (Mixtral).")
-except Exception as e:
-    print(f"❌ Error initializing Mixtral LLM: {e}")
-    print("Attempting fallback to zephyr-7b-beta...")
+    logger.info("Initializing AI services...")
+    start_time = datetime.now()
+
+    # Initialize Embedding Service
+    try:
+        embedding_service = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
+        _initialized_services["embedding_service"] = embedding_service
+        logger.info(f"✅ Embedding service initialized: {EMBEDDING_MODEL_NAME}")
+    except Exception as e:
+        logger.error(f"❌ Failed to initialize embedding service: {e}")
+        raise RuntimeError(f"Embedding service initialization failed: {e}")
+
+    # Initialize LLM
     try:
         llm_endpoint = HuggingFaceEndpoint(
-            repo_id=FALLBACK_LLM_REPO_ID,
+            repo_id=LLM_REPO_ID,
             huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN"),
-            max_new_tokens=128,
+            max_new_tokens=256,
             temperature=0.1,
             timeout=60,
         )
         llm = ChatHuggingFace(llm=llm_endpoint)
-        print("✅ LLM initialized with ChatHuggingFace.")
+        _initialized_services["llm"] = llm
+        logger.info(f"✅ Primary LLM initialized: {LLM_REPO_ID}")
     except Exception as e:
-        print(f"❌ Error initializing fallback LLM: {e}")
-        print("Ensure your HUGGINGFACEHUB_API_TOKEN is set and the model is available.")
-        sys.exit(1)
+        logger.warning(f"⚠️ Primary LLM failed: {e}. Trying fallback...")
+        try:
+            llm_endpoint = HuggingFaceEndpoint(
+                repo_id=FALLBACK_LLM_REPO_ID,
+                huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN"),
+                max_new_tokens=256,
+                temperature=0.1,
+                timeout=60,
+            )
+            llm = ChatHuggingFace(llm=llm_endpoint)
+            _initialized_services["llm"] = llm
+            logger.info(f"✅ Fallback LLM initialized: {FALLBACK_LLM_REPO_ID}")
+        except Exception as fallback_e:
+            logger.error(f"❌ Both primary and fallback LLM failed: {fallback_e}")
+            raise RuntimeError(f"LLM initialization failed: {fallback_e}")
 
-try:
-    print("Testing Firestore connection...")
-    test_doc = db.collection("test").document("connection_test").set({"test": "ok"})
-    print("✅ Firestore connection test successful.")
-    vector_store = Chroma(
-        collection_name=VECTOR_COLLECTION_NAME,
-        embedding_function=embedding_service,
-        persist_directory=CHROMA_PERSIST_DIR
-    )
-    print(f"✅ Vector store initialized in '{VECTOR_COLLECTION_NAME}' collection.")
-except GoogleAPIError as e:
-    print(f"❌ Firestore error: {e}")
-    print("Check your Firebase service account key (firebase_key.json) and permissions.")
-    sys.exit(1)
-except Exception as e:
-    print(f"❌ Error initializing Chroma vector store: {e}")
-    sys.exit(1)
-
-print("Services initialized.")
-
-# --- INDEXING ---
-# --- INDEXING ---
-def index_user_transactions(user_id: str, force_reindex=False):
-    print(f"Starting indexing for user: {user_id} (force_reindex={force_reindex})...")
+    # Initialize Vector Store
     try:
-        # Fetch transactions and income using get_transactions
-        transactions_data = get_transactions(user_id, "expenses", limit=1000) # Increased limit for comprehensive indexing
-        income_data = get_transactions(user_id, "incomes", limit=1000) # Assuming an "income" collection
+        vector_store = Chroma(
+            collection_name=VECTOR_COLLECTION_NAME,
+            embedding_function=embedding_service,
+            persist_directory=CHROMA_PERSIST_DIR
+        )
+        _initialized_services["vector_store"] = vector_store
+        logger.info(f"✅ Vector store initialized: {VECTOR_COLLECTION_NAME}")
+    except Exception as e:
+        logger.error(f"❌ Vector store initialization failed: {e}")
+        raise RuntimeError(f"Vector store initialization failed: {e}")
+
+    init_time = (datetime.now() - start_time).total_seconds()
+    logger.info(f"✅ All AI services initialized successfully in {init_time:.2f}s")
+    
+    return embedding_service, llm, vector_store
+
+def index_user_transactions(user_id: str, embedding_service, vector_store, force_reindex=False):
+    """Index user transactions and income data with comprehensive logging"""
+    logger.info(f"Starting indexing for user: {user_id} (force_reindex={force_reindex})")
+    start_time = datetime.now()
+    
+    try:
+        # Fetch transactions and income
+        transactions_data = get_transactions(user_id, "expenses", limit=1000)
+        income_data = get_transactions(user_id, "incomes", limit=1000)
+        
+        logger.info(f"Retrieved {len(transactions_data)} transactions and {len(income_data)} income records")
 
         all_docs = []
+        
         # Process transactions
         for tx in transactions_data:
-            # Ensure 'id' is present for Document creation
             if 'id' not in tx:
-                tx['id'] = tx.get('source_transaction_id', 'unknown_id') # Fallback if 'id' is missing
+                tx['id'] = tx.get('source_transaction_id', f'tx_{datetime.now().timestamp()}')
             all_docs.append({'data': tx, 'collection': 'transactions'})
 
         # Process income
         for inc in income_data:
             if 'id' not in inc:
-                inc['id'] = inc.get('source_transaction_id', 'unknown_id') # Fallback if 'id' is missing
+                inc['id'] = inc.get('source_transaction_id', f'inc_{datetime.now().timestamp()}')
             all_docs.append({'data': inc, 'collection': 'income'})
 
-        documents_to_index = []
-        doc_count = len(all_docs)
-        if doc_count == 0:
-            print(f"No new transactions or income to index for user: {user_id} (Found {doc_count} documents)")
+        if not all_docs:
+            logger.info(f"No documents found for user: {user_id}")
             return False
 
-        print(f"Processing {doc_count} transaction/income doc(s)...")
+        documents_to_index = []
+        processed_count = 0
+        skipped_count = 0
+
+        logger.info(f"Processing {len(all_docs)} document(s)...")
+        
         for item in all_docs:
             raw = item['data']
             collection_type = item['collection']
@@ -128,119 +160,134 @@ def index_user_transactions(user_id: str, force_reindex=False):
 
             try:
                 tx_payload = raw.get("transaction") if isinstance(raw.get("transaction"), dict) else raw
-                required_fields = ["amount", "category", "date"] if collection_type == 'transactions' else ["amount", "source", "date"]
-                missing = [f for f in required_fields if f not in tx_payload]
-                if missing:
-                    print(f"❌ Doc {doc_id} from {collection_type} missing fields: {missing}. Full doc keys: {list(raw.keys())}")
-                    continue
-
-                amount = tx_payload.get('amount')
-                date = tx_payload.get('date')
-
+                
+                # Validate required fields
                 if collection_type == 'transactions':
-                    category_raw = tx_payload.get("category", "")
+                    required_fields = ["amount", "category", "date"]
+                    category_raw = tx_payload.get("category", "uncategorized")
                     category_norm = category_raw.strip().lower()
                     transaction_name = tx_payload.get("name", "").strip()
+                    
                     compact_content = (
-                        f"type: expense, amount: {amount}, "
-                        f"category: {category_norm}, date: {date}, "
-                        f"name: {transaction_name}"
+                        f"Transaction: {transaction_name or 'unnamed'} "
+                        f"Amount: ₹{tx_payload.get('amount', 0)} "
+                        f"Category: {category_norm} "
+                        f"Date: {tx_payload.get('date', 'unknown')} "
+                        f"Type: expense"
                     )
-                    metadata_type = "expense"
-                    metadata_category = category_norm
-                    metadata_source = None
-                    metadata_name = transaction_name
-                else: # income
-                    source_raw = tx_payload.get("source", "")
+                    
+                    metadata = {
+                        "user_id": user_id,
+                        "source_document_id": doc_id,
+                        "type": "expense",
+                        "amount": float(tx_payload.get('amount', 0)),
+                        "date": tx_payload.get('date'),
+                        "category": category_norm,
+                        "source": None,
+                        "name": transaction_name
+                    }
+                else:  # income
+                    required_fields = ["amount", "source", "date"]
+                    source_raw = tx_payload.get("source", "unknown")
                     source_norm = source_raw.strip().lower()
                     transaction_name = tx_payload.get("name", "").strip()
+                    
                     compact_content = (
-                        f"type: income, amount: {amount}, "
-                        f"source: {source_norm}, date: {date}, "
-                        f"name: {transaction_name}"
+                        f"Income: {transaction_name or 'unnamed'} "
+                        f"Amount: ₹{tx_payload.get('amount', 0)} "
+                        f"Source: {source_norm} "
+                        f"Date: {tx_payload.get('date', 'unknown')} "
+                        f"Type: income"
                     )
-                    metadata_type = "income"
-                    metadata_category = None
-                    metadata_source = source_norm
-                    metadata_name = transaction_name
+                    
+                    metadata = {
+                        "user_id": user_id,
+                        "source_document_id": doc_id,
+                        "type": "income",
+                        "amount": float(tx_payload.get('amount', 0)),
+                        "date": tx_payload.get('date'),
+                        "category": None,
+                        "source": source_norm,
+                        "name": transaction_name
+                    }
+
+                # Check for missing required fields
+                missing = [f for f in required_fields if f not in tx_payload or not tx_payload[f]]
+                if missing:
+                    logger.warning(f"Document {doc_id} missing fields: {missing}, skipping")
+                    skipped_count += 1
+                    continue
 
                 doc_to_add = Document(
                     page_content=compact_content,
-                    metadata={
-                        "user_id": user_id,
-                        "source_document_id": doc_id,
-                        "type": metadata_type,
-                        "amount": amount,
-                        "date": date,
-                        "category": metadata_category,
-                        "source": metadata_source,
-                        "name": metadata_name # Add the transaction name to metadata
-                    }
+                    metadata=metadata
                 )
                 documents_to_index.append(doc_to_add)
+                processed_count += 1
+
             except Exception as e:
-                print(f"❌ Error processing document {doc_id} from {collection_type}: {e}")
+                logger.error(f"Error processing document {doc_id} from {collection_type}: {e}")
+                skipped_count += 1
                 continue
 
         if not documents_to_index:
-            print(f"No valid documents to index after filtering for user: {user_id}")
+            logger.warning(f"No valid documents to index for user: {user_id}")
             return False
 
-        # Filter complex metadata before adding to vector store
-        filtered_documents_to_index = filter_complex_metadata(documents_to_index)
-
-        print("Generating test embedding to verify vector config...")
-        try:
-            test_embedding = embedding_service.embed_query(filtered_documents_to_index[0].page_content)
-            print("✅ Sample embedding generated. Length:", len(test_embedding))
-        except Exception as e:
-            print(f"❌ Error generating test embedding: {e}")
-            return False
-
-        print(f"Adding {len(filtered_documents_to_index)} document(s) to '{VECTOR_COLLECTION_NAME}'...")
-        vector_store.add_documents(documents=filtered_documents_to_index)
+        # Filter complex metadata and add to vector store
+        filtered_documents = filter_complex_metadata(documents_to_index)
+        logger.info(f"Adding {len(filtered_documents)} documents to vector store")
+        
+        vector_store.add_documents(documents=filtered_documents)
+        
+        # Persist if supported
         try:
             if hasattr(vector_store, "persist"):
                 vector_store.persist()
-        except Exception:
-            pass
+        except Exception as persist_e:
+            logger.warning(f"Vector store persist failed: {persist_e}")
 
-        print(f"✅ Indexing complete for user: {user_id}")
+        index_time = (datetime.now() - start_time).total_seconds()
+        logger.info(f"✅ Indexing complete for user: {user_id} "
+                   f"(Processed: {processed_count}, Skipped: {skipped_count}, Time: {index_time:.2f}s)")
         return True
 
-    except GoogleAPIError as e:
-        print(f"❌ Firestore error during indexing: {e}")
-        print("Check Firestore permissions and ensure the 'transactions' and 'income' collections exist.")
-        return False
     except Exception as e:
-        print(f"❌ Error during indexing: {e}")
+        logger.error(f"❌ Indexing failed for user {user_id}: {e}")
         return False
 
-# --- RAG ---
-def create_rag_chain_for_user(user_id: str):
+def create_rag_chain_for_user(user_id: str, vector_store, llm):
+    """Create RAG chain with concise prompting"""
     try:
         retriever = vector_store.as_retriever(
             search_kwargs={
-                "k": 5,
+                "k": 8,
                 "filter": {"user_id": user_id}
             }
         )
 
-        template = """
-        You are "Neural Budget", a friendly financial assistant.
-        If the user's query is a greeting (e.g., "Hi", "Hello", "How are you?"), respond with a friendly welcome message like "Hello! How can I help you with your finances today?".
-        Otherwise, sum the 'amount' for transactions where 'category' or 'name' matches the category or name mentioned in the question: {question} (case-insensitive, treat 'food' and 'Groceries' as equivalent).
-        Provide the answer concisely in Indian Rupees (₹), e.g., "You've spent ₹X.XX on [category/name] so far. Remember to keep track of your spending to stay on budget!" Do NOT include document IDs, metadata, or detailed breakdowns unless specifically asked.
-        If no relevant transactions are found, say: "I don't have enough information to answer."
+        # Concise prompt template
+        template = """You are "Neural Budget", a helpful AI financial assistant.
 
-        CONTEXT:
-        {context}
+RESPONSE RULES:
+1. For greetings ONLY (Hi, Hello, Hey, etc.): Respond with "Hello! How can I help with your finances today?" - DO NOT include any transaction data.
+2. For spending questions: Give the amount in ₹ format + one short tip (max 25 words).
+3. If no data found: Say "No [category] expenses found in your records."
+4. Keep responses under 3 sentences total.
+5. Always respond in a friendly and professional tone.
+6. If the user is argueing or rude, stay calm and polite.
+7. If you don't know the answer, say "I'm not sure about that" and offer a financial advice.
 
-        QUESTION:
-        {question}
+EXAMPLES:
+- "You've spent ₹1,500 on laundry. Consider bulk washing to save money."
+- "No dining expenses found in your records."
+- "Hello! How can I help with your finances today?"
 
-        ANSWER:
-        """
+CONTEXT: {context}
+QUESTION: {question}
+
+RESPONSE:"""
+
         prompt = ChatPromptTemplate.from_template(template)
 
         rag_chain = (
@@ -249,62 +296,106 @@ def create_rag_chain_for_user(user_id: str):
             | llm
             | StrOutputParser()
         )
+        
+        logger.info(f"RAG chain created successfully for user: {user_id}")
         return rag_chain
+        
     except Exception as e:
-        print(f"❌ Error creating RAG chain: {e}")
+        logger.error(f"Failed to create RAG chain for user {user_id}: {e}")
         return None
 
-# --- RUN ---
 def get_chatbot_response(user_id: str, message: str) -> str:
     """
-    Provides a chatbot response based on user query and indexed transactions.
+    Main function to get chatbot response with comprehensive logging
     """
+    logger.info(f"Processing query for user {user_id}: '{message[:50]}...' ")
+    start_time = datetime.now()
+    
     try:
-        # Ensure user transactions are indexed
-        index_user_transactions(user_id)
+        # Initialize AI services
+        embedding_service, llm, vector_store = _initialize_ai_services()
+        
+        # Index user transactions
+        indexing_success = index_user_transactions(user_id, embedding_service, vector_store)
+        if not indexing_success:
+            logger.warning(f"Indexing failed for user {user_id}, proceeding with existing data")
 
-        # Create RAG chain for the user
-        user_rag_chain = create_rag_chain_for_user(user_id=user_id)
+        # Create RAG chain
+        user_rag_chain = create_rag_chain_for_user(user_id=user_id, vector_store=vector_store, llm=llm)
+        
+        if not user_rag_chain:
+            error_msg = "Failed to initialize the financial assistant. Please try again later."
+            logger.error(f"RAG chain creation failed for user {user_id}")
+            return error_msg
 
-        if user_rag_chain:
-            response = user_rag_chain.invoke(message)
-            return response
-        else:
-            return "I'm sorry, I couldn't initialize the financial assistant. Please try again later."
+        # Get response
+        response = user_rag_chain.invoke(message)
+        
+        # Clean up response
+        if isinstance(response, str):
+            response = response.strip()
+        
+        response_time = (datetime.now() - start_time).total_seconds()
+        logger.info(f"✅ Response generated for user {user_id} in {response_time:.2f}s")
+        
+        return response
+
     except ReadTimeout as e:
-        return f"I'm experiencing a timeout. Please check your internet connection or try again later. Error: {e}"
+        error_msg = "I'm experiencing a timeout. Please check your internet connection or try again in a moment."
+        logger.error(f"ReadTimeout for user {user_id}: {e}")
+        return error_msg
+        
     except Exception as e:
-        return f"An error occurred while processing your request: {e}"
+        error_msg = f"I encountered an error while processing your request. Please try again later."
+        logger.error(f"Unexpected error for user {user_id}: {e}")
+        return error_msg
 
-# --- RUN ---
+# --- STANDALONE TESTING ---
 if __name__ == '__main__':
-    current_user_id = "nQUxkJ1HkZZIPVboQytBLpbC4za2"
-
-    index_user_transactions(current_user_id, force_reindex=True)
-
-    print(f"\nCreating RAG chain for user: {current_user_id}")
-    user_rag_chain = create_rag_chain_for_user(user_id=current_user_id)
-
-    if user_rag_chain:
-        print("--- Ready to Chat ---")
-        questions = [
-            "How much did I spend on Groceries?",
-            "How much did I spend on Transport?",
-            "How much did I spend on Entertainment?",
-            "How much did I spend on Utilities?",
-            "How much did I spend on Dining?"
-        ]
-        for question in questions:
-            print(f"Q: {question}")
-            try:
-                response = user_rag_chain.invoke(question)
-                print(f"A: {response}\n")
-            except ReadTimeout as e:
-                print(f"❌ ReadTimeoutError processing question: {e}")
-                print(f"Check your network connection or increase the timeout in HuggingFaceEndpoint.")
-            except Exception as e:
-                print(f"❌ Error processing question: {e}")
-                print(f"Check if LLM is accessible with your API token.")
-                print(f"Using fallback LLM: {FALLBACK_LLM_REPO_ID}.")
-    else:
-        print("❌ Failed to create RAG chain. Cannot process questions.")
+    # Test user ID
+    test_user_id = "nQUxkJ1HkZZIPVboQytBLpbC4za2"
+    
+    logger.info("=== Starting Chatbot Service Test ===")
+    
+    try:
+        # Initialize services
+        embedding_service, llm, vector_store = _initialize_ai_services()
+        
+        # Index transactions
+        index_success = index_user_transactions(test_user_id, embedding_service, vector_store, force_reindex=True)
+        
+        if index_success:
+            # Create RAG chain
+            user_rag_chain = create_rag_chain_for_user(user_id=test_user_id, vector_store=vector_store, llm=llm)
+            
+            if user_rag_chain:
+                logger.info("=== Testing Sample Queries ===")
+                
+                test_queries = [
+                    "Hello! How are you?",
+                    "How much did I spend on groceries this month?",
+                    "What's my total spending on transport?",
+                    "Show me my entertainment expenses",
+                    "How much income did I receive from salary?",
+                    "What's my biggest expense category?"
+                ]
+                
+                for query in test_queries:
+                    logger.info(f"Testing query: {query}")
+                    try:
+                        response = user_rag_chain.invoke(query)
+                        logger.info(f"Response: {response[:100]}...")
+                        print(f"\n🔸 Q: {query}")
+                        print(f"🔹 A: {response}\n")
+                    except Exception as e:
+                        logger.error(f"Query failed: {e}")
+                        print(f"❌ Query failed: {e}")
+            else:
+                logger.error("Failed to create RAG chain")
+        else:
+            logger.error("Failed to index transactions")
+            
+    except Exception as e:
+        logger.error(f"Test execution failed: {e}")
+        
+    logger.info("=== Test Complete ===")

@@ -2,6 +2,8 @@ from django.http import JsonResponse
 from apps.common_utils.firebase_service import get_transactions
 from apps.common_utils.auth_utils import get_user_id
 from apps.budgets.services import get_budgets
+from datetime import datetime
+from dateutil import parser
 
 # Define collection names
 EXPENSE_COLLECTION = 'expenses'
@@ -53,7 +55,7 @@ def get_dashboard_data(request):
         total_income = sum(float(transaction.get('amount', 0)) for transaction in incomes)
         
         # Calculate total budget dynamically
-        total_budget = sum(float(budget.get('budget', 0)) for budget in user_budgets)
+        total_budget = sum(float(str(budget.get('budget', 0)).replace('₹', '').replace(',', '').strip()) for budget in user_budgets)
 
         # Process expenses for category chart
         expense_categories = {}
