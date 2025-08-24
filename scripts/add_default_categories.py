@@ -20,7 +20,7 @@ if __name__ == "__main__":
     print(f"Attempting to add default categories for user ID: {user_id}")
 
     try:
-        # delete_user_categories(user_id)  # Clear existing categories to avoid duplicates
+        delete_user_categories(user_id)  # Clear existing categories to avoid duplicates
         copy_default_categories_to_user(user_id)
         print(get_user_categories(user_id))
         print(f"Successfully added default categories for user ID: {user_id}")

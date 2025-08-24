@@ -8,11 +8,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/chatbot.css' %}">
     <link rel="stylesheet" href="{% static 'core/css/sidebar-new.css' %}"> {# Sidebar specific CSS #}
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <div id="chatbot-component" data-api-url="{% url 'core:chatbot_api' %}">
+    <div id="chatbot-component" data-api-url="{% url 'ml_features:chatbot_response' %}">
         {% include 'core/chatbot.html' %}
     </div>
     <script>
