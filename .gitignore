@@ -18,4 +18,4 @@ __pycache__/
 *.pyd
 GEMINI.md
 media/
-chroma_db/
+/chroma_db
