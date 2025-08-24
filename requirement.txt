@@ -17,4 +17,9 @@ langchain_community
 langchain_chroma
 python-decouple
 google.generativeai
-sentence_transformers
+langchain
+langchain-core
+langchain-google-firestore
+chromadb
+sentence-transformers
+huggingface-hub
