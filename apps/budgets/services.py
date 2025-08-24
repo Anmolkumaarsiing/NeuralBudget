@@ -1,6 +1,6 @@
 # in apps/budgets/services.py
 
-import json
+import json,logging
 import google.generativeai as genai
 from django.conf import settings
 from apps.common_utils.firebase_service import get_user_categories, add_transaction, get_transactions, set_document
@@ -57,40 +57,49 @@ def get_budgets(user_id):
 
 def create_smart_saver_plan(data):
     """
-    Calls Gemini to generate a warm, friendly 'Smart Saver' plan
-    WITHOUT saving anything to the database — now budget-aware and realistic.
-    Refuses impossible savings targets.
+    Generate a warm, budget-aware 'Smart Saver' plan using Gemini, JSON output ONLY.
+    Impossible goals are rejected with a helpful message, and Gemini JSON is fully validated.
     """
+    logger = logging.getLogger("savi.plan")
 
-    # Convert values to numbers safely
+    # --- INPUT VALIDATION ---
     try:
         income = float(data.get('income', 0))
         expenses = float(data.get('expenses', 0))
         goal_amount = float(data.get('goal_amount', 0))
         timeframe = int(data.get('timeframe', 0))
-    except ValueError:
-        return {
-            "title": "Invalid Input ❌",
-            "summary": "Income, expenses, goal amount, and timeframe must be numbers.",
-            "monthly_savings_target": 0,
-            "plan_steps": [],
-            "chart_data": {"labels": [], "values": []}
+    except (ValueError, TypeError) as e:
+        logger.warning(f"Invalid numeric input: {e}")
+        return {"title": "Invalid Input ❌",
+                "summary": "Income, expenses, goal amount, and timeframe must be numbers.",
+                "monthly_savings_target": 0,
+                "plan_steps": [],
+                "chart_data": {"labels": [], "values": []}
+        }
+
+    # Extra edge case guards
+    if any(n < 0 for n in [income, expenses, goal_amount, timeframe]) or timeframe == 0 or income == 0:
+        logger.warning("Zero or negative value in inputs")
+        return {"title": "Invalid Input ❌",
+                "summary": "All numbers must be positive and timeframe cannot be zero. Please correct and try again.",
+                "monthly_savings_target": 0,
+                "plan_steps": [],
+                "chart_data": {"labels": [], "values": []}
         }
 
     possible_monthly_saving = max(0, income - expenses)
     total_possible_saving = possible_monthly_saving * timeframe
 
-    # Reject if goal is not possible
     if possible_monthly_saving <= 0 or total_possible_saving < goal_amount:
+        alt_timeframe = (goal_amount // possible_monthly_saving + 1) if possible_monthly_saving > 0 else None
+        alt_msg = (f"To reach ₹{goal_amount}, try a plan of about {int(alt_timeframe)} months." if alt_timeframe else "")
+        summary = (f"Your income is ₹{income} and expenses are ₹{expenses}. "
+                   f"You can save only ₹{possible_monthly_saving} per month. "
+                   f"In {timeframe} months, you can save ₹{total_possible_saving}, which is less than your goal (₹{goal_amount}). "
+                   f"{alt_msg}")
         return {
             "title": "Goal Not Possible 😔",
-            "summary": (
-                f"Your monthly income is ₹{income} and your expenses are ₹{expenses}. "
-                f"This means you can save only ₹{possible_monthly_saving} per month. "
-                f"In {timeframe} months, the maximum you can save is ₹{total_possible_saving}, "
-                f"which is less than your goal of ₹{goal_amount}. "
-                "Try reducing your goal amount or increasing your saving period."
-            ),
+            "summary": summary.strip(),
             "monthly_savings_target": possible_monthly_saving,
             "plan_steps": [],
             "chart_data": {
@@ -99,56 +108,49 @@ def create_smart_saver_plan(data):
             }
         }
 
-    # If possible, ask Gemini for a plan
-    prompt = f"""
-        You are 'SAVI', the friendly money buddy in the Neural Budget AI app.
-        Use warm, practical, and encouraging language.
+    # --- PROMPT ENGINEERING ---
+    prompt = (
+        f"You are 'SAVI', a financial wellness buddy for Indians. "
+        f"Generate a clear, actionable savings plan for this user to reach '{data.get('goal_name')}'."
+        "\nRULES:"
+        f"\n- DO NOT EXCEED ₹{possible_monthly_saving} monthly savings."
+        "\n- Give realistic, India-focused tips (no generic or western examples)."
+        "\n- If you cannot suggest any realistic plan, return ONLY this: {{'error': 'Goal impossible'}}."
+        "\n- Plan as JSON with keys: title, summary (<=2 sentences), monthly_savings_target, plan_steps, chart_data."
+        f"\n- Goal: ₹{goal_amount} in {timeframe} months (Income: ₹{income}, Expenses: ₹{expenses}). Tailor tips to '{data.get('goal_name')}'."
+        "\n- Each step: step_number, icon, title, description, potential_savings."
+        f"\n- chart_data: {{'labels':['Month 1',...], 'values':[cumulative_savings]}} for {timeframe} months."
+        "\n--- Begin JSON ---"
+    )
 
-        RULES:
-        - Do not exceed ₹{possible_monthly_saving} in total monthly savings.
-        - Each tip must be realistic for India.
-        - Total savings from tips should be close to ₹{possible_monthly_saving}.
-        - Tailor suggestions for the goal: "{data.get('goal_name')}".
-        - Provide chart data for {timeframe} months (cumulative savings).
+    try:
+        genai.configure(api_key=settings.GEMINI_API_KEY)
+        model = genai.GenerativeModel("gemini-1.5-flash-latest")
+        response = model.generate_content(prompt)
+        logger.info("GenAI called successfully for plan")
 
-        USER DATA:
-        - Monthly Income: ₹{income}
-        - Monthly Expenses: ₹{expenses}
-        - Goal Name: {data.get('goal_name')}
-        - Goal Amount: ₹{goal_amount}
-        - Timeframe: {timeframe} months
-        - Risk Profile: {data.get('risk')}
-        - Saving Style: {data.get('saving_style')}
+        plan_json_text = response.text.strip().lstrip("``````").strip()
+        plan_data = json.loads(plan_json_text)
 
-        Output valid JSON only:
-        {{
-            "title": string,
-            "summary": string,
-            "monthly_savings_target": {possible_monthly_saving},
-            "plan_steps": [
-                {{
-                    "step_number": int,
-                    "icon": string,
-                    "title": string,
-                    "description": string,
-                    "potential_savings": "₹amount/month"
-                }}
-            ],
-            "chart_data": {{
-                "labels": ["Month 1", "Month 2", ...],
-                "values": [numbers]
-            }}
-        }}
-    """
+        # Output validation
+        expected_keys = {"title", "summary", "monthly_savings_target", "plan_steps", "chart_data"}
+        if not isinstance(plan_data, dict) or not expected_keys.issubset(plan_data.keys()):
+            logger.warning("AI responded, but output is missing fields. Output: %s", plan_data)
+            raise ValueError("Model output missing fields")
 
-    genai.configure(api_key=settings.GEMINI_API_KEY)
-    model = genai.GenerativeModel("gemini-1.5-flash-latest")
-    response = model.generate_content(prompt)
-
-    plan_json_text = response.text.strip().replace("```json", "").replace("```", "")
-    plan_data = json.loads(plan_json_text)
-
-    return plan_data
+        return plan_data
+    except Exception as err:
+        logger.exception(f"Error from Gemini or output validation: {err}")
+        return {
+            "title": "Error 🛑",
+            "summary": "Couldn't generate a savings plan due to an internal error. Please try again soon.",
+            "monthly_savings_target": possible_monthly_saving,
+            "plan_steps": [],
+            "chart_data": {
+                "labels": [f"Month {i+1}" for i in range(timeframe)],
+                "values": [possible_monthly_saving * (i+1) for i in range(timeframe)]
+            }
+        }
 
 
 # Smart Categorization
