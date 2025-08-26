@@ -1,0 +1,57 @@
+/* ====== DELETE PAGE STYLES ====== */
+.delete-container {
+  border-left: 6px solid #e74c3c;
+}
+
+.tool-header h1 {
+  font-size: 1.8rem;
+  color: #e74c3c;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.warning-icon {
+  color: #e74c3c;
+}
+
+.warning-text {
+  color: #555;
+  font-size: 1rem;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+
+/* Delete Button */
+.btn-delete {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-delete:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+}
+
+/* Success/Error Messages Overrides */
+.status-message.success {
+  background: #e0f7e9;
+  color: #2b7a4b;
+}
+
+.status-message.error {
+  background: #fdecea;
+  color: #a94442;
+}

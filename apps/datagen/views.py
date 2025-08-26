@@ -26,3 +26,38 @@ def generate_data_api(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+# Add these two new views to your datagen/views.py file
+
+def delete_data_page(request):
+    """Renders the data deletion tool page."""
+    email = get_email(request)
+    return render(request, 'datagen/delete_data.html', {'email': email})
+
+def delete_data_api(request):
+    """API endpoint to handle the data deletion request."""
+    if request.method == 'POST':
+        try:
+            user_id = get_user_id(request)
+            deleted_count = services.delete_all_user_transactions(user_id)
+            return JsonResponse({'message': f'Successfully deleted {deleted_count} transaction records.'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+# Add these two new views to your datagen/views.py file
+
+def admin_overview_page(request):
+    """Renders the main admin overview page."""
+    email = get_email(request)
+    return render(request, 'datagen/overview.html', {'email': email})
+
+def get_admin_analytics_api(request):
+    """API endpoint that provides analytics data to the frontend."""
+    if request.method == 'GET':
+        try:
+            analytics_data = services.get_admin_dashboard_analytics()
+            return JsonResponse(analytics_data)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)

@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Overview - Neural Budget AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'datagen/css/admin_dashboard.css' %}">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-brain"></i> NeuralBudget Admin</h2>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="{% url 'datagen:admin_overview_page' %}" class="active"><i class="fas fa-home"></i> Overview</a>
+                <a href="{% url 'datagen:data_generator_page' %}"><i class="fas fa-database"></i> Data Generator</a>
+                <a href="{% url 'datagen:delete_data_page' %}   "><i class="fas fa-chart-line"></i> Data Deletion</a>
+                <a href="#"><i class="fas fa-user"></i> Profile</a>
+                <a href="#"><i class="fas fa-cog"></i> Settings</a>
+                <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="admin-content">
+            <header class="admin-topbar">
+                <h1>Platform Overview</h1>
+                <div class="user-info">
+                    <span>{{ email|default:'Admin' }}</span>
+                </div>
+            </header>
+            
+            <div class="page-container">
+                <div class="kpi-cards-grid">
+                    <div class="kpi-card">
+                        <div class="card-icon total-users"><i class="fas fa-users"></i></div>
+                        <div class="card-content">
+                            <p>Total Active Users</p>
+                            <h3 id="total-users">--</h3>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="card-icon new-users"><i class="fas fa-user-plus"></i></div>
+                        <div class="card-content">
+                            <p>New Users (Last 7 Days)</p>
+                            <h3 id="new-users">--</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Top 5 Spending Categories (All Users)</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="top-categories-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="{% static 'datagen/js/admin_dashboard.js' %}"></script>
+</body>
+</html>

@@ -1,64 +1,217 @@
-/* --- Data Generator Tool Styles --- */
-.tool-container {
-    max-width: 600px;
-    margin: 0 auto;
-}
-.tool-header { 
-    text-align: center; 
-    margin-bottom: 2rem; 
-}
-.tool-header h1 { 
-    font-size: 28px; 
-    color: #1f2937; 
-}
-.tool-header p { 
-    color: #555; 
+/* ========= Global Reset ========= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+body {
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  background: #f6f8fc;
+  color: #333;
+  line-height: 1.5;
+}
+
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ========= Sidebar ========= */
+.sidebar {
+  width: 250px;
+  background: #1a1c23;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.sidebar-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.sidebar-header h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-menu a {
+  color: #ddd;
+  text-decoration: none;
+  padding: 14px 20px;
+  border-left: 4px solid transparent;
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.sidebar-menu a i {
+  margin-right: 12px;
+  font-size: 1.1rem;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
+  background: #2b2f3a;
+  border-left-color: #4e9eff;
+  color: #fff;
+}
+
+/* ========= Main Content ========= */
+.content {
+  flex: 1;
+  margin-left: 250px;
+  padding: 40px;
+  transition: margin-left 0.3s ease;
+}
+
+.page-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.tool-header h1 {
+  font-size: 2rem;
+  color: #1a1c23;
+  margin-bottom: 10px;
+}
+
+.tool-header p {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* ========= Card Style ========= */
 .card-style {
-    background: #fff; 
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+  background: #fff;
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.08);
+  border-radius: 10px;
+  padding: 25px;
+  margin-top: 20px;
 }
-.generator-form .form-group { 
-    margin-bottom: 1.5rem; 
+
+/* ========= Forms ========= */
+.form-group {
+  margin-bottom: 20px;
 }
-.generator-form label { 
-    display: block; 
-    font-weight: 600; 
-    margin-bottom: 10px; 
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
 }
-.generator-form input {
-    width: 100%; 
-    padding: 12px; 
-    font-size: 16px;
-    border: 1px solid #ddd; 
-    border-radius: 8px;
+
+input[type="number"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  outline: none;
+  transition: 0.3s;
 }
+
+input[type="number"]:focus {
+  border-color: #4e9eff;
+  box-shadow: 0px 0px 5px rgba(78, 158, 255, 0.4);
+}
+
+/* ========= Buttons ========= */
 .btn-generate {
-    width: 100%; 
-    padding: 15px; 
-    font-size: 18px;
-    font-weight: 700; 
-    background-color: rgb(36, 167, 145);
-    color: white; 
-    border: none; 
-    border-radius: 10px; 
-    cursor: pointer;
+  background: #4e9eff;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
+
+.btn-generate:hover {
+  background: #357ecc;
+  transform: translateY(-2px);
+}
+
+/* ========= Status Message ========= */
 .status-message {
-    margin-top: 1.5rem; 
-    padding: 15px;
-    border-radius: 8px; 
-    text-align: center; 
-    font-weight: 600;
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  display: none;
+  font-size: 0.95rem;
 }
-.status-message.success { 
-    background-color: #eaf8ee; 
-    color: #28a745; 
+
+.status-message.success {
+  background: #e0f7e9;
+  color: #2b7a4b;
 }
-.status-message.error { 
-    background-color: #fdecea; 
-    color: #dc3545; 
+
+.status-message.error {
+  background: #fdecea;
+  color: #a94442;
+}
+
+/* ========= Responsive Design ========= */
+@media (max-width: 992px) {
+  .sidebar {
+    width: 70px; /* collapse to icon-only */
+  }
+
+  .sidebar-menu a {
+    justify-content: center;
+    border-left: none;
+    padding: 14px;
+  }
+
+  .sidebar-menu a i {
+    margin: 0;
+  }
+
+  .sidebar-menu a span {
+    display: none; /* hide text */
+  }
+
+  .content {
+    margin-left: 70px;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: absolute;
+    left: -250px; /* hide sidebar */
+    z-index: 1000;
+  }
+  
+  .sidebar.active {
+    left: 0;
+  }
+
+  .content {
+    margin-left: 0;
+    padding: 20px;
+  }
 }

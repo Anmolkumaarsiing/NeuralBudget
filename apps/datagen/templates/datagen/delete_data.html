@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Data Generator - Neural Budget AI</title>
+    <title>AI Data Deletion - Neural Budget AI</title>
     
     <!-- Icon Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -12,6 +12,7 @@
     
     <!-- Page-Specific Stylesheet -->
     <link rel="stylesheet" href="{% static 'datagen/css/data_generator.css' %}">
+    <link rel="stylesheet" href="{% static 'datagen/css/delete_data.css' %}">
 </head>
 <body>
     <div id="chatbot-component" data-api-url="{% url 'core:chatbot_api' %}">
@@ -36,26 +37,22 @@
 
         <!-- MAIN CONTENT -->
         <main class="content">
-            <div class="page-container">
-                <div class="tool-container">
-                    <div class="tool-header">
-                        <h1>AI Data Generator ✨</h1>
-                        <p>Instantly populate your account with realistic transaction data for testing and demos.</p>
-                    </div>
+            <div class="delete-data-page">
+    <div class="delete-container card-style">
+        <div class="tool-header">
+            <h1><i class="fas fa-exclamation-triangle warning-icon"></i> Delete All Transaction Data</h1>
+            <p>This is a permanent action. Once you delete your data, it cannot be recovered. This will remove all entries from your **expenses** and **incomes**.</p>
+        </div>
 
-                    <div class="generator-form card-style">
-                        <div class="form-group">
-                            <label for="num-transactions">Number of Transactions to Generate (1-100)</label>
-                            <input type="number" id="num-transactions" min="1" max="100" value="20">
-                        </div>
-                        <button id="generate-btn" class="btn-generate">
-                            <i class="fas fa-magic"></i> Generate Data
-                        </button>
-                    </div>
+        <div class="delete-form">
+            <button id="delete-btn" class="btn-delete">
+                <i class="fas fa-trash-alt"></i> Yes, I understand. Delete all my data.
+            </button>
+        </div>
 
-                    <div id="status-message" class="status-message" style="display: none;"></div>
-                </div>
-            </div>
+        <div id="status-message" class="status-message" style="display: none;"></div>
+    </div>
+</div>
         </main>
     </div>
 
@@ -63,6 +60,6 @@
     <script type="module" src="{% static 'reports/js/dashboard.js' %}"></script>
     <script type="module" src="{% static 'core/js/darkmode.js' %}"></script>
     <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
-    <script type="module" src="{% static 'datagen/js/data_generator.js' %}"></script>
+    <script type="module" src="{% static 'datagen/js/delete_data.js' %}"></script>
 </body>
 </html>

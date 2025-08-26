@@ -6,29 +6,42 @@ from apps.common_utils.firebase_service import add_transaction
 
 def generate_transaction_batch(num_transactions: int):
     """
-    Generates a batch of realistic transaction data using the Gemini API.
+    Generates a batch of hyper-realistic transaction data using an optimized Gemini API prompt.
     """
     genai.configure(api_key=settings.GEMINI_API_KEY)
     model = genai.GenerativeModel("gemini-1.5-flash-latest")
     
+    # --- THIS IS THE NEW, HIGHLY-OPTIMIZED PROMPT ---
     prompt = f"""
-    You are an AI data generator for "Neural Budget AI", creating realistic financial data for a user in Vadodara, India.
+    You are an AI data generator creating hyper-realistic financial data for a user in Vadodara, Gujarat, India.
 
-    **User Profile:**
-    - Monthly Salary: ₹30,000
-    - Monthly Expenses: Approx. ₹25,000
+    **User Profile & Constraints:**
+    - Monthly Salary: ₹30,000 (credited on the 1st of the month).
+    - Total Monthly Expenses: Must be approximately ₹25,000.
+    - Location: Vadodara, Gujarat, India.
 
-    **Task:**
-    Generate a JSON array of exactly {num_transactions} unique and hyper-realistic transactions.
+    **Your Task:**
+    Generate a JSON array of exactly {num_transactions} unique and hyper-realistic transactions for this user.
 
-    **Instructions:**
-    1.  **Hyper-Realism:** Do NOT use generic names. Be specific (e.g., "D-Mart: Amul Gold Milk (1L)", "Uber ride to Alkapuri").
-    2.  **Local Context:** Use merchants and places relevant to Vadodara, India.
-    3.  **Accurate Categories:** Assign a correct category to each transaction.
-    4.  **Financial Sense:** The spending should reflect the user's budget.
+    **CRITICAL INSTRUCTIONS:**
+    1.  **Hyper-Realism & Granularity:** DO NOT use generic names. Be extremely specific down to the item level.
+        -   **Correct:** `D-Mart: Onion (500g)`, `PVR Cinemas: Shaitaan Movie Ticket`, `Hariyali Restaurant: Paneer Butter Masala`, `Netflix Premium Subscription`.
+        -   **Incorrect:** `Grocery shopping`, `Movie`, `Restaurant bill`.
+    2.  **Local Context (Vadodara):** Use real, existing merchants, restaurants, and places.
+        -   **Good examples:** Canara Coffee House, Mandap Restaurant, Inorbit Mall, D-Mart, Ratri Bazaar, Uber, Zomato, Swiggy.
+        -   **Bad examples:** "Sursagar Lake Restaurant" (this does not exist).
+    3.  **Accurate Categories:** Assign the single most accurate category. "Netflix" MUST be in "Subscriptions & OTT", not "Dining Out & Entertainment".
+    4.  **Financial Realism:** The sum of all expenses should reflect the user's budget. Create a mix of small daily purchases (like "chai", "snacks") and larger, less frequent ones (like "utility bill", "rent").
+    5.  **Salary:** You MUST include one salary credit of exactly ₹30,000 with the category "Income", dated on the first day of the month.
 
-    **Schema:** `name`, `category`, `amount`, `date` (YYYY-MM-DD), `status` ("Completed").
-    The output must be a single, valid JSON array.
+    **Schema for each JSON object:**
+    - `name`: (String) The hyper-realistic transaction name including merchant and item.
+    - `category`: (String) One of: "Housing", "Groceries & Essentials", "Dining Out & Entertainment", "Transportation", "Utilities", "Healthcare & Insurance", "Subscriptions & OTT", "Shopping", "Education & Self-Development", "Income", "Other".
+    - `amount`: (Float) A realistic amount in INR for the specific item.
+    - `date`: (String) A date in "YYYY-MM-DD" format.
+    - `status`: (String) Must always be "Completed".
+
+    The final output must be a single, valid JSON array only.
     """
     
     try:
@@ -60,3 +73,83 @@ def add_generated_data_to_user(user_id, num_transactions):
             continue
     
     return added_count
+
+
+# Add this new function to your datagen/services.py file
+from apps.common_utils.firebase_service import db
+from google.cloud.firestore_v1.base_query import FieldFilter
+
+def delete_all_user_transactions(user_id):
+    """
+    Finds and deletes all documents in 'expenses' and 'incomes' collections
+    for a given user_id.
+    """
+    collections_to_delete = ['expenses', 'incomes']
+    deleted_count = 0
+
+    for collection_name in collections_to_delete:
+        # Query for all documents belonging to the user in the collection
+        docs = db.collection(collection_name).where(
+            filter=FieldFilter("userId", "==", user_id)
+        ).stream()
+
+        for doc in docs:
+            doc.reference.delete()
+            deleted_count += 1
+            print(f"Deleted {doc.id} from {collection_name}")
+
+    return deleted_count
+
+# in apps/datagen/services.py
+
+from datetime import datetime, timedelta
+from collections import Counter
+from apps.common_utils.firebase_service import db
+
+def get_admin_dashboard_analytics():
+    """
+    Fetches and calculates key metrics for the admin dashboard from Firestore.
+    """
+    # 1. Get User Metrics
+    user_profiles_ref = db.collection('user_profiles')
+    all_users = list(user_profiles_ref.stream())
+    total_users = len(all_users)
+
+    # 2. Calculate New Users in the Last 7 Days
+    seven_days_ago = datetime.now() - timedelta(days=7)
+    new_users_last_7_days = 0
+    for user in all_users:
+        user_data = user.to_dict()
+        created_at = user_data.get('created_at')
+        # Ensure created_at is a datetime object before comparing
+        if isinstance(created_at, datetime) and created_at.replace(tzinfo=None) > seven_days_ago:
+            new_users_last_7_days += 1
+
+    # 3. Analyze Top 5 Spending Categories across ALL users
+    expenses_ref = db.collection('expenses')
+    all_expenses = expenses_ref.stream()
+    
+    category_counts = Counter()
+    for expense in all_expenses:
+        expense_data = expense.to_dict()
+        category = expense_data.get('category')
+        if category:
+            # Ensure amount is a number before adding
+            amount = expense_data.get('amount', 0)
+            if isinstance(amount, (int, float)):
+                category_counts[category] += amount
+
+    # Get the top 5 most common categories by total spend
+    top_5_categories = category_counts.most_common(5)
+    
+    # Format for Chart.js
+    top_categories_chart_data = {
+        'labels': [category for category, amount in top_5_categories],
+        'values': [amount for category, amount in top_5_categories]
+    }
+
+    return {
+        'total_users': total_users,
+        'new_users_last_7_days': new_users_last_7_days,
+        'top_categories_chart': top_categories_chart_data
+    }
