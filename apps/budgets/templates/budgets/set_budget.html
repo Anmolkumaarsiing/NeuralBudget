@@ -1,131 +1,168 @@
-<!DOCTYPE html>
+{% extends 'core/base.html' %}
 {% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neural Budget AI</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'reports/css/dashboard.css' %}">
+
+{% block title %}Budget Dashboard - Neural Budget AI{% endblock %}
+
+{% block extra_css %}
     <link rel="stylesheet" href="{% static 'budgets/css/set_budget.css' %}">
-        <link rel="stylesheet" href="{% static 'reports/css/sidebar-new.css' %}">
+{% endblock %}
 
-    
-    <script type="module" src="{% static 'reports/js/dashboard.js' %}"></script>
-    <script type="module" src="{% static 'core/js/darkmode.js' %}"></script>
-    <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
-    
+{% block extra_js %}
     <script type="module" src="{% static 'budgets/js/budget.js' %}"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-</head>
-<body>
-      <div id="chatbot-component" data-api-url="{% url 'core:chatbot_api' %}">
-      {% include 'core/chatbot.html' %}
-  </div>
-    <script>
-        const LOGOUT_URL = "{% url 'accounts:logout' %}";
-    </script>
-    <div class="container">
+    {{ categories|json_script:"processed_categories_json" }}
+{% endblock %}
 
-        <!-- SIDEBAR SECTION -->
+{% block content %}
+<div class="budget-dashboard">
+    
 
-        <aside class="sidebar">
-            <div class="logo">
-                <img src="{% static 'core/img/logo.png' %}" href="{% url 'reports:dashboard' %}" alt="Neural Budget AI Logo" class="logo-img">
-                <span class="logo-text">Neural Budget AI</span>
-            </div>            
-            <nav>
-                <ul>
-                    <li class="dropdown">
-                        <button class="drop-btn"><i class="fas fa-receipt"></i>Expense Tracking
-                            <i class="fas fa-angle-right dropdown-icon"></i>
-                        </button>
-                        <ul class="dropdown-content">
-                            <li><a href="{% url 'reports:dashboard' %}"><i class="fas fa-tachometer-alt"></i> Overview</a></li>
-                            <li><a href="{% url 'transactions:add_transaction' %}"><i class="fas fa-plus-circle"></i> Add Expense</a></li>
-                            <li><a href="{% url 'transactions:transaction_history' %}"><i class="fas fa-eye"></i> View Transactions</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <button class="drop-btn"><i class="fas fa-wallet"></i>Budgeting Tools
-                            <i class="fas fa-angle-right dropdown-icon"></i>
-                        </button>
-                        <ul class="dropdown-content">
-                            <li><a href="{% url 'budgets:set_budget' %}"><i class="fas fa-coins"></i>Set Budget</a></li>
-                            <li><a href="{% url 'budgets:smart_saver' %}"><i class="fas fa-magic"></i> Smart Saver</a></li>
-                            <li><a href="{% url 'budgets:smart_categorization' %}"><i class="fas fa-layer-group"></i> Smart Categorization</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <button class="drop-btn"><i class="fas fa-chart-line"></i>AI Insights
-                            <i class="fas fa-angle-right dropdown-icon"></i>
-                        </button>
-                        <ul class="dropdown-content"> 
-                            <li><a href="{% url 'reports:visualize' %}"><i class="fas fa-brain"></i> Predictive Analysis</a></li>
-                            <li><a href="#"><i class="fas fa-chart-pie"></i> Spending Insights</a></li>
-                            <li><a href="#"><i class="fas fa-chart-line"></i> Expense Forecasting</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <button class="drop-btn"><i class="fas fa-cog"></i>Settings
-                            <i class="fas fa-angle-right dropdown-icon"></i>
-                        </button>
-                        <ul class="dropdown-content">
-                            <li><a href="/accounts/profile"><i class="fas fa-user"></i> Profile</a></li>
-                            <li><a href="#" id="signOutLink"><i class="fas fa-sign-out-alt"></i> Logoutt</a></li>
-                        </ul>
-                    </li>
-                
-                </ul>
-            </nav>
-        </aside>
+    
+    <!-- Main Budget Display Area -->
+    <div class="budget-main">
 
-        <main class="content">
-            
-        <!-- TOPBAR SECTION -->
 
-            <header class="topbar">
-                <div class="greeting">
-                    <h3>Hi, {{email}} <i class="fas fa-smile"></i></h3>
+        <div class="budget-stats">
+            <div class="stat-card total">
+                <div class="stat-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>₹{{ total_budget|default:"0" }}</h3>
+                    <p>Total Budget</p>
+                </div>
+            </div>
+            <div class="stat-card spent">
+                <div class="stat-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>₹{{ total_spent|default:"0" }}</h3>
+                    <p>Total Spent</p>
+                </div>
+            </div>
+            <div class="stat-card remaining">
+                <div class="stat-icon">
+                    <i class="fas fa-piggy-bank"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>₹{{ total_remaining|default:"0" }}</h3>
+                    <p>Remaining</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="budget-grid">
+            {% for category in categories %}
+            <div class="budget-card" data-category="{{ category.name }}">
+                <div class="budget-card-header">
+                    <div class="category-info">
+                        <i class="fas {{ category.icon }}"></i>
+                        <h3>{{ category.display_name }}</h3>
+                    </div>
+                    <div class="budget-amount">
+                        ₹{{ category.budget_amount|default:"0" }}
+                    </div>
                 </div>
                 
-                <div class="actions">
-                    <label class="switch">
-                        <input type="checkbox" id="darkModeToggle">
-                        <span class="slider round"></span>
-                    </label>
+                <div class="budget-progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill {% if category.progress_percentage <= 50 %}green{% elif category.progress_percentage <= 80 %}yellow{% else %}red{% endif %}" style="width: {{ category.progress_percentage|default:0 }}%"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span class="spent">₹{{ category.spent_amount|default:"0" }}</span>
+                        <span class="percentage {% if category.progress_percentage <= 50 %}green-text{% elif category.progress_percentage <= 80 %}yellow-text{% else %}red-text{% endif %}">{{ category.progress_percentage|default:0 }}%</span>
+                    </div>
                 </div>
-            </header>
-            <section class="set-budget">
-                <div class="budget-container">
-                    <h2>Set Your Monthly Budget</h2>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <div class="budget-input">
-                            <label for="category">Select Category:</label>
-                            <select id="category" name="category">
-                                {% for category in categories %}
-                                    <option value="{{ category }}">{{ category }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="budget-input">
-                            <label for="budget-amount">Enter Budget Amount:</label>
-                            <input type="number" id="budget-amount" name="budget" placeholder="₹ Enter amount">
-                        </div>
-                
-                        <div class="budget-progress">
-                            <span>Budget Spent</span>
-                            <progress id="budget-progress-bar" value="30" max="100"></progress>
-                            <span id="budget-percentage">30%</span>
-                        </div>
-                
-                        <button type="submit" class="set-budget-btn">Save Budget</button>
-                    </form>
+
+                <div class="budget-card-footer">
+                    <span class="remaining">₹{{ category.remaining|default:"0" }} left</span>
+                    <button class="edit-btn" onclick="editBudget('{{ category.name }}', {{ category.budget_amount|default:0 }})">
+                        <i class="fas fa-edit"></i>
+                    </button>
                 </div>
-            </section>
-        </main>
+            </div>
+            {% empty %}
+            <div class="no-budgets">
+                <i class="fas fa-plus-circle"></i>
+                <h3>No budgets set yet</h3>
+                <p>Use the form on the right to create your first budget</p>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-</body>
-</html>
+
+    <!-- Sidebar Budget Form -->
+    <div class="budget-sidebar">
+        <div class="form-container">
+            <h2>Set Budget</h2>
+            
+            <form method="POST" id="budgetForm">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="category">
+                        <i class="fas fa-list"></i>
+                        Select Category
+                    </label>
+                    <select id="category" name="category" required>
+                        <option value="">Choose category</option>
+                        {% for cat in user_available_categories %}
+                            <option value="{{ cat.value }}">{{ cat.display }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="budget-amount">
+                        <i class="fas fa-rupee-sign"></i>
+                        Budget Amount
+                    </label>
+                    <input type="number" 
+                           id="budget-amount" 
+                           name="budget" 
+                           placeholder="Enter amount"
+                           min="1"
+                           step="0.01"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="period">
+                        <i class="fas fa-calendar"></i>
+                        Budget Period
+                    </label>
+                    <select id="period" name="period" required>
+                        <option value="monthly" selected>Monthly</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+
+                <!-- Current Progress Display -->
+                <div class="current-progress" id="currentProgress" style="display: none;">
+                    <h4>Current Progress</h4>
+                    <div class="mini-progress">
+                        <div class="mini-progress-bar">
+                            <div class="mini-progress-fill" id="miniProgressFill"></div>
+                        </div>
+                        <div class="mini-progress-text">
+                            <span id="miniSpent">₹0</span> / <span id="miniBudget">₹0</span>
+                        </div>
+                    </div>
+                    <div class="mini-percentage" id="miniPercentage">0% used</div>
+                </div>
+
+                <button type="submit" class="save-btn">
+                    <i class="fas fa-save"></i>
+                    Save Budget
+                </button>
+
+                <button type="button" class="reset-btn" id="resetForm">
+                    <i class="fas fa-refresh"></i>
+                    Reset Form
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

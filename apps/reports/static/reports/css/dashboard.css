@@ -1,1119 +1,138 @@
-body
-{
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-}
-
-.container {
-    display: flex;
-    flex-direction: column; /* Stack elements vertically */
-    width: 90vw;
-    height: 100vh;
-}
-
-@keyframes confetti-fall {
-    0% { transform: translateY(-10vh) rotate(0deg); }
-    100% { transform: translateY(110vh) rotate(720deg); }
-}
-
-.confetti {
-    position: fixed;
-    top: 0;
-    width: 10px;
-    height: 10px;
-    opacity: 0.8;
-    animation: confetti-fall 5s linear forwards;
-    z-index: 10001;
-}
-.visualization {
-    width: 100%;
-    min-height: 100vh; /* Full viewport height */
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    background: #fff;
-    padding: 20px;
-    text-align: center;
-}
-.graph-container {
-    width: 100%; /* Ensure full screen width */
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    margin: auto; /* Ensures perfect centering */
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centers graph inside the container */
-    justify-content: center;
-}
-
-
-
-
-/*-----------TOPBAR---------------*/
-
-.topbar
-{
-    display: flex;
-    justify-content: center;
-    margin-left: 300px;
-    align-items: center;
-    width: 80vw;
-    padding: 15px 20px;
-    height: 30px;
-    position: fixed;
-    background-color: rgb(255 249 244);
-    color: #000000;
-}
-
-.greeting
-{
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.actions
-{
-    margin-left: auto;
-    display: flex;
-    justify-content: flex-end;
-    width: 100px;
-    margin-right: 30px;
-}
-
-.switch
-{
-    position: relative;
-    display: inline-block;
-    width: 40px;
-    height: 20px;
-}
-
-.switch input
-{
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider
-{
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 20px;
-}
-
-.slider:before
-{
-    position: absolute;
-    content: "";
-    height: 14px;
-    width: 14px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-}
-
-input:checked + .slider
-{
-    background-color: #2a2a72;
-}
-
-input:checked + .slider:before
-{
-    transform: translateX(20px);
-}
-
-/*-----------DASHBOARD CONTENTS---------------*/
+/*=============================================
+  DASHBOARD-SPECIFIC STYLES
+=============================================*/
 
 .dashboard {
-    display: flex;
-    justify-content: space-between;
-    gap: 100px;
-    align-items: flex-start;
-    padding: 20px;
-    margin-left: 380px;
-    max-width: calc(100% - 420px);
-    width: auto;
-    margin-top: 60px;
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  align-items: flex-start;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-
-.dashboard-left
-{
-    display: flex;
-    flex-direction: column;
-    width: 65%;
-}
-
-.dashboard-cards
-{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    width: 100%;
-}
-
-/*-----------CARD---------------*/
-
-.card
-{
-    flex: 1;
-    min-width: 200px;
-    background: rgb(255 249 244);
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.card:hover
-{
-    transform: translateY(-5px);
-}
-
-.card h3
-{
-    margin-bottom: 10px;
-    font-size: 18px;
-}
-
-.card p
-{
-    font-size: 22px;
-    font-weight: bold;
-    color: rgb(36 167 145);
-}
-
-/*-----------RECENT TRANSACTIONS---------------*/
-
-.recent-transactions
-{
-    margin-top: 20px;
-    padding: 15px;
-    background: rgb(255 249 244);
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.recent-transactions h3
-{
-    margin-bottom: 10px;
-    font-size: 18px;
-    color: rgb(36 167 145);
-}
-
-.recent-transactions ul
-{
-    list-style: none;
-    padding: 0;
-}
-
-.recent-transactions li
-{
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 16px;
-}
-
-.recent-transactions li:last-child
-{
-    border-bottom: none;
-}
-
-.txn-name
-{
-    font-weight: bold;
-    flex: 2;
-}
-
-.txn-amount
-{
-    flex: 1;
-    text-align: center;
-    color: #2a2a72;
-    font-weight: bold;
-}
-
-.txn-type
-{
-    flex: 1;
-    text-align: right;
-    font-style: italic;
-    color: #777;
-}
-
-/*-----------CHART---------------*/
-
-.chart-section
-{
-    width: 35%;
-    max-width: 400px;
-    height: 400px;
-    margin-left: 80px;
-}
-
-#expenseChart
-{
-    width: 100% !important;
-    height: 100% !important;
-}
-
-.chart-section h3 {
-    white-space: nowrap;
-    
-}
-
-
-/*-----------TRACK INCOME SECTION---------------*/
-
-.track-income {
-    background: rgb(255, 249, 244);
-    padding: 20px;
-    border-bottom: 1px solid #ddd;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 80px;
-    margin-left: 400px;
-    width: min(340%, 1200px);
-    max-width: 100vw;
-}
-
-.track-income h2 {
-    text-align: center;
-    font-size: 22px;
-    margin-bottom: 15px;
-    color: #000000;
-}
-
-.incomeTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-.incomeTable thead {
-    background-color: #2a2a72;
-    color: white;
-}
-
-.incomeTable th {
-    padding: 20px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    background-color: #2a2a72;
-    color: white;
-}
-
-.incomeTable th:first-child {
-    border-top-left-radius: 10px;
-}
-
-.incomeTable th:last-child {
-    border-top-right-radius: 10px;
-}
-
-
-.incomeTable td {
-    padding: 20px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-.incomeTable tbody tr:hover {
-    background-color: rgba(252, 217, 189, 0.2);
-}
-
-.incomeTable th {
-    font-weight: bold;
-}
-
-.incomeTable td {
-    color: #333;
-}
-
-.incomeTable button {
-    background-color: #007bff; /* Blue color */
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.incomeTable button:hover {
-    background-color: #0056b3; /* Darker blue */
-}
-
-.incomeTable .delete-btn {
-    background-color: #dc3545; /* Red for delete */
-}
-
-.incomeTable .delete-btn:hover {
-    background-color: #a71d2a;
-}
-
-.incomeTable .edit-btn {
-    background-color: #ffc107; /* Yellow for edit */
-    color: black;
-}
-
-.incomeTable .edit-btn:hover {
-    background-color: #d39e00;
-}
-
-#LoadMore {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background-color: rgb(36, 167, 145);
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    cursor: pointer;
-    transition: background 0.3s ease-in-out;
-}
-
-#LoadMore:hover {
-    background-color: #2a2a72;
-}
-
-/*-----------ADD TRANSACTION SECTION---------------*/
-
-
-
-.add-transaction {
-    background-color: #fff; /* Default light mode background */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 80px;
-    margin-left: 400px;
-    width: 100%;
-    max-width: 600px; /* Set a max-width for consistent form element length */
-}
-
-.add-transaction h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #2c3e50; /* Default light mode text color */
-    text-align: center;
-}
-
-.add-transaction form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.add-transaction label {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333; /* Default light mode text color */
-}
-
-.add-transaction input,
-.add-transaction select,
-.add-transaction button {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    outline: none;
-    transition: border-color 0.3s ease;
-    width: 100%; /* Ensure full width within the container */
-}
-
-.add-transaction input:focus,
-.add-transaction select:focus {
-    border-color: #3498db;
-}
-
-.add-transaction button {
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.add-transaction button:hover {
-    background-color: #2980b9;
-}
-
-#other-category-container {
-    margin-top: 10px;
-}
-
-/* Dark Mode Styles for add-transaction */
-.dark-mode .add-transaction {
-    background-color: #1f1e1e; /* Dark mode background */
-    color: #f4f7f6; /* Dark mode text color */
-}
-
-.dark-mode .add-transaction h2 {
-    color: #f4f7f6;
-}
-
-.dark-mode .add-transaction label {
-    color: #f4f7f6;
-}
-
-.dark-mode .add-transaction input,
-.dark-mode .add-transaction select {
-    background-color: #2c3e50;
-    color: #f4f7f6;
-    border-color: #555;
-}
-
-.dark-mode .add-transaction button {
-    background-color: #2980b9;
-}
-
-.dark-mode .add-transaction button:hover {
-    background-color: #3498db;
-}
-
-/* Dark Mode Styles for add-transaction */
-.dark-mode .add-transaction {
-    background-color: #1f1e1e; /* Dark mode background */
-    color: #f4f7f6; /* Dark mode text color */
-}
-
-.dark-mode .add-transaction h2 {
-    color: #f4f7f6;
-}
-
-.dark-mode .add-transaction label {
-    color: #f4f7f6;
-}
-
-.dark-mode .add-transaction input,
-.dark-mode .add-transaction select {
-    background-color: #2c3e50;
-    color: #f4f7f6;
-    border-color: #555;
-}
-
-.dark-mode .add-transaction button {
-    background-color: #2980b9;
-}
-
-.dark-mode .add-transaction button:hover {
-    background-color: #3498db;
-}
-/* Set Budget Section */
-.Set_Budget {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-    width: 100%;
-}
-
-.budget-container {
-    background: var(--card-background);
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    max-width: 600px;
-    width: 90%;
-    transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    margin-left: 450px;
-}
-
-/* Title */
-.budget-container h2 {
-    font-size: 2rem;
-    color: var(--primary-text);
-    margin-bottom: 20px;
-}
-
-/* Budget Input */
-.budget-input {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.budget-input label {
-    font-size: 1rem;
-    color: var(--secondary-text);
-}
-
-.budget-input input {
-    padding: 12px;
-    border: 2px solid var(--input-border);
-    border-radius: 8px;
-    font-size: 1rem;
-    outline: none;
-    background: var(--input-background);
-    color: var(--primary-text);
-    width: 100%;
-}
-
-.budget-input input:focus {
-    border-color: var(--accent);
-}
-
-/* Progress Bar */
-.budget-progress {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.budget-progress span {
-    font-size: 1rem;
-    color: var(--secondary-text);
-    margin-bottom: 8px;
-}
-
-progress {
-    width: 100%;
-    height: 12px;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-progress::-webkit-progress-bar {
-    background: var(--progress-background);
-    border-radius: 10px;
-}
-
-progress::-webkit-progress-value {
-    background: var(--accent);
-    border-radius: 10px;
-}
-
-/* Budget Percentage */
-#budget-percentage {
-    font-size: 1rem;
-    font-weight: bold;
-    margin-top: 5px;
-    color: var(--primary-text);
-}
-
-/* Button */
-.set-budget-btn {
-    padding: 14px;
-    background: var(--accent);
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    color: white;
-    cursor: pointer;
-    width: 100%;
-    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
-}
-
-.set-budget-btn:hover {
-    background: var(--accent-hover);
-    transform: translateY(-2px);
-}
-
-/* Light Mode Variables */
-:root {
-    --card-background: rgb(255, 249, 244);
-    --primary-text: #333;
-    --secondary-text: #666;
-    --input-border: #ccc;
-    --input-background: #fff;
-    --progress-background: #e0e0e0;
-    --accent: #007bff;
-    --accent-hover: #0056b3;
-}
-
-
-
-/* Fix for Full Width */
-@media (max-width: 768px) {
-    .budget-container {
-        width: 95%;
-        max-width: 100%;
-    }
-}
-
-
-/*-----------DARK MODE---------------*/
-
-.dark-mode
-{
-    background-color: #242323;
-    color: white;
-}
-
-
-/* Budget Container */
-.dark-mode .budget-container {
-    background: #242323;
-    color: white;
-    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
-    border: 1px solid #3a3a3a;
-}
-
-/* Heading & Labels */
-.dark-mode h1,
-.dark-mode h2,
-.dark-mode h3,
-.dark-mode label,
-.dark-mode p {
-    color: white;
-}
-
-/* Input Field */
-.dark-mode .budget-input input {
-    background: #2b2b2b;
-    color: white;
-    border: 2px solid #3d3d3d;
-    padding: 8px;
+.dashboard-left {
+  display: flex;
+  flex-direction: column;
+  width: 65%;
+  gap: 20px;
 }
 
-.dark-mode .budget-input input:focus {
-    border-color: #5a9cf8;
-    outline: none;
+.dashboard-cards {
+  display: flex;
+  gap: 20px;
+  width: 100%;
 }
 
-/* Progress Bar */
-.dark-mode .budget-progress progress {
-    background: #3d3d3d;
-    color: #5a9cf8;
+/*----------- CARD COMPONENT ---------------*/
+.card {
+  flex: 1;
+  min-width: 200px;
+  background: rgb(255 249 244);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
 }
 
-/* Save Button */
-.dark-mode .set-budget-btn {
-    background: #5a9cf8;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-weight: bold;
+.card:hover {
+  transform: translateY(-5px);
 }
 
-.dark-mode .set-budget-btn:hover {
-    background: #4a8be6;
+.card h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
 }
 
-/* Error Message */
-.dark-mode .error-message {
-    color: red;
-    font-weight: bold;
+.card p {
+  font-size: 22px;
+  font-weight: bold;
+  color: rgb(36 167 145);
 }
 
-/* Mobile View */
-@media (max-width: 768px) {
-    .dark-mode .budget-container {
-        width: 90%;
-    }
+/*----------- RECENT TRANSACTIONS COMPONENT ---------------*/
+.recent-transactions {
+  background: rgb(255 249 244);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-
-.dark-mode .topbar
-{
-    background: #1f1e1e;
-    color: white;
-}
-
-.dark-mode .greeting h3
-{
-    color: white;
+.recent-transactions h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  color: rgb(36 167 145);
 }
 
-.dark-mode .sidebar
-{
-    background: #1f1e1e;
+.recent-transactions ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.dark-mode .dropdown-content li a
-{
-    color: white;
+.recent-transactions li {
+  padding: 12px 0;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
 }
 
-.dark-mode .drop-btn
-{
-    color: white;
+.recent-transactions li:last-child {
+  border-bottom: none;
 }
 
-.dark-mode .track-income, .dark-mode .add-transaction {
-    background: #1f1e1e;
-    color: white;
-}
+.txn-name { font-weight: bold; flex: 2; }
+.txn-amount { flex: 1; text-align: center; color: #2a2a72; font-weight: bold; }
+.txn-type { flex: 1; text-align: right; font-style: italic; color: #777; }
 
-.dark-mode .track-income h2, .dark-mode .add-transaction h2
-{
-    color: white;
-
-}
-.dark-mode .add-expense-section {
-  background-color: #1e1e2f;
-  color: #f0f0f0;
-  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.05);
+/*----------- CHART COMPONENT ---------------*/
+.chart-section {
+  width: 35%;
+  max-width: 400px;
 }
 
-.dark-mode .add-expense-section h2 {
-  color: #ffffff;
+#expenseChart {
+  width: 100% !important;
+  height: auto !important;
 }
 
-.dark-mode .entry-toggle button {
-  background-color: #2c2c3e;
-  color: #ccc;
+/*----------- DARK MODE FOR DASHBOARD ---------------*/
+.dark-mode .card,
+.dark-mode .recent-transactions {
+  background: #1f1e1e;
+  box-shadow: 2px 2px 10px rgba(255, 255, 255, 0.1);
 }
 
-.dark-mode .entry-toggle button.active {
-  background-color: #4c66ff;
+.dark-mode .card h3, .dark-mode .recent-transactions h3, .dark-mode .chart-section h3 {
   color: white;
 }
 
-.dark-mode .entry-form label {
-  color: #ddd;
+.dark-mode .card p, .dark-mode .txn-amount {
+  color: #2af5a1;
 }
 
-.dark-mode .entry-form input,
-.dark-mode .entry-form select {
-  background-color: #2c2c3e;
-  color: #f0f0f0;
-  border: 1px solid #555;
+.dark-mode .txn-type {
+  color: #bbb;
 }
 
-.dark-mode .entry-form button[type="submit"] {
-  background-color: #4c66ff;
-  color: white;
-}
-
-.dark-mode .entry-form button[type="submit"]:hover {
-  background-color: #3a4cc0;
-}
-
-
-.dark-mode .incomeTable thead, .dark-mode .add-transaction input,
-.dark-mode .add-transaction select {
-    background-color: #444;
-}
-
-.dark-mode .incomeTable td {
-    color: #ffffff;
-}
-
-.dark-mode #LoadMore {
-    background-color: #2af5a1;
-    color: #ffffff;
-}
-
-.dark-mode #LoadMore:hover {
-    background-color: #2a2a72;
-    color: white;
-}
-
-
-.category-chart
-{
-    width: 100%;
-    max-width: 500px;
-    margin: 20px auto;
-    background: rgb(255 249 244);
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.dark-mode .category-chart
-{
-    background: #1f1e1e;
-    color: white;
-}
-
-.dark-mode .recent-transactions
-{
-    background: #1f1e1e;
-    color: white;
-}
-
-.dark-mode .recent-transactions h3
-{
-    color: white;
-}
-
-.dark-mode .txn-amount
-{
-    color: #2af5a1;
-}
-
-.dark-mode .txn-type
-{
-    color: #bbb;
-}
-
-.dark-mode .container {
-    background-color: #1e1e1e;
-}
-
-.dark-mode .content
-{
-    background-color: #1e1e1e;
-}
-.dark-mode .visualization {
-    background: #1e1e1e;
-    color: #1e1e1e;
-    display: flex;
-    justify-content: center; /* Center content */
+/*----------- RESPONSIVE FOR DASHBOARD ---------------*/
+@media screen and (max-width: 1200px) {
+  .dashboard {
+    flex-direction: column;
     align-items: center;
-    overflow: hidden; /* Prevents extra spacing */
-    padding: 10px 0;
+  }
+  .dashboard-left, .chart-section {
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
-.dark-mode .graph-container {
-    background: #1e1e1e;
-    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
-}
-
-.dark-mode .visualization img {
-    width: 100%;  /* Ensure it fits within the container */
-    height: auto;
-    object-fit: contain; /* Maintain aspect ratio */
-    display: block; /* Remove extra spacing */
-    border-radius: 10px;
-    background: transparent; /* Remove unwanted white background */
-    margin: 0; /* Ensure no extra margins */
-    padding: 0; /* Remove any extra padding */
-}
-
-
-
-.dark-mode .card
-{
-    background: #1f1e1e;
-    color: white;
-    box-shadow: 2px 2px 10px rgba(255, 255, 255, 0.1);
-}
-
-.dark-mode .card p
-{
-    color: #2af5a1;
-}
-
-.dark-mode .chart-section h3
-{
-    color: white;
-}
-
-/*-----------RESPONSIVE MEDIA QUERIES---------------*/
-
-@media screen and (max-width: 1200px)
-{
-    .dashboard
-    {
-        flex-direction: column;
-        align-items: center;
-    }
-    .dashboard-left
-    {
-        width: 100%;
-    }
-    .chart-section
-    {
-        width: 100%;
-        max-width: 100%;
-        height: auto;
-    }
-}
-
-@media screen and (max-width: 992px)
-{
-    .sidebar
-    {
-        width: 200px;
-    }
-    .drop-btn
-    {
-        font-size: 14px;
-        gap: 10px;
-    }
-    .dropdown-content
-    {
-        padding-left: 10px;
-        max-width: 180px;
-    }
-    .greeting
-    {
-        font-size: 18px;
-    }
-    .actions
-    {
-        margin-right: 10px;
-    }
-}
-
-@media screen and (max-width: 768px)
-{
-    .container
-    {
-        flex-direction: column;
-    }
-    .sidebar
-    {
-        width: 100%;
-        min-height: auto;
-        padding: 10px;
-    }
-    .topbar
-    {
-        width: 100%;
-        position: relative;
-    }
-    .dashboard
-    {
-        padding: 10px;
-        gap: 15px;
-    }
-    .dashboard-cards
-    {
-        flex-direction: column;
-        gap: 15px;
-    }
-    .card
-    {
-        width: 100%;
-    }
-    .recent-transactions
-    {
-        padding: 10px;
-    }
-    .chart-section
-    {
-        height: 300px;
-    }
-}
-
-@media screen and (max-width: 576px)
-{
-    .sidebar
-    {
-        width: 100%;
-        padding: 5px;
-    }
-    .logo
-    {
-        font-size: 20px;
-    }
-    .drop-btn
-    {
-        font-size: 12px;
-        padding: 8px;
-    }
-    .dropdown-content
-    {
-        padding-left: 5px;
-        max-width: 150px;
-    }
-    .greeting
-    {
-        font-size: 16px;
-    }
-    .dashboard
-    {
-        margin-top: 40px;
-    }
-    .card h3
-    {
-        font-size: 16px;
-    }
-    .card p
-    {
-        font-size: 18px;
-    }
-    .recent-transactions li
-    {
-        font-size: 14px;
-        padding: 8px;
-    }
-    .txn-amount,
-    .txn-type
-    {
-        font-size: 14px;
-    }
-    .chart-section
-    {
-        height: 250px;
-    }
-}
-
-@media screen and (max-width: 400px)
-{
-    .logo-img
-    {
-        width: 30px;
-        height: 30px;
-    }
-    .drop-btn
-    {
-        font-size: 10px;
-        padding: 6px;
-    }
-    .dropdown-content
-    {
-        max-width: 120px;
-    }
-    .greeting
-    {
-        font-size: 14px;
-    }
-    .dashboard
-    {
-        padding: 5px;
-    }
-    .card
-    {
-        padding: 10px;
-    }
-    .card h3
-    {
-        font-size: 14px;
-    }
-    .card p
-    {
-        font-size: 16px;
-    }
-    .recent-transactions li
-    {
-        font-size: 12px;
-        padding: 6px;
-    }
-    .txn-amount,
-    .txn-type
-    {
-        font-size: 12px;
-    }
-    .chart-section
-    {
-        height: 200px;
-    }
+@media screen and (max-width: 768px) {
+  .dashboard-cards {
+    flex-direction: column;
+  }
 }

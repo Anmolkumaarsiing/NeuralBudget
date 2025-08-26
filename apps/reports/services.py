@@ -1,13 +1,14 @@
 from django.http import JsonResponse
 from apps.common_utils.firebase_service import get_transactions
 from apps.common_utils.auth_utils import get_user_id
-from apps.ml_features.services import preprocess_data, predict_future_income, categorize_spending, generate_visualizations
+from apps.budgets.services import get_budgets
 from datetime import datetime
 from dateutil import parser
 
 # Define collection names
 EXPENSE_COLLECTION = 'expenses'
 INCOME_COLLECTION = 'incomes'
+BUDGET_COLLECTION = 'budgets'
 
 def _parse_date(date_input):
     """Safely parse a date which can be a datetime object or a string, and make it naive."""
@@ -44,13 +45,17 @@ def get_dashboard_data(request):
         }
 
     try:
-        # Fetch all expenses and incomes for the user (using a high limit)
+        # Fetch all expenses, incomes, and budgets for the user
         expenses = get_transactions(user_id, EXPENSE_COLLECTION, limit=1000)
         incomes = get_transactions(user_id, INCOME_COLLECTION, limit=1000)
-        print(f"[DEBUG] Fetched {len(expenses)} expenses and {len(incomes)} incomes for user {user_id}")
+        user_budgets = get_budgets(user_id) # Fetch user budgets
+        print(f"[DEBUG] Fetched {len(expenses)} expenses, {len(incomes)} incomes, and {len(user_budgets)} budgets for user {user_id}")
 
         total_expenses = sum(float(transaction.get('amount', 0)) for transaction in expenses)
         total_income = sum(float(transaction.get('amount', 0)) for transaction in incomes)
+        
+        # Calculate total budget dynamically
+        total_budget = sum(float(str(budget.get('budget', 0)).replace('₹', '').replace(',', '').strip()) for budget in user_budgets)
 
         # Process expenses for category chart
         expense_categories = {}
@@ -73,9 +78,11 @@ def get_dashboard_data(request):
         all_transactions.sort(key=lambda x: _parse_date(x.get('date')), reverse=True)
         recent_transactions = all_transactions[:5]
 
-        # TODO: Fetch actual budget from Firestore instead of using a placeholder
-        budget_set = 10000  # Example budget
-        budget_left = budget_set - total_expenses
+        # Calculate budget_left dynamically
+        budget_left = total_budget - total_expenses
+        # If no budget is set (total_budget is 0), then budget_left should also be 0
+        if total_budget == 0:
+            budget_left = 0
 
         # Prepare data for chart
         chart_data = {
@@ -84,7 +91,7 @@ def get_dashboard_data(request):
         }
         
         savings = total_income - total_expenses
-        print(f"[DEBUG] Dashboard Data: Total Expenses: {total_expenses}, Total Income: {total_income}, Savings: {savings}, Budget Left: {budget_left}")
+        print(f"[DEBUG] Dashboard Data: Total Expenses: {total_expenses}, Total Income: {total_income}, Savings: {savings}, Total Budget: {total_budget}, Budget Left: {budget_left}")
 
         return {
             'total_expenses': total_expenses,

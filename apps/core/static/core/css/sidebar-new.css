@@ -1,0 +1,231 @@
+/* SIDEBAR */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--light-bg);
+    padding: 20px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    box-sizing: border-box;
+    border-right: 1px solid var(--light-border);
+    z-index: 99;
+}
+
+/* LOGO */
+.logo {
+    display: flex;
+    margin-top: 40px;
+    align-items: center;
+    gap: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.logo span {
+    color: var(--theme-primary);
+}
+
+.logo-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+}
+
+/* NAVIGATION */
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
+    margin-bottom: 8px;
+}
+
+.sidebar nav {
+    margin-top: 30px;
+}
+
+/* DROPDOWN BUTTONS */
+.drop-btn {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 16px;
+    font-weight: 600;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 5px;
+    color: var(--light-text);
+    border-radius: 10px;
+}
+
+.drop-btn:hover {
+    background-color: var(--theme-secondary);
+    color: var(--dark-text);
+}
+
+.drop-btn.active {
+    background-color: var(--theme-primary);
+    color: white;
+}
+
+/* DROPDOWN ICON */
+.dropdown-icon {
+    font-size: 14px;
+    margin-left: auto;
+}
+
+.dropdown-icon.rotate {
+    transform: rotate(90deg);
+}
+
+/* DROPDOWN CONTENT */
+.dropdown-content {
+    display: none; /* Will be toggled by JS */
+    flex-direction: column;
+    padding-left: 20px;
+    padding-top: 10px;
+    width: 100%;
+    background: none;
+    list-style: none;
+    margin: 0;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden; /* Crucial for max-height transition */
+    transform: translateY(-10px);
+    transition: opacity 0.4s ease, max-height 0.4s ease, transform 0.4s ease;
+}
+
+.dropdown-content.show {
+    display: flex; /* Or block, depending on desired layout */
+    opacity: 1;
+    max-height: 300px; /* A value large enough to contain all content */
+    transform: translateY(0);
+}
+
+.dropdown-content li {
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+}
+
+.dropdown-content li:hover {
+    background-color: var(--theme-secondary);
+    color: var(--dark-text);
+}
+
+.dropdown-content li a {
+    text-decoration: none;
+    color: var(--light-text);
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.dropdown-content li:hover a {
+    color: var(--dark-text);
+}
+
+/* DARK MODE */
+.dark-mode .sidebar {
+    background: var(--dark-bg);
+    color: var(--dark-text);
+    border-color: var(--dark-border);
+}
+
+.dark-mode .logo span {
+    color: var(--theme-primary);
+}
+
+.dark-mode .drop-btn {
+    color: var(--dark-text);
+}
+
+.dark-mode .drop-btn:hover {
+    background-color: var(--dark-border);
+    color: var(--accent-green);
+}
+
+.dark-mode .drop-btn.active {
+    background-color: var(--accent-green);
+    color: var(--dark-bg);
+}
+
+.dark-mode .dropdown-content li a {
+    color: var(--dark-text-secondary);
+}
+
+.dark-mode .dropdown-content li:hover {
+    background-color: var(--dark-border);
+    color: var(--accent-green);
+}
+
+.dark-mode .dropdown-content li:hover a {
+    color: var(--accent-green);
+}
+
+/* RESPONSIVE */
+@media screen and (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 15px;
+    }
+    
+    .logo {
+        margin-top: 20px;
+        font-size: 20px;
+    }
+    
+    .logo-img {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .sidebar nav {
+        margin-top: 20px;
+    }
+    
+    .drop-btn {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+    
+    .dropdown-content li {
+        padding: 10px 12px;
+    }
+    
+    .dropdown-content li a {
+        font-size: 13px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .drop-btn {
+        font-size: 13px;
+        padding: 8px 10px;
+    }
+    
+    .dropdown-icon {
+        font-size: 12px;
+    }
+}

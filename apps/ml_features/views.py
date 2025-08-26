@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import os
 import json
+from apps.ml_features.services.chatbot_service import get_chatbot_response
 
 # Import AI functions
 from AI.categorization.run_ocr import get_ocr_text
@@ -58,3 +59,25 @@ def categorize_expense_view(request):
             if os.path.exists(temp_image_path):
                 os.remove(temp_image_path)
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@csrf_exempt
+def chatbot_response_view(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            user_message = data.get('message')
+            user_id = request.session.get('user_id')
+
+            if not user_id:
+                return JsonResponse({"error": "User not authenticated"}, status=401)
+            if not user_message:
+                return JsonResponse({"error": "No message provided"}, status=400)
+
+            response_message = get_chatbot_response(user_id, user_message)
+            return JsonResponse({"response": response_message})
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)

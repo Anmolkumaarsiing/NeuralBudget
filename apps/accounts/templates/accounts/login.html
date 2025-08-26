@@ -5,23 +5,54 @@
   {% load static %}
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign In & Sign Up</title>
+  <title>Sign In & Sign Up - Neural Budget AI</title>
+  <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
   <link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script>
     const LOGIN_URL = "{% url 'accounts:login' %}";
-
   </script>
   <script type="module" src="{% static 'core/js/app.js' %}"></script>
 </head>
 
 <body>
+  <!-- Dark Mode Toggle Bar -->
+  <div class="theme-toggle-bar">
+    <div class="theme-toggle-container">
+      <span class="theme-toggle-label">
+        <i class="fas fa-sun"></i>
+      </span>
+      <label class="theme-toggle-switch">
+        <input type="checkbox" id="darkModeToggle">
+        <span class="slider"></span>
+      </label>
+      <span class="theme-toggle-label">
+        <i class="fas fa-moon"></i>
+      </span>
+    </div>
+  </div>
+
   <div class="container">
     <div class="forms-container">
       <div class="signin-signup">
-        {% csrf_token %}
+        
         <!-- Sign In Form -->
-        <form action="#" class="sign-in-form" id="loginForm">
+        <form class="sign-in-form active" id="loginForm">
+          {% csrf_token %}
+          
+          <!-- Sign In SVG Illustration -->
+          <div class="form-illustration">
+            <svg viewBox="0 0 400 300" class="illustration-svg">
+              <!-- Login illustration -->
+              <rect x="50" y="50" width="300" height="200" rx="15" fill="var(--theme-primary)" opacity="0.1"/>
+              <rect x="80" y="80" width="240" height="20" rx="10" fill="var(--theme-primary)" opacity="0.3"/>
+              <rect x="80" y="120" width="240" height="20" rx="10" fill="var(--theme-primary)" opacity="0.3"/>
+              <rect x="80" y="160" width="100" height="30" rx="15" fill="var(--theme-primary)"/>
+              <circle cx="320" cy="100" r="30" fill="var(--accent-green)" opacity="0.2"/>
+              <path d="M310 95 L315 100 L325 90" stroke="var(--accent-green)" stroke-width="3" fill="none"/>
+              <text x="200" y="35" text-anchor="middle" fill="var(--theme-secondary)" font-size="18" font-weight="600">Welcome Back!</text>
+            </svg>
+          </div>
 
           <h2 class="title">Sign In</h2>
           <div class="input-field">
@@ -33,10 +64,11 @@
             <input type="password" id="loginPassword" placeholder="Password" required />
           </div>
           <div class="forgot-password">
-          <a href="{% url 'accounts:reset_password_form' %}">Forgot Password?</a>
-        </div>
+            <a href="{% url 'accounts:reset_password_form' %}">Forgot Password?</a>
+          </div>
           <button type="submit" class="btn solid">Login</button>
-          <div id="loginError" style="color: red; margin: 10px 0; display: none;"></div>
+          <div id="loginError" class="error-message"></div>
+          
           <p class="social-text">Or Sign-in with social platforms</p>
           <div class="social-media">
             <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
@@ -44,11 +76,29 @@
             <a href="#" class="social-icon"><i class="fab fa-google"></i></a>
             <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
           </div>
+          
+          <p class="switch-text">Don't have an account? <a href="#" id="sign-up-btn">Sign Up</a></p>
         </form>
 
         <!-- Sign Up Form -->
-        <form action="#" class="sign-up-form" id="signupForm">
+        <form class="sign-up-form" id="signupForm">
           {% csrf_token %}
+          
+          <!-- Sign Up SVG Illustration -->
+          <div class="form-illustration">
+            <svg viewBox="0 0 400 300" class="illustration-svg">
+              <!-- Signup illustration -->
+              <rect x="50" y="50" width="300" height="200" rx="15" fill="var(--accent-green)" opacity="0.1"/>
+              <circle cx="200" cy="120" r="40" fill="var(--theme-primary)" opacity="0.2"/>
+              <circle cx="200" cy="110" r="15" fill="var(--theme-primary)"/>
+              <path d="M170 140 Q200 160 230 140" stroke="var(--theme-primary)" stroke-width="8" fill="none" stroke-linecap="round"/>
+              <rect x="80" y="180" width="240" height="15" rx="7" fill="var(--accent-green)" opacity="0.3"/>
+              <rect x="80" y="210" width="180" height="15" rx="7" fill="var(--accent-green)" opacity="0.3"/>
+              <path d="M290 190 L300 200 L320 180" stroke="var(--accent-green)" stroke-width="3" fill="none"/>
+              <text x="200" y="35" text-anchor="middle" fill="var(--theme-secondary)" font-size="18" font-weight="600">Join Neural Budget AI!</text>
+            </svg>
+          </div>
+
           <h2 class="title">Sign Up</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
@@ -67,7 +117,8 @@
             <input type="password" name="registerPassword2" placeholder="Confirm Password" required />
           </div>
           <button type="submit" class="btn solid">Sign Up</button>
-          <div id="registerError" style="color: red; margin: 10px 0; display: none;"></div>
+          <div id="registerError" class="error-message"></div>
+          
           <p class="social-text">Or Sign up with social platforms</p>
           <div class="social-media">
             <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
@@ -75,33 +126,39 @@
             <a href="#" class="social-icon"><i class="fab fa-google"></i></a>
             <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
           </div>
+          
+          <p class="switch-text">Already have an account? <a href="#" id="sign-in-btn">Sign In</a></p>
         </form>
-
       </div>
     </div>
 
-    <!-- Panels -->
-    <div class="panels-container">
-      <div class="panel left-panel">
-        <div class="content">
-          <h3>New here?</h3>
-          <p>Join us and start your journey today!</p>
-          <button class="btn transparent" id="sign-up-btn">Sign Up</button>
-        </div>
-        <img src="{% static 'accounts/img/login.png' %}" class="image" alt="Sign In Illustration">
-      </div>
-
-      <div class="panel right-panel">
-        <div class="content">
-          <h3>Already a member?</h3>
-          <p>Welcome back! Log in to continue.</p>
-          <button class="btn transparent" id="sign-in-btn">Sign In</button>
-        </div>
-        <img src="{% static 'accounts/img/signup.png' %}" class="image" alt="Sign Up Illustration">
-      </div>
-    </div>
+    <!-- Background decoration -->
+    <div class="bg-decoration"></div>
   </div>
 
+  <!-- Include scripts -->
+  <script src="{% static 'core/js/darkmode.js' %}"></script>
+  <script>
+    // Simple form switching
+    document.addEventListener('DOMContentLoaded', function() {
+      const signInForm = document.querySelector('.sign-in-form');
+      const signUpForm = document.querySelector('.sign-up-form');
+      const signUpBtn = document.getElementById('sign-up-btn');
+      const signInBtn = document.getElementById('sign-in-btn');
+
+      signUpBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        signInForm.classList.remove('active');
+        signUpForm.classList.add('active');
+      });
+
+      signInBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        signUpForm.classList.remove('active');
+        signInForm.classList.add('active');
+      });
+    });
+  </script>
 </body>
 
 </html>

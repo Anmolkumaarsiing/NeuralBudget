@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Neural Budget AI{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/chatbot.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/sidebar-new.css' %}"> {# Sidebar specific CSS #}
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div id="chatbot-component" data-api-url="{% url 'ml_features:chatbot_response' %}">
+        {% include 'core/chatbot.html' %}
+    </div>
+    <script>
+        const LOGOUT_URL = "{% url 'accounts:logout' %}";
+    </script>
+    <div class="container">
+        {% include 'core/_sidebar.html' %}
+        <div class="main-content-wrapper">
+            {% include 'core/_topbar.html' %}
+            <main class="content">
+                {% block content %}
+                {# Page-specific content will go here #}
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+    <script type="module" src="{% static 'core/js/darkmode.js' %}"></script>
+    <script type="module" src="{% static 'core/js/sidebar.js' %}"></script>
+    <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> {# Chart.js CDN #}
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

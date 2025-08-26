@@ -1,313 +1,335 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  {% load static %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Neural Budget AI</title>
-    <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script type="module" src="{% static 'accounts/js/auth.js' %}"></script>
-    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
-    <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
-
-    
-</head>
-<body>
-  
-  
-  <!-- Sidebar -->
-<div id="sidebar" style="position:fixed; top:0; left:-250px; height:100%; width:250px; background:#111; overflow-x:hidden; transition:0.3s; padding-top:60px; z-index:1000;">
-  <a href="#features">FEATURES</a>
-  <a href="#comparison">COMPARISON</a>
-  <a href="#Team">OUR TEAM</a>
-  <a href="{% url 'accounts:login' %}"><i class="fas fa-user-plus userIcon"></i>Login/Signup</a>
-</div>
-
-<!-- Toggle Button placed before NeuralBudget -->
-<div style="position:fixed; top:10px; left:10px; z-index:1100;">
-  <button id="toggleBtn" style="font-size:18px; padding:8px 12px; cursor:pointer;">☰</button>
-</div>
-
+    <link rel="stylesheet" href="{% static 'core/css/index.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Lato&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"
+    />
+    <!-- <script type="module" src="{% static 'accounts/js/auth.js' %}"></script> -->
+  </head>
+  <body>
 
 
     <header>
-        <section>
-            <div id="container">
-                <div id="neuralbudget">
-                    <a href="#"><b>Neural</b>Budget</a>
-                </div>
-                <div id="navbar">
-                    <a href="#features">FEATURES</a>
-                    <a href="#comparison">COMPARISON</a>
-                    <a href="#Team">OUR TEAM</a>
-                    <a href="{% url 'accounts:login' %}"><i class="fas fa-user-plus userIcon"></i>Login/Signup</a>
-
-                </div>
-            </div>
-            <div class="video-container">
-                <video autoplay muted loop playsinline>
-                    <source src="{% static 'core/videos/intro.mp4' %}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-            
-        </section>
+      <section>
+        <div id="container">
+          <div id="neuralbudget">
+            <a href="#"><b>Neural</b>Budget</a>
+          </div>
+          <div id="navbar">
+            <a href="#features">FEATURES</a>
+            <a href="#comparison">COMPARISON</a>
+            <a href="#Team">OUR TEAM</a>
+            <a href="{% url 'accounts:login' %}"
+              ><i class="fas fa-user-plus userIcon"></i>Login/Signup</a
+            >
+          </div>
+        </div>
+        <div class="video-container">
+          <video autoplay muted loop playsinline>
+            <source
+              src="{% static 'core/videos/intro.mp4' %}"
+              type="video/mp4"
+            />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </section>
     </header>
 
-<!-- Neural Budget AI vs. Competitors Section -->
-<section id="comparison">
-    <div class="container">
-      <div class="title-container">
-        <h2 class="section-title">Neural Budget AI vs. Competitors</h2>
+    <!-- Neural Budget AI vs. Competitors Section -->
+    <section id="comparison">
+      <div class="container">
+        <div class="title-container">
+          <h2 class="section-title">Neural Budget AI vs. Competitors</h2>
+        </div>
+        <div class="comparison-table-wrapper">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Neural Budget AI</th>
+                <th>Other Budgeting Tools</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>AI-Powered Expense Categorization</td>
+                <td><i class="uil uil-check-circle check"></i></td>
+                <td><i class="uil uil-times-circle cross"></i></td>
+              </tr>
+              <tr>
+                <td>Predictive Budgeting</td>
+                <td><i class="uil uil-check-circle check"></i></td>
+                <td><i class="uil uil-times-circle cross"></i></td>
+              </tr>
+              <tr>
+                <td>Real-Time Transaction Alerts</td>
+                <td><i class="uil uil-check-circle check"></i></td>
+                <td><i class="uil uil-times-circle cross"></i></td>
+              </tr>
+              <tr>
+                <td>Expense Forecasting</td>
+                <td><i class="uil uil-check-circle check"></i></td>
+                <td><i class="uil uil-minus-circle partial"></i></td>
+              </tr>
+              <tr>
+                <td>Gamification Features</td>
+                <td><i class="uil uil-check-circle check"></i></td>
+                <td><i class="uil uil-times-circle cross"></i></td>
+              </tr>
+              <tr>
+                <td>Customizable Budget Categories</td>
+                <td><i class="uil uil-check-circle check"></i></td>
+                <td><i class="uil uil-minus-circle partial"></i></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div class="comparison-table-wrapper">
-        <table class="comparison-table">
-          <thead>
-            <tr>
-              <th>Feature</th>
-              <th>Neural Budget AI</th>
-              <th>Other Budgeting Tools</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>AI-Powered Expense Categorization</td>
-              <td><i class="uil uil-check-circle check"></i></td>
-              <td><i class="uil uil-times-circle cross"></i></td>
-            </tr>
-            <tr>
-              <td>Predictive Budgeting</td>
-              <td><i class="uil uil-check-circle check"></i></td>
-              <td><i class="uil uil-times-circle cross"></i></td>
-            </tr>
-            <tr>
-              <td>Real-Time Transaction Alerts</td>
-              <td><i class="uil uil-check-circle check"></i></td>
-              <td><i class="uil uil-times-circle cross"></i></td>
-            </tr>
-            <tr>
-              <td>Expense Forecasting</td>
-              <td><i class="uil uil-check-circle check"></i></td>
-              <td><i class="uil uil-minus-circle partial"></i></td>
-            </tr>
-            <tr>
-              <td>Gamification Features</td>
-              <td><i class="uil uil-check-circle check"></i></td>
-              <td><i class="uil uil-times-circle cross"></i></td>
-            </tr>
-            <tr>
-              <td>Customizable Budget Categories</td>
-              <td><i class="uil uil-check-circle check"></i></td>
-              <td><i class="uil uil-minus-circle partial"></i></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-  <div id="chatbot-component" data-api-url="{% url 'core:chatbot_api' %}">
+    </section>
+    <div id="chatbot-component" data-api-url="{% url 'core:chatbot_api' %}">
       {% include 'core/chatbot.html' %}
-  </div>
+    </div>
 
-  
-<!-- Features Section -->
-<div class="features" id="features">
-    <h2 class="features-title">
-        Innovative Neural Budget AI features to help you grow your money and track your financial journey.
-    </h2>
-    <div class="features-container">
+    <!-- Features Section -->
+    <div class="features" id="features">
+      <h2 class="features-title">
+        Innovative Neural Budget AI features to help you grow your money and
+        track your financial journey.
+      </h2>
+      <div class="features-container">
         <div class="features-image">
-            <img src="{% static 'core/img/image4.png' %}" alt="Phone Mockup">
+          <img src="{% static 'core/img/image4.png' %}" alt="Phone Mockup" />
         </div>
         <div class="features-text">
-            <h3>Track your net worth in real-time.</h3>
-            <p>Get a complete overview of your assets and liabilities, and watch your net worth grow with AI-powered insights and updates on your financial progress.</p>
+          <h3>Track your net worth in real-time.</h3>
+          <p>
+            Get a complete overview of your assets and liabilities, and watch
+            your net worth grow with AI-powered insights and updates on your
+            financial progress.
+          </p>
         </div>
+      </div>
     </div>
-</div>
 
-<div class="features-2-container">
-    <div class="features-2-text">
+    <div class="features-2-container">
+      <div class="features-2-text">
         <p class="features-2-title">Manage your monthly spending with ease.</p>
         <p class="features-2-desc">
-            Stay on top of your monthly expenses with detailed insights into your spending patterns, helping you stay within your budget and make smarter financial decisions.
+          Stay on top of your monthly expenses with detailed insights into your
+          spending patterns, helping you stay within your budget and make
+          smarter financial decisions.
         </p>
+      </div>
+      <div class="features-2-image">
+        <img src="{% static 'home/img/image3.png' %}" alt="Feature 2 Image" />
+      </div>
     </div>
-    <div class="features-2-image">
-        <img src="{% static 'home/img/image3.png' %}" alt="Feature 2 Image">
-    </div>
-</div>
-
-
 
     <!-- Our Team Section -->
     <section class="team-section" id="Team">
-        <h2 class="our-team">
-          Our
-          <span class="highlight">super cool</span>
-          Team
-        </h2>
-        <div class="team-container">
+      <h2 class="our-team">
+        Our
+        <span class="highlight">super cool</span>
+        Team
+      </h2>
+      <div class="team-container">
+        <!-- Team Member 1 -->
+        <div class="team-member">
+          <img
+            src="https://media.licdn.com/dms/image/v2/D4D03AQH3vXlFbqUqWA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1688562310995?e=1744243200&v=beta&t=oJiUZJcw6zDy8uojrKHh9veZeVSTDaoChbI_KDHRCwY"
+            alt="Thura Kyaw"
+          />
+          <h3>Thura Kyaw</h3>
+          <p>Backend Developer</p>
+          <p></p>
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/thurakyaw/"
+              ><i class="fab fa-linkedin"></i
+            ></a>
+            <a href="https://github.com/codes71"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a href="2203031050760@paruluniversity.ac.in"
+              ><i class="fas fa-envelope"></i
+            ></a>
+          </div>
+        </div>
 
-          <!-- Team Member 1 -->
-          <div class="team-member">
-            <img
-              src="https://media.licdn.com/dms/image/v2/D4D03AQH3vXlFbqUqWA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1688562310995?e=1744243200&v=beta&t=oJiUZJcw6zDy8uojrKHh9veZeVSTDaoChbI_KDHRCwY"
-              alt="Thura Kyaw"
-            />
-            <h3>Thura Kyaw</h3>
-            <p>Backend Developer</p>
-            <p></p>
-            <div class="social-icons">
-              <a href="https://www.linkedin.com/in/thurakyaw/"><i class="fab fa-linkedin"></i></a>
-              <a href="https://github.com/codes71"><i class="fab fa-github"></i></a>
-              <a href="2203031050760@paruluniversity.ac.in"><i class="fas fa-envelope"></i></a>
-            </div>
+        <!-- Team Member 2 -->
+        <div class="team-member">
+          <img
+            src="https://media.licdn.com/dms/image/v2/D4D03AQHOnM4yGqWUtA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1732121458518?e=1744243200&v=beta&t=CtHZ2_BWUv68mQFqStRAa-D2shThf-Fw0InjzyTSlJE"
+            alt="Hansakunvar Rathod"
+          />
+          <h3>Hansakunvar Rathod</h3>
+          <p>ML Engineer</p>
+          <p></p>
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/hansha-rathod-34883a251/"
+              ><i class="fab fa-linkedin"></i
+            ></a>
+            <a href="https://github.com/Hansha111"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a href="2203031050220@paruluniversity.ac.in"
+              ><i class="fas fa-envelope"></i
+            ></a>
           </div>
-      
-          <!-- Team Member 2 -->
-          <div class="team-member">
-            <img
-              src="https://media.licdn.com/dms/image/v2/D4D03AQHOnM4yGqWUtA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1732121458518?e=1744243200&v=beta&t=CtHZ2_BWUv68mQFqStRAa-D2shThf-Fw0InjzyTSlJE"
-              alt="Hansakunvar Rathod"
-            />
-            <h3>Hansakunvar Rathod</h3>
-            <p>ML Engineer</p>
-            <p></p>
-            <div class="social-icons">
-                <a href="https://www.linkedin.com/in/hansha-rathod-34883a251/"><i class="fab fa-linkedin"></i></a>
-                <a href="https://github.com/Hansha111"><i class="fab fa-github"></i></a>
-                <a href="2203031050220@paruluniversity.ac.in"><i class="fas fa-envelope"></i></a>
-            </div>
-          </div>
-      
-          <!-- Team Member 3 -->
-          <div class="team-member">
-            <img
+        </div>
+
+        <!-- Team Member 3 -->
+        <div class="team-member">
+          <img
             src="https://media.licdn.com/dms/image/v2/D4D03AQGGzv0ND6MTkg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1711904070755?e=1744243200&v=beta&t=5rCWH1j3LQW4ZF3hJWFKoREiqDc5T_-XOUznH8rAv-s"
             alt="Anmol Kumar Singh"
-            />
-            <h3>Anmol Kumar Singh</h3>
-            <p>Full Stack Developer</p>
-            <p></p>
-            <div class="social-icons">
-                <a href="https://www.linkedin.com/in/anmolkumaarsiingh/"><i class="fab fa-linkedin"></i></a>
-                <a href="https://github.com/Anmolkumaarsiing"><i class="fab fa-github"></i></a>
-                <a href="2203031050045@paruluniversity.ac.in"><i class="fas fa-envelope"></i></a>
-            </div>
+          />
+          <h3>Anmol Kumar Singh</h3>
+          <p>Full Stack Developer</p>
+          <p></p>
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/anmolkumaarsiingh/"
+              ><i class="fab fa-linkedin"></i
+            ></a>
+            <a href="https://github.com/Anmolkumaarsiing"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a href="2203031050045@paruluniversity.ac.in"
+              ><i class="fas fa-envelope"></i
+            ></a>
           </div>
-      
-          <!-- Team Member 4 -->
-          <div class="team-member">
-            <img
+        </div>
+
+        <!-- Team Member 4 -->
+        <div class="team-member">
+          <img
             src="https://media.licdn.com/dms/image/v2/D5603AQHROsUyQePjKw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1700139200145?e=1744243200&v=beta&t=1Bm59_kLVIKGrofqysE795zJqrJj30UyJAm2GQvgOgc"
             alt="Harsh"
-            />
-            <h3>Harsh</h3>
-            <p>Frontend Developer</p>
-            <p></p>
-            <div class="social-icons">
-                <a href="https://www.linkedin.com/in/harsh-choudhary-08b00b266/"><i class="fab fa-linkedin"></i></a>
-                <a href="https://github.com/Harshchoudhary07"><i class="fab fa-github"></i></a>
-                <a href="2203031050221@paruluniversity.ac.in"><i class="fas fa-envelope"></i></a>
+          />
+          <h3>Harsh</h3>
+          <p>Frontend Developer</p>
+          <p></p>
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/harsh-choudhary-08b00b266/"
+              ><i class="fab fa-linkedin"></i
+            ></a>
+            <a href="https://github.com/Harshchoudhary07"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a href="2203031050221@paruluniversity.ac.in"
+              ><i class="fas fa-envelope"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq-section">
+      <div class="faq-container">
+        <div class="title-container">
+          <h2 class="section-title">Frequently Asked Questions</h2>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span class="faq-number">1</span>
+            What is Neural Budget AI?
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              Neural Budget AI is an AI-powered financial management tool that
+              helps users track expenses, create budgets, and predict future
+              spending to achieve their financial goals.
             </div>
           </div>
         </div>
-      </section>
 
-<!-- FAQ Section -->
-<section id="faq" class="faq-section">
-  <div class="faq-container">
-    <div class="title-container">
-      <h2 class="section-title">Frequently Asked Questions</h2>
-    </div>
-    <div class="faq-item">
-      <button class="faq-question">
-        <span class="faq-number">1</span>
-        What is Neural Budget AI?
-      </button>
-      <div class="faq-answer">
-        <div class="faq-answer-content">
-          Neural Budget AI is an AI-powered financial management tool that helps users track expenses, create budgets, and predict future spending to achieve their financial goals.
+        <div class="faq-item">
+          <button class="faq-question">
+            <span class="faq-number">2</span>
+            How does AI categorize my expenses?
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              The AI learns from your transaction history, automatically
+              categorizing your expenses based on patterns, ensuring accuracy
+              and adapting to your habits over time.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span class="faq-number">3</span>
+            Can I customize my budget categories?
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              Yes, you can create custom categories for your expenses, giving
+              you complete control over how your spending is tracked and
+              managed.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span class="faq-number">4</span>
+            Is my financial data secure?
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              We prioritize security with encryption and regular backups to
+              ensure your financial data is safe, private, and protected at all
+              times.
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    
-    <div class="faq-item">
-      <button class="faq-question">
-        <span class="faq-number">2</span>
-        How does AI categorize my expenses?
-      </button>
-      <div class="faq-answer">
-        <div class="faq-answer-content">
-          The AI learns from your transaction history, automatically categorizing your expenses based on patterns, ensuring accuracy and adapting to your habits over time.
-        </div>
-      </div>
-    </div>
-    
-    <div class="faq-item">
-      <button class="faq-question">
-        <span class="faq-number">3</span>
-        Can I customize my budget categories?
-      </button>
-      <div class="faq-answer">
-        <div class="faq-answer-content">
-          Yes, you can create custom categories for your expenses, giving you complete control over how your spending is tracked and managed.
-        </div>
-      </div>
-    </div>
-    
-    <div class="faq-item">
-      <button class="faq-question">
-        <span class="faq-number">4</span>
-        Is my financial data secure?
-      </button>
-      <div class="faq-answer">
-        <div class="faq-answer-content">
-          We prioritize security with encryption and regular backups to ensure your financial data is safe, private, and protected at all times.
-        </div>
-      </div>
-    </div>
-    
-  </div>
-</section>
+    </section>
 
+    <script>
+      document.querySelectorAll(".faq-item").forEach((faq) => {
+        const questionButton = faq.querySelector(".faq-question");
 
-<script>
+        questionButton.addEventListener("click", () => {
+          faq.classList.toggle("active");
 
-document.querySelectorAll('.faq-item').forEach((faq) => {
-  const questionButton = faq.querySelector('.faq-question');
+          const answer = faq.querySelector(".faq-answer");
+          if (faq.classList.contains("active")) {
+            answer.style.maxHeight = answer.scrollHeight + "px";
+          } else {
+            answer.style.maxHeight = null;
+          }
+        });
+      });
+    </script>
+    <script>
+      // Sidebar toggle logic
+      const sidebar = document.getElementById("sidebar");
+      const toggleBtn = document.getElementById("toggleBtn");
 
-  questionButton.addEventListener('click', () => {
-    faq.classList.toggle('active');
-    
-    const answer = faq.querySelector('.faq-answer');
-    if (faq.classList.contains('active')) {
-      answer.style.maxHeight = answer.scrollHeight + "px";
-    } else {
-      answer.style.maxHeight = null;
-    }
-  });
-});
-
-
-</script>
-<script>
-  // Sidebar toggle logic
-  const sidebar = document.getElementById('sidebar');
-  const toggleBtn = document.getElementById('toggleBtn');
-
-  toggleBtn.addEventListener('click', () => {
-    if (sidebar.style.left === '0px') {
-      sidebar.style.left = '-250px';
-    } else {
-      sidebar.style.left = '0px';
-    }
-  });
-</script>
-
-</body>
+      toggleBtn.addEventListener("click", () => {
+        if (sidebar.style.left === "0px") {
+          sidebar.style.left = "-250px";
+        } else {
+          sidebar.style.left = "0px";
+        }
+      });
+    </script>
+  </body>
 </html>

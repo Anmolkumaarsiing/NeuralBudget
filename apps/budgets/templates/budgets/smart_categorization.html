@@ -1,111 +1,21 @@
-<!DOCTYPE html>
+{% extends 'core/base.html' %}
 {% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Categorization - Neural Budget AI</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-    <link rel="stylesheet" href="{% static 'reports/css/dashboard.css' %}">
-    <link rel="stylesheet" href="{% static 'reports/css/sidebar-new.css' %}">
 
-    
-    <script type="module" src="{% static 'reports/js/dashboard.js' %}"></script>
-    <script type="module" src="{% static 'core/js/darkmode.js' %}"></script>
-    <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
+{% block title %}Smart Saver - Neural Budget AI{% endblock %}
+
+{% block extra_css %}
     <link rel="stylesheet" href="{% static 'budgets/css/smart_categorization.css' %}">
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <script type="module" src="{% static 'core/js/main.js' %}"></script>
-    <script type="module" src="{% static 'core/js/darkmode.js' %}"></script>
-    <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
+{% endblock %}
+
+{% block extra_js %}
     <script type="module" src="{% static 'budgets/js/smart_categorization.js' %}"></script>
-</head>
-<body>
-      <div id="chatbot-component" data-api-url="{% url 'core:chatbot_api' %}">
-      {% include 'core/chatbot.html' %}
-  </div>
-    <script>
-        const LOGOUT_URL = "{% url 'accounts:logout' %}";
-    </script>
-    <div class="container">
+{% endblock %}``````
 
-        <!-- SIDEBAR SECTION -->
-
-        <aside class="sidebar">
-            <div class="logo">
-                <img src="{% static 'core/img/logo.png' %}" href="{% url 'reports:dashboard' %}" alt="Neural Budget AI Logo" class="logo-img">
-                <span class="logo-text">Neural Budget AI</span>
-            </div>            
-            <nav>
-                <ul>
-                    <li class="dropdown">
-                        <button class="drop-btn"><i class="fas fa-receipt"></i>Expense Tracking
-                            <i class="fas fa-angle-right dropdown-icon"></i>
-                        </button>
-                        <ul class="dropdown-content">
-                            <li><a href="{% url 'reports:dashboard' %}"><i class="fas fa-tachometer-alt"></i> Overview</a></li>
-                            <li><a href="{% url 'transactions:add_transaction' %}"><i class="fas fa-plus-circle"></i> Add Expense</a></li>
-                            <li><a href="{% url 'transactions:transaction_history' %}"><i class="fas fa-eye"></i> View Transactions</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <button class="drop-btn"><i class="fas fa-wallet"></i>Budgeting Tools
-                            <i class="fas fa-angle-right dropdown-icon"></i>
-                        </button>
-                        <ul class="dropdown-content">
-                            <li><a href="{% url 'budgets:set_budget' %}"><i class="fas fa-coins"></i>Set Budget</a></li>
-                            <li><a href="{% url 'budgets:smart_saver' %}"><i class="fas fa-magic"></i> Smart Saver</a></li>
-                            <li><a href="{% url 'budgets:smart_categorization' %}"><i class="fas fa-layer-group"></i> Smart Categorization</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <button class="drop-btn"><i class="fas fa-chart-line"></i>AI Insights
-                            <i class="fas fa-angle-right dropdown-icon"></i>
-                        </button>
-                        <ul class="dropdown-content"> 
-                            <li><a href="{% url 'reports:visualize' %}"><i class="fas fa-brain"></i> Predictive Analysis</a></li>
-                            <li><a href="#"><i class="fas fa-chart-pie"></i> Spending Insights</a></li>
-                            <li><a href="#"><i class="fas fa-chart-line"></i> Expense Forecasting</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <button class="drop-btn"><i class="fas fa-cog"></i>Settings
-                            <i class="fas fa-angle-right dropdown-icon"></i>
-                        </button>
-                        <ul class="dropdown-content">
-                            <li><a href="/accounts/profile"><i class="fas fa-user"></i> Profile</a></li>
-                            <li><a href="#" id="signOutLink"><i class="fas fa-sign-out-alt"></i> Logoutt</a></li>
-                        </ul>
-                    </li>
-                
-                </ul>
-            </nav>
-        </aside>
-
-        <main class="content">
-            
-        <!-- TOPBAR SECTION -->
-
-            <header class="topbar">
-                <div class="greeting">
-                    <h3>Hi, {{email}} <i class="fas fa-smile"></i></h3>
-                </div>
-                
-                <div class="actions">
-                    <label class="switch">
-                        <input type="checkbox" id="darkModeToggle">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-            </header>
-<div class="smart-categorization-page">
+{% block content %}
+<section class="smart-categorization-page">
     <div class="page-header">
         <h1>AI Smart Categorization ✨</h1>
-        <p>Let SAVI analyze your expenses and automatically group them into clear categories. Get a visual breakdown of where your money really goes.</p>
+        <p>Let SAVI analyze your expenses and a``utomatically group them into clear categories. Get a visual breakdown of where your money really goes.</p>
     </div>
 
     <div class="analysis-controls">
@@ -120,9 +30,5 @@
     </div>
 
     <div id="results-container" class="results-container"></div>
-</div>
-
-        </main>
-    </div>
-</body>
-</html>
+</section>
+{% endblock %}

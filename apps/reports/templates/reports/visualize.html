@@ -6,12 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neural Budget AI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'reports/css/dashboard.css' %}">
+    
     <link rel="stylesheet" href="{% static 'reports/css/sidebar-new.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="{% static 'reports/js/dashboard.js' %}"></script>
     <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="{% static 'reports/css/sidebar-new.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="{% static 'reports/js/dashboard.js' %}"></script>
+    <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
     <script type="module" src="{% static 'core/js/darkmode.js' %}"></script>
+    
+</head>
+<body>
+      <div id="chatbot-component" data-api-url="{% url 'core:chatbot_api' %}">
+      {% include 'core/chatbot.html' %}
+  </div>
+    <div class="container">
     
 </head>
 <body>
@@ -104,8 +118,7 @@
         </main>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        </main>
+    </main>
     </div>
 </body>
 </html>

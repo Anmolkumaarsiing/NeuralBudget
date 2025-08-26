@@ -13,5 +13,13 @@ pymongo==3.12.3
 dotenv
 setuptools
 langchain_huggingface
+langchain_community
+langchain_chroma
 python-decouple
 google.generativeai
+langchain
+langchain-core
+langchain-google-firestore
+chromadb
+sentence-transformers
+huggingface-hub
