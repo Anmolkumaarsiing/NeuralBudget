@@ -1,57 +1,72 @@
-/* ====== DELETE PAGE STYLES ====== */
-.delete-container {
-  border-left: 6px solid #e74c3c;
+/* in apps/datagen/static/datagen/css/delete_data.css */
+
+.delete-data-page {
+    max-width: 600px;
+    margin: 0 auto; /* Centers the content on the page */
 }
 
-.tool-header h1 {
-  font-size: 1.8rem;
-  color: #e74c3c;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.card-style {
+    background: #fff; 
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.07);
 }
 
-.warning-icon {
-  color: #e74c3c;
+.tool-header { 
+    text-align: center; 
+    margin-bottom: 2rem; 
 }
 
-.warning-text {
-  color: #555;
-  font-size: 1rem;
-  margin-top: 10px;
-  line-height: 1.6;
+.tool-header h1 { 
+    font-size: 24px; 
+    color: #c0392b; /* A strong red for warning */
 }
 
-/* Delete Button */
+.tool-header .warning-icon { 
+    margin-right: 10px; 
+}
+
+.tool-header p { 
+    color: #555; 
+    line-height: 1.6; 
+    font-size: 15px;
+}
+
 .btn-delete {
-  background: #e74c3c;
-  color: #fff;
-  border: none;
-  padding: 14px 20px;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s;
-  width: 100%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+    width: 100%; 
+    padding: 15px; 
+    font-size: 16px;
+    font-weight: 700; 
+    background-color: #e74c3c;
+    color: white; 
+    border: none; 
+    border-radius: 10px; 
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.btn-delete:hover {
-  background: #c0392b;
-  transform: translateY(-2px);
+.btn-delete:hover { 
+    background-color: #c0392b; 
 }
 
-/* Success/Error Messages Overrides */
-.status-message.success {
-  background: #e0f7e9;
-  color: #2b7a4b;
+.btn-delete:disabled { 
+    background-color: #ccc; 
+    cursor: not-allowed; 
 }
 
-.status-message.error {
-  background: #fdecea;
-  color: #a94442;
+.status-message {
+    margin-top: 1.5rem; 
+    padding: 15px;
+    border-radius: 8px; 
+    text-align: center; 
+    font-weight: 600;
+}
+
+.status-message.success { 
+    background-color: #eaf8ee; 
+    color: #28a745; 
+}
+.status-message.error { 
+    background-color: #fdecea; 
+    color: #dc3545; 
 }

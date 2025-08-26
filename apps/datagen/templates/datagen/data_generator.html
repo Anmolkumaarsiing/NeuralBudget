@@ -6,36 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Data Generator - Neural Budget AI</title>
     
-    <!-- Icon Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-    
-    <!-- Page-Specific Stylesheet -->
+
+    <link rel="stylesheet" href="{% static 'datagen/css/admin_layout.css' %}">
     <link rel="stylesheet" href="{% static 'datagen/css/data_generator.css' %}">
 </head>
 <body>
-    <div id="chatbot-component" data-api-url="{% url 'core:chatbot_api' %}">
-        {% include 'core/chatbot.html' %}
-    </div>
-
-    <div class="container">
-        <!-- SIDEBAR SECTION -->
-        <aside class="sidebar">
+    <div class="admin-container">
+        <aside class="admin-sidebar">
             <div class="sidebar-header">
                 <h2><i class="fas fa-brain"></i> NeuralBudget</h2>
             </div>
             <nav class="sidebar-menu">
-                <a href="{% url 'datagen:admin_overview_page' %}" class="active"><i class="fas fa-home"></i> Overview</a>
-                <a href="{% url 'datagen:data_generator_page' %}"><i class="fas fa-database"></i> Data Generator</a>
-                <a href="{% url 'datagen:delete_data_page' %}   "><i class="fas fa-chart-line"></i> Data Deletion</a>
-                <a href="#"><i class="fas fa-user"></i> Profile</a>
-                <a href="#"><i class="fas fa-cog"></i> Settings</a>
-                <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                <a href="{% url 'datagen:admin_overview_page' %}"><i class="fas fa-home"></i> Overview</a>
+                <a href="{% url 'datagen:data_generator_page' %}" class="active"><i class="fas fa-database"></i> Data Generator</a>
+                <a href="{% url 'datagen:delete_data_page' %}"><i class="fas fa-trash-alt"></i> Data Deletion</a>
+                <a href="{% url 'reports:dashboard' %}" class="back-link"><i class="fas fa-arrow-left"></i> Back to App</a>
             </nav>
         </aside>
 
-        <!-- MAIN CONTENT -->
-        <main class="content">
+        <main class="admin-content">
+            <header class="admin-topbar">
+                <h1>Developer Tools</h1>
+                <div class="user-info">
+                    <span>{{ user_name|default:'Admin' }}</span>
+                </div>
+            </header>
+            
             <div class="page-container">
                 <div class="tool-container">
                     <div class="tool-header">
@@ -59,10 +56,7 @@
         </main>
     </div>
 
-    <!-- JavaScript Files -->
-    <script type="module" src="{% static 'reports/js/dashboard.js' %}"></script>
-    <script type="module" src="{% static 'core/js/darkmode.js' %}"></script>
-    <script type="module" src="{% static 'accounts/js/signOut.js' %}"></script>
+    <script type="module" src="{% static 'core/js/help.js' %}"></script>
     <script type="module" src="{% static 'datagen/js/data_generator.js' %}"></script>
 </body>
 </html>

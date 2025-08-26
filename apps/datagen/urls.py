@@ -4,15 +4,17 @@ from . import views
 app_name = 'datagen'
 
 urlpatterns = [
-    # AI Data Generator tool
-    path('', views.data_generator_page, name='data_generator_page'),
-    path('api/generate-data/', views.generate_data_api, name='generate_data_api'),
-
-    # Data Deletion tool
+    # This now makes the 'overview' page the default for the app
+    path('', views.admin_overview_page, name='admin_overview_page'),
+    
+    # URL for the AI Data Generator tool page
+    path('generate/', views.data_generator_page, name='data_generator_page'),
+    
+    # URL for the Data Deletion tool page
     path('delete-data/', views.delete_data_page, name='delete_data_page'),
-    path('api/delete-data/', views.delete_data_api, name='delete_data_api'),
 
-    #Admin Overview page
-    path('overview/', views.admin_overview_page, name='admin_overview_page'),
+    # --- API Endpoints ---
+    path('api/generate-data/', views.generate_data_api, name='generate_data_api'),
+    path('api/delete-data/', views.delete_data_api, name='delete_data_api'),
     path('api/get-admin-analytics/', views.get_admin_analytics_api, name='get_admin_analytics_api'),
 ]
