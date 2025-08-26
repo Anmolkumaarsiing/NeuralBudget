@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historical Data Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'datagen/css/admin_layout.css' %}">
+    <link rel="stylesheet" href="{% static 'datagen/css/historical_data_generator.css' %}">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-brain"></i> NeuralBudget Admin</h2>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="{% url 'datagen:admin_overview_page' %}"><i class="fas fa-home"></i> Overview</a>
+                <a href="{% url 'datagen:data_generator_page' %}"><i class="fas fa-database"></i> Data Generator</a>
+                <a href="{% url 'datagen:historical_data_page' %}" class="active"><i class="fas fa-calendar-alt"></i> Historical Data</a>
+                <a href="{% url 'datagen:delete_data_page' %}"><i class="fas fa-trash-alt"></i> Data Deletion</a>
+                <a href="{% url 'reports:dashboard' %}" class="back-link"><i class="fas fa-arrow-left"></i> Back to App</a>
+            </nav>
+        </aside>
+
+        <main class="admin-content">
+            <header class="admin-topbar">
+                <h1>Developer Tools</h1>
+                <div class="user-info">
+                    <span>{{ user_name|default:'Admin' }}</span>
+                </div>
+            </header>
+            
+            <div class="page-container">
+                <div class="tool-container">
+                    <div class="tool-header">
+                        <h1>Historical Data Generator 🗓️</h1>
+                        <p>Create realistic transaction data for specific past date ranges and locations.</p>
+                    </div>
+
+                    <div class="generator-form card-style">
+                        <div class="form-group">
+                            <label for="num-transactions">Number of Transactions to Generate</label>
+                            <input type="number" id="num-transactions" min="1" max="100" value="15">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="start-date">Start Date</label>
+                                <input type="date" id="start-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="end-date">End Date</label>
+                                <input type="date" id="end-date" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="district">District / City</label>
+                            <input type="text" id="district" value="Vadodara" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="min-amount">Min Amount (₹)</label>
+                                <input type="number" id="min-amount" value="50">
+                            </div>
+                            <div class="form-group">
+                                <label for="max-amount">Max Amount (₹)</label>
+                                <input type="number" id="max-amount" value="2000">
+                            </div>
+                        </div>
+
+                        <button id="generate-btn" class="btn-generate">
+                            <i class="fas fa-magic"></i> Generate Historical Data
+                        </button>
+                    </div>
+
+                    <div id="status-message" class="status-message" style="display: none;"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="{% static 'core/js/help.js' %}"></script>
+    <script type="module" src="{% static 'datagen/js/historical_data_generator.js' %}"></script>
+</body>
+</html>

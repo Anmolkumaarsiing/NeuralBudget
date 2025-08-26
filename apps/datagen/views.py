@@ -75,3 +75,32 @@ def get_admin_analytics_api(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+def historical_data_page(request):
+    """Renders the historical data generator tool page."""
+    email = get_email(request)
+    return render(request, 'datagen/historical_data_generator.html', {'email': email})
+
+def generate_historical_data_api(request):
+    """API endpoint to handle the historical data generation request."""
+    if request.method == 'POST':
+        try:
+            user_id = get_user_id(request)
+            data = json.loads(request.body)
+            
+            # Add validation for the new inputs
+            constraints = {
+                "start_date": data.get("start_date"),
+                "end_date": data.get("end_date"),
+                "district": data.get("district"),
+                "min_amount": int(data.get("min_amount", 10)),
+                "max_amount": int(data.get("max_amount", 1000)),
+                "num_transactions": int(data.get("num_transactions", 10))
+            }
+
+            added_count = services.generate_historical_data(user_id, constraints)
+            return JsonResponse({'message': f'Successfully generated and added {added_count} historical transactions!'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)

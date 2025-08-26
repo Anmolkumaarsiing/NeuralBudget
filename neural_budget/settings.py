@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'apps.ml_features',
     'apps.datagen',
     'apps.common_utils',
+    'apps.insights',
 ]
 
 MIDDLEWARE = [

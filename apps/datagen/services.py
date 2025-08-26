@@ -153,3 +153,59 @@ def get_admin_dashboard_analytics():
         'new_users_last_7_days': new_users_last_7_days,
         'top_categories_chart': top_categories_chart_data
     }
+
+# Add this new function to your datagen/services.py file
+
+def generate_historical_data(user_id, constraints):
+    """
+    Generates a batch of historical transaction data based on user constraints.
+    """
+    genai.configure(api_key=settings.GEMINI_API_KEY)
+    model = genai.GenerativeModel("gemini-1.5-flash-latest")
+    
+    # --- NEW OPTIMIZED PROMPT ---
+    prompt = f"""
+    You are an AI data generator for "Neural Budget AI". Your task is to create a JSON array of hyper-realistic historical transactions for a user.
+
+    **User Profile & Constraints:**
+    - Location for all expenses: {constraints.get('district', 'Vadodara')}, India.
+    - Date Range: All transaction dates MUST be between {constraints.get('start_date')} and {constraints.get('end_date')}.
+    - Amount Range: All transaction amounts MUST be between ₹{constraints.get('min_amount')} and ₹{constraints.get('max_amount')}.
+    - Number of transactions to generate: {constraints.get('num_transactions')}
+
+    **CRITICAL INSTRUCTIONS:**
+    1.  **Hyper-Realism & Granularity:** Be extremely specific. Instead of "Groceries", generate "D-Mart: Onion (1kg)".
+    2.  **Local Context:** Use real, existing merchants and places relevant to the specified district.
+    3.  **Accurate Categories:** Assign the single most accurate category to each transaction.
+    4.  **Financial Realism:** Ensure the amounts are realistic for the items described and fall within the specified range.
+
+    **Schema for each JSON object:**
+    - `name`: (String) The hyper-realistic transaction name.
+    - `category`: (String) One of: "Groceries & Essentials", "Dining Out & Entertainment", "Transportation", "Utilities", "Shopping", "Other".
+    - `amount`: (Float) A realistic amount in INR within the specified range.
+    - `date`: (String) A date in "YYYY-MM-DD" format within the specified range.
+    - `status`: (String) Must always be "Completed".
+
+    The output must be a single, valid JSON array only.
+    """
+    
+    try:
+        response = model.generate_content(prompt)
+        response_text = response.text.strip().replace("```json", "").replace("```", "")
+        transactions = json.loads(response_text)
+    except Exception as e:
+        print(f"Error parsing Gemini response: {e}")
+        return []
+
+    # Add the generated data to the user's account
+    added_count = 0
+    for txn in transactions:
+        try:
+            txn['date'] = datetime.strptime(txn['date'], '%Y-%m-%d')
+            add_transaction(user_id, txn, 'expenses')
+            added_count += 1
+        except (ValueError, KeyError) as e:
+            print(f"Skipping invalid transaction record: {txn}. Error: {e}")
+            continue
+            
+    return added_count

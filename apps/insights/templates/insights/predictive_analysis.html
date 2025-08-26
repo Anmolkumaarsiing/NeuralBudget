@@ -1,0 +1,40 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Predictive Analysis - Neural Budget AI{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'insights/css/insights.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="insights-page">
+    <div class="page-header">
+        <h1>AI Predictive Analysis 📊</h1>
+    </div>
+
+    {% if visualizations and not visualizations.error %}
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>Spending Forecast</h3>
+                <div class="chart-wrapper"><canvas id="forecast-chart"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h3>Spending by Category</h3>
+                <div class="chart-wrapper"><canvas id="category-chart"></canvas></div>
+            </div>
+        </div>
+        {{ visualizations|json_script:"chart-data" }}
+    {% else %}
+        <div class="error-container">
+            <h3><i class="fas fa-exclamation-triangle"></i> Analysis Failed</h3>
+            <p>{{ visualizations.error|default:"Not enough data to generate visualizations. Please add more transactions." }}</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="{% static 'insights/js/predictive_analysis.js' %}"></script>
+{% endblock %}
