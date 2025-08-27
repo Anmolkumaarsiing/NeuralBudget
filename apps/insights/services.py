@@ -169,64 +169,103 @@ def generate_smart_categorization(user_id):
     except Exception as e:
         return {"error": f"AI analysis failed: {e}"}
 
+# in apps/insights/services.py
 
+import json
+from datetime import datetime, timedelta
+import google.generativeai as genai
+from django.conf import settings
+from apps.common_utils.firebase_service import db, get_transactions
 
-def generate_spending_insights(user_id):
-    """
-    Fetches expenses for the current month and uses the Gemini API to generate
-    a day-wise breakdown and a summary of the top 5 spending categories.
-    """
-    # 1. Fetch all expense transactions from Firestore for the user
-    all_expenses = get_transactions(user_id, 'expenses', limit=1000)
-    if not all_expenses:
-        return {"error": "No transaction data found to generate insights."}
-
-    # 2. Filter for transactions in the current month
-    now = datetime.now()
-    start_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-    
-    current_month_expenses = [
-        t for t in all_expenses
-        if isinstance(t.get('date'), datetime) and t['date'].replace(tzinfo=None) >= start_of_month
-    ]
-
-    if not current_month_expenses:
-        return {"error": "No transactions found for the current month."}
-
-    # 3. Pre-process data for the prompt
-    for transaction in current_month_expenses:
-        if 'date' in transaction and isinstance(transaction['date'], datetime):
-            transaction['date'] = transaction['date'].isoformat()
-
-    # 4. Construct a detailed prompt for the Gemini API
-    prompt = f"""
-    You are "SAVI", an insightful financial analyst for the "Neural Budget AI" app. Your task is to analyze a user's spending for the current month.
-
-    Your final output must be a single, valid JSON object with two keys: "daily_breakdown" and "top_categories".
-
-    1.  For "daily_breakdown":
-        - Group all transactions by their date.
-        - For each date, provide a summary, the total amount spent, and a relevant Font Awesome icon.
-        - The value should be an array of objects, sorted from most recent date to oldest. Each object must have the keys: "date" (YYYY-MM-DD), "day_summary" (e.g., "Mainly spent on food delivery"), "total_spent", and "icon" (e.g., "fas fa-utensils").
-
-    2.  For "top_categories":
-        - Identify the top 5 spending categories for the month.
-        - The value should be an object with two keys: "labels" (an array of the top 5 category names) and "values" (an array of the total spending for each of those categories).
-
-    Here is the user's transaction data for the current month:
-    {json.dumps(current_month_expenses, indent=2)}
-    """
-
-    # 5. Call the Gemini API and parse the response
+def update_user_salary(user_id, salary):
+    """Saves or updates the monthly salary in the user's Firestore profile."""
+    # Ensure salary is a number before saving
     try:
+        salary_float = float(salary)
+    except (ValueError, TypeError):
+        raise ValueError("Invalid salary format. Please provide a number.")
+        
+    user_profile_ref = db.collection('user_profiles').document(user_id)
+    user_profile_ref.set({'monthly_salary': salary_float}, merge=True)
+
+def generate_investment_guide(user_id, location, salary):
+    """
+    Analyzes user's savings and location to generate investment tips via Gemini API.
+    Includes debugging prints to trace the execution flow.
+    """
+    print("--- 1. Starting Investment Guide Generation ---")
+    
+    # 1. Fetch all expense transactions from the last 30 days
+    thirty_days_ago = datetime.now() - timedelta(days=30)
+    all_expenses = get_transactions(user_id, 'expenses', limit=1000)
+    
+    recent_expenses = [
+        t for t in all_expenses
+        if isinstance(t.get('date'), datetime) and t['date'].replace(tzinfo=None) > thirty_days_ago
+    ]
+    
+    total_monthly_expenses = sum(t.get('amount', 0) for t in recent_expenses)
+    print(f"--- 2. Calculated last 30 days expenses: ₹{total_monthly_expenses:.2f} ---")
+
+    # 2. Calculate monthly savings
+    monthly_savings = float(salary) - total_monthly_expenses
+    print(f"--- 3. Calculated monthly savings: ₹{monthly_savings:.2f} (Salary: ₹{salary}) ---")
+
+    if monthly_savings <= 100:
+        print("--- ERROR: Monthly savings are too low. Aborting. ---")
+        return {"error": "Your monthly savings are too low to generate investment tips. Focus on budgeting first."}
+
+    # 3. Construct a detailed prompt for the Gemini API
+    prompt = f"""
+    You are "SAVI", an expert financial advisor...
+    ...(The rest of your prompt is the same)...
+    """
+
+    # 4. Call the Gemini API and return the response
+    try:
+        print("--- 4. Sending prompt to Gemini API... ---")
         genai.configure(api_key=settings.GEMINI_API_KEY)
         model = genai.GenerativeModel("gemini-1.5-flash-latest")
         response = model.generate_content(prompt)
         
+        print("--- 5. Received response from Gemini. Parsing JSON... ---")
         result_text = response.text.strip().replace("```json", "").replace("```", "")
-        insights_data = json.loads(result_text)
-        
-        return insights_data
+        parsed_response = json.loads(result_text)
+        print("--- 6. JSON parsed successfully. Sending tips to user. ---")
+        return parsed_response
+
     except Exception as e:
-        print(f"Gemini API Error: {e}")
-        return {"error": "The AI could not generate your insights. Please try again later."}
+        print(f"--- CRITICAL ERROR during Gemini API call: {e} ---")
+        return {"error": f"The AI could not generate investment tips. Details: {e}"}
+import requests
+
+def get_city_from_coordinates(lat, lon):
+    """
+    Fetch city/town/village/state from OpenStreetMap Nominatim API.
+    Falls back to state if city is unavailable.
+    """
+    url = "https://nominatim.openstreetmap.org/reverse"
+    params = {
+        "format": "json",
+        "lat": lat,
+        "lon": lon
+    }
+    headers = {
+        "User-Agent": "NeuralBudgetAI/1.0 (anmolkumaarsiingh2@gmail.com)"  # Required by OSM
+    }
+    try:
+        resp = requests.get(url, params=params, headers=headers, timeout=5)
+        resp.raise_for_status()
+        data = resp.json()
+        address = data.get("address", {})
+        
+        # Try city, town, village, then state
+        return (
+            address.get("city")
+            or address.get("town")
+            or address.get("village")
+            or address.get("state")
+            or "Unknown"
+        )
+    except Exception:
+        return "Unknown"

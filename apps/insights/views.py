@@ -48,17 +48,77 @@ def spending_insights_page(request):
     return render(request, "insights/spending_insights.html", {"user_name": user_name})
 
 
-def get_spending_insights_api(request):
+# Add these new views to your insights/views.py file
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from . import services
+from apps.common_utils.firebase_service import get_user_profile
+
+
+def investment_guide_page(request):
     """
-    API endpoint that handles the slow task of calling the Gemini API.
+    Renders the Investment Guide page. It checks if the user has a salary set
+    and passes the initial state to the template.
     """
-    if request.method == "GET":
+    user_id = get_user_id(request)
+    email = get_email(request)
+    user_profile = get_user_profile(user_id)
+    
+    # Check if salary is already saved in the user's profile
+    current_salary = user_profile.get('monthly_salary') if user_profile else None
+    
+    context = {
+        'email': email,
+        'current_salary': current_salary
+    }
+    return render(request, 'insights/investment_guide.html', context)
+
+def generate_investment_tips_api(request):
+    """
+    API endpoint that saves the user's salary and returns AI-generated tips.
+    """
+    if request.method == "POST":
         try:
             user_id = get_user_id(request)
-            insights_data = services.generate_spending_insights(user_id)
-            if "error" in insights_data:
-                return JsonResponse(insights_data, status=400)
-            return JsonResponse(insights_data)
+            data = json.loads(request.body)
+            salary = data.get('salary')
+            location = data.get('location')
+
+            if not salary or not location:
+                return JsonResponse({"error": "Salary and location are required."}, status=400)
+            
+            # Save the salary to the user's profile for future use
+            services.update_user_salary(user_id, salary)
+            
+            # Generate the investment tips
+            tips_data = services.generate_investment_guide(user_id, location, salary)
+            
+            if "error" in tips_data:
+                return JsonResponse(tips_data, status=400)
+            return JsonResponse(tips_data)
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
     return JsonResponse({"error": "Invalid request method"}, status=405)
+
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from . import services
+
+@csrf_exempt
+def get_city_api(request):
+    """
+    API to resolve lat/lon into a city name (server-side to avoid OSM 403).
+    """
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            lat = data.get("lat")
+            lon = data.get("lon")
+            if not lat or not lon:
+                return JsonResponse({"error": "Latitude and longitude required"}, status=400)
+            city = services.get_city_from_coordinates(lat, lon)
+            return JsonResponse({"city": city})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "Invalid method"}, status=405)

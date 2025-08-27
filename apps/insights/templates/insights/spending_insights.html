@@ -3,29 +3,19 @@
 
 {% block title %}Spending Insights{% endblock %}
 
-{% block head_extra %}
+{% block extra_css %}
     <link rel="stylesheet" href="{% static 'insights/css/insights.css' %}">
+    <link rel="stylesheet" href="{% static 'insights/css/spending_insights.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="insights-page">
-    <div class="page-header">
-        <h1>AI Spending Insights 💡</h1>
-        <p>Discover personalized insights and suggestions based on your recent spending activity.</p>
-    </div>
-
-    <div id="insights-container">
-        <div id="loading-spinner" class="spinner-container">
-            <div class="spinner"></div>
-            <p>SAVI is analyzing your spending...</p>
-        </div>
-        
-        <div id="results-content" style="display: none;">
-            </div>
+<div class="insights-page maintenance">
+    <div class="maintenance-box">
+        <img src="{% static 'insights/images/maintenance2.png' %}" alt="Under Maintenance" class="maintenance-img">
+        <h1>🚧 Spending Insights Under Maintenance</h1>
+        <p>We’re working hard to bring you powerful AI-driven insights into your spending.  
+           Please check back soon.</p>
+        <a href="{% url 'reports:dashboard' %}" class="btn-back">← Back to Dashboard</a>
     </div>
 </div>
-{% endblock %}
-
-{% block scripts_extra %}
-    <script type="module" src="{% static 'insights/js/spending_insights.js' %}"></script>
 {% endblock %}
