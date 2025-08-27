@@ -16,13 +16,14 @@
                 <p id="totalExpenses">₹{{ total_expenses|floatformat:2 }}</p>
               </div>
               <div class="card">
+                <h3>Total Income</h3>
+                <p id="totalIncome">₹{{ total_income|floatformat:2 }}</p>
+              </div>
+              <div class="card">
                 <h3>Savings</h3>
                 <p id="savings">₹{{ savings|floatformat:2 }}</p>
               </div>
-              <div class="card">
-                <h3>Budget Left</h3>
-                <p id="budgetLeft">₹{{ budget_left|floatformat:2 }}</p>
-              </div>
+              
             </div>
 
             <div class="recent-transactions">

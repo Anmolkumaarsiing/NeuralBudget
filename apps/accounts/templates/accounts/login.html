@@ -9,10 +9,36 @@
   <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
   <link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script>
     const LOGIN_URL = "{% url 'accounts:login' %}";
+    const GOOGLE_LOGIN_URL = "{% url 'accounts:google_login' %}"; // New URL for Google login
+
+    window.onload = function () {
+      console.log("[DEBUG] window.onload fired.");
+      const clientId = "999678886480-sogu82l8gva959u909rbeg8rq22u81g5.apps.googleusercontent.com";
+      const uxMode = 'redirect';
+      const redirectUri = 'http://127.0.0.1:8000/accounts/google_login/';
+
+      console.log(`[DEBUG] Initializing Google Sign-In with:`);
+      console.log(`[DEBUG]   client_id: ${clientId}`);
+      console.log(`[DEBUG]   ux_mode: ${uxMode}`);
+      console.log(`[DEBUG]   redirect_uri: ${redirectUri}`);
+
+      if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+        google.accounts.id.initialize({
+          client_id: clientId,
+          ux_mode: uxMode,
+          redirect_uri: redirectUri
+        });
+        console.log("[DEBUG] google.accounts.id.initialize called.");
+      } else {
+        console.error("[DEBUG] Google Identity Services library (google.accounts.id) not available.");
+      }
+    };
   </script>
   <script type="module" src="{% static 'core/js/app.js' %}"></script>
+  <script type="module" src="{% static 'accounts/js/auth.js' %}"></script>
 </head>
 
 <body>
@@ -69,13 +95,13 @@
           <button type="submit" class="btn solid">Login</button>
           <div id="loginError" class="error-message"></div>
           
-          <p class="social-text">Or Sign-in with social platforms</p>
+          <!-- <p class="social-text">Or Sign-in with social platforms</p>
           <div class="social-media">
             <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
             <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-google"></i></a>
+            <a href="#" class="social-icon" id="google-signin-btn"><i class="fab fa-google"></i></a>
             <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-          </div>
+          </div> -->
           
           <p class="switch-text">Don't have an account? <a href="#" id="sign-up-btn">Sign Up</a></p>
         </form>
@@ -105,6 +131,18 @@
             <input type="text" id="registerUsername" placeholder="Username" required />
           </div>
           <div class="input-field">
+            <i class="fas fa-user"></i>
+            <input type="text" id="registerFirstName" placeholder="First Name" required />
+          </div>
+          <div class="input-field">
+            <i class="fas fa-user"></i>
+            <input type="text" id="registerLastName" placeholder="Last Name" required />
+          </div>
+          <div class="input-field">
+            <i class="fas fa-phone"></i>
+            <input type="tel" id="registerPhoneNumber" placeholder="Phone Number" />
+          </div>
+          <div class="input-field">
             <i class="fas fa-envelope"></i>
             <input type="email" id="registerEmail" placeholder="Email" required />
           </div>
@@ -119,14 +157,6 @@
           <button type="submit" class="btn solid">Sign Up</button>
           <div id="registerError" class="error-message"></div>
           
-          <p class="social-text">Or Sign up with social platforms</p>
-          <div class="social-media">
-            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-google"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-          </div>
-          
           <p class="switch-text">Already have an account? <a href="#" id="sign-in-btn">Sign In</a></p>
         </form>
       </div>
@@ -138,27 +168,6 @@
 
   <!-- Include scripts -->
   <script src="{% static 'core/js/darkmode.js' %}"></script>
-  <script>
-    // Simple form switching
-    document.addEventListener('DOMContentLoaded', function() {
-      const signInForm = document.querySelector('.sign-in-form');
-      const signUpForm = document.querySelector('.sign-up-form');
-      const signUpBtn = document.getElementById('sign-up-btn');
-      const signInBtn = document.getElementById('sign-in-btn');
-
-      signUpBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        signInForm.classList.remove('active');
-        signUpForm.classList.add('active');
-      });
-
-      signInBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        signUpForm.classList.remove('active');
-        signInForm.classList.add('active');
-      });
-    });
-  </script>
+  <script type="module" src="{% static 'core/js/app.js' %}"></script>
+  <script type="module" src="{% static 'accounts/js/auth.js' %}"></script>
 </body>
-
-</html>

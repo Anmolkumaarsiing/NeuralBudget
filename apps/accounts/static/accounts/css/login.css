@@ -143,15 +143,39 @@ input:checked + .slider:before {
 form {
   position: relative; /* instead of absolute */
   width: 100%;
-  display: none; /* hide inactive forms */
+  display: flex; /* show all forms by default, then hide with specific rules */
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  transition: transform 0.6s ease-in-out, opacity 0.5s ease-in-out;
 }
 
-form.active {
-  display: flex; /* show only active form */
+.sign-in-form {
+  z-index: 2;
+  opacity: 1;
+  transform: translateX(0%);
+}
+
+.sign-up-form {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  z-index: 1;
+  transform: translateX(100%);
+}
+
+/* When in sign-up mode, shift forms */
+.container.sign-up-mode .sign-in-form {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.container.sign-up-mode .sign-up-form {
+  transform: translateX(0%);
+  opacity: 1;
+  z-index: 2;
 }
 /* SVG Illustrations */
 .form-illustration {

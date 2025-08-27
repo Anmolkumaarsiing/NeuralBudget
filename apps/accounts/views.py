@@ -75,7 +75,13 @@ def register_view(request):
 
     if request.method == "POST":
         data = json.loads(request.body)
-        response = register_user(request, data)
+        # Extract new fields
+        first_name = data.get('firstName')
+        last_name = data.get('lastName')
+        phone_number = data.get('phoneNumber')
+
+        # Pass all data to the service layer
+        response = register_user(request, data, first_name, last_name, phone_number)
         if "error" in response:
             status_code = 400 
             if "Email already exists" in response["error"]:
@@ -104,7 +110,7 @@ def profile_view(request):
     
     user_id = get_user_id(request)
     user_profile = get_user_profile(user_id)
-    # print("User Profile:", user_profile)
+    print(f"[DEBUG] User Profile Object: {user_profile}") # Added for debugging username availability
 
     context = {
         'email': get_email(request),
@@ -210,3 +216,60 @@ def reset_password_form_view(request):
 
 def reset_done_view(request):
     return render(request, 'accounts/reset_done.html')
+
+@csrf_exempt
+def google_login_view(request):
+    print(f"[DEBUG] google_login_view received request. Method: {request.method}")
+    print(f"[DEBUG] Request Headers: {request.headers}")
+    
+    if is_authenticated(request):
+        print("[DEBUG] User already authenticated, redirecting to dashboard.")
+        return redirect('reports:dashboard')
+
+    if request.method == 'POST':
+        try:
+            body = json.loads(request.body)
+            print(f"[DEBUG] Request Body: {body}")
+            id_token = body.get('id_token')
+
+            if not id_token:
+                return JsonResponse({'error': 'Google ID token is required'}, status=400)
+
+            decoded_token = verify_firebase_token(id_token)
+            uid = decoded_token['uid']
+            email = decoded_token.get('email')
+            display_name = decoded_token.get('name', email.split('@')[0] if email else 'User')
+
+            # Fetch or create user profile
+            user_profile = get_user_profile(uid)
+            if not user_profile:
+                create_user_profile(uid, email, display_name)
+                user_profile = get_user_profile(uid) # Fetch again to get the newly created profile
+            
+            # Use display name from profile if available
+            display_name_from_profile = user_profile.get('display_name', display_name)
+
+            request.session['user_id'] = uid
+            request.session['email'] = email
+            request.session['id_token'] = id_token
+
+            return JsonResponse({
+                'message': 'Google login successful',
+                'email': email,
+                'uid': uid,
+                'display_name': display_name_from_profile,
+                'redirect_url': '/reports/dashboard'
+            })
+
+        except ValueError as e:
+            return JsonResponse({'error': str(e)}, status=401)
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({'error': 'Network error or invalid request.'}, status=401)
+        except firebase_exceptions.FirebaseError as e:
+            return JsonResponse({'error': f'Firebase error: {str(e)}'}, status=401)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON in request body.'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': 'An unexpected error occurred.'}, status=500)
+
+    return JsonResponse({'error': 'Method not allowed'}, status=405)

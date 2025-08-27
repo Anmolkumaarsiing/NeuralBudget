@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
-def register_user(request, data):
+def register_user(request, data, first_name, last_name, phone_number):
     try:
         username = data.get("username")
         email = data.get("email")
@@ -26,8 +26,8 @@ def register_user(request, data):
         # 2. Copy default categories to user's collection
         copy_default_categories_to_user(uid)
         
-        # 3. Create user profile in Firestore
-        create_user_profile(uid, email, username) 
+        # 3. Create user profile in Firestore with new fields
+        create_user_profile(uid, email, username, first_name, last_name, phone_number) 
 
         # 4. Automatically log in the user after registration
         response_data = firebase_login(email, password)

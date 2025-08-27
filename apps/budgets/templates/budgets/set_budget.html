@@ -76,7 +76,7 @@
 
                 <div class="budget-card-footer">
                     <span class="remaining">₹{{ category.remaining|default:"0" }} left</span>
-                    <button class="edit-btn" onclick="editBudget('{{ category.name }}', {{ category.budget_amount|default:0 }})">
+                    <button class="edit-btn" onclick="editBudget('{{ category.name }}', { category.budget_amount|default:0 }})">
                         <i class="fas fa-edit"></i>
                     </button>
                 </div>

@@ -45,35 +45,52 @@ def get_dashboard_data(request):
         }
 
     try:
+        # Get current month and year
+        now = datetime.now()
+        current_month = now.month
+        current_year = now.year
+
         # Fetch all expenses, incomes, and budgets for the user
-        expenses = get_transactions(user_id, EXPENSE_COLLECTION, limit=1000)
-        incomes = get_transactions(user_id, INCOME_COLLECTION, limit=1000)
-        user_budgets = get_budgets(user_id) # Fetch user budgets
-        print(f"[DEBUG] Fetched {len(expenses)} expenses, {len(incomes)} incomes, and {len(user_budgets)} budgets for user {user_id}")
+        all_expenses = get_transactions(user_id, EXPENSE_COLLECTION, limit=100)
+        all_incomes = get_transactions(user_id, INCOME_COLLECTION, limit=100)
+        # print("[DEBUG] Fetched Expenses:", all_expenses)  # Debugging line
+        all_user_budgets = get_budgets(user_id) # Fetch user budgets
+
+        # Filter transactions for the current month
+        expenses = [t for t in all_expenses if _parse_date(t.get('date')).month == current_month and _parse_date(t.get('date')).year == current_year]
+        incomes = [t for t in all_incomes if _parse_date(t.get('date')).year == current_year]
+
+        # print("[DEBUG] Fetched Incomes:", incomes)    # Debugging line
+        # Filter budgets for the current month (assuming 'monthly' period for dashboard display)
+        user_budgets = [b for b in all_user_budgets if b.get('period', 'monthly').lower() == 'monthly']
 
         total_expenses = sum(float(transaction.get('amount', 0)) for transaction in expenses)
         total_income = sum(float(transaction.get('amount', 0)) for transaction in incomes)
+        # print(f"[DEBUG] Total Expenses: {total_expenses}, Total Income: {total_income}")
         
-        # Calculate total budget dynamically
-        total_budget = sum(float(str(budget.get('budget', 0)).replace('₹', '').replace(',', '').strip()) for budget in user_budgets)
+        # Calculate total budget dynamically (robust conversion from string to float)
+        total_budget = 0
+        for budget_item in user_budgets:
+            budget_amount_str = str(budget_item.get('budget', 0)).replace('₹', '').replace(',', '').strip()
+            try:
+                total_budget += float(budget_amount_str)
+            except ValueError:
+                print(f"[WARNING] Could not convert budget amount to float: {budget_amount_str}")
+                # Optionally log or handle this error more gracefully
 
-        # Process expenses for category chart
+        # Process expenses for category chart (only for current month expenses)
         expense_categories = {}
         for transaction in expenses:
             amount = float(transaction.get('amount', 0))
             category = transaction.get('category', 'Uncategorized')
             expense_categories[category] = expense_categories.get(category, 0) + amount
 
-        # Combine transactions for 'Recent Transactions' list
+        # Combine transactions for 'Recent Transactions' list (only for current month transactions)
         all_transactions = []
         for t in expenses:
             t['type'] = 'expense'
             all_transactions.append(t)
-        for t in incomes:
-            t['name'] = t.get('source', 'N/A') # Standardize 'name' field
-            t['type'] = 'income'
-            all_transactions.append(t)
-
+            
         # Sort all transactions by parsed date
         all_transactions.sort(key=lambda x: _parse_date(x.get('date')), reverse=True)
         recent_transactions = all_transactions[:5]
@@ -91,7 +108,6 @@ def get_dashboard_data(request):
         }
         
         savings = total_income - total_expenses
-        print(f"[DEBUG] Dashboard Data: Total Expenses: {total_expenses}, Total Income: {total_income}, Savings: {savings}, Total Budget: {total_budget}, Budget Left: {budget_left}")
 
         return {
             'total_expenses': total_expenses,

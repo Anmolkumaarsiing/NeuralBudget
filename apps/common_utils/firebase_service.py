@@ -67,15 +67,20 @@ def set_document(collection_name, doc_id, data):
     doc_ref = db.collection(collection_name).document(doc_id)
     doc_ref.set(data)
 
-def create_user_profile(uid, email, display_name):
+def create_user_profile(uid, email, display_name, first_name=None, last_name=None, phone_number=None):
     """Creates an initial user profile document in Firestore."""
     user_profile_ref = db.collection('user_profiles').document(uid)
-    user_profile_ref.set({
+    profile_data = {
         'email': email,
         'display_name': display_name,
         'created_at': firestore.SERVER_TIMESTAMP,
         'photo_url': DEFAULT_PROFILE_PIC_URL # Set default profile picture
-    })
+    }
+    if first_name: profile_data['first_name'] = first_name
+    if last_name: profile_data['last_name'] = last_name
+    if phone_number: profile_data['phone_number'] = phone_number
+
+    user_profile_ref.set(profile_data)
 
 def get_user_profile(uid):
     """Retrieves a user profile document from Firestore."""

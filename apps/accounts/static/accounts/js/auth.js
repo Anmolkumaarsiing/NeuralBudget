@@ -2,13 +2,63 @@ import { clearError, displayError, getCookie } from '/static/core/js/help.js';
 
 const csrftoken = getCookie('csrftoken');
 
+// Google Sign-In Callback
+window.handleGoogleCredentialResponse = function(response) {
+    console.log("Encoded JWT ID token: " + response.credential);
+    const errorDiv = document.getElementById('loginError'); // Assuming a common error div
+    clearError(errorDiv);
+
+    // GOOGLE_LOGIN_URL is expected to be a global variable from login.html
+    fetch(GOOGLE_LOGIN_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({ id_token: response.credential })
+    })
+    .then(async response => {
+        const data = await response.json();
+        if (response.ok) {
+            console.log("Google login successful! Redirecting...");
+            localStorage.setItem("uid", data.uid);
+            window.location.href = data.redirect_url;
+        } else {
+            throw new Error(data.error || 'Google login failed');
+        }
+    })
+    .catch(error => {
+        console.error("Google login error:", error);
+        displayError(errorDiv, error.message);
+    });
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    const googleSignInBtn = document.getElementById('google-signin-btn');
+    const googleSignUpBtn = document.getElementById('google-signup-btn');
+
+    // Attach Google Sign-In to the existing icons
+    if (googleSignInBtn) {
+        googleSignInBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            google.accounts.id.prompt(); // Display the One Tap / Google Sign-In dialog
+        });
+    }
+
+    if (googleSignUpBtn) {
+        googleSignUpBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            google.accounts.id.prompt(); // Display the One Tap / Google Sign-In dialog
+        });
+    }
+});
 
 export function login(email, password) {
     console.log("Login function called");
     const errorDiv = document.getElementById('loginError');
     clearError(errorDiv);
 
-    console.log("Attempting login with:", { email, password });
+    // console.log("Attempting login with:", { email, password });
 
     fetch('/accounts/login/', {
         method: 'POST',
@@ -54,12 +104,15 @@ export function register() {
     console.log("Register function called");
 
     const username = document.getElementById('registerUsername').value;
+    const firstName = document.getElementById('registerFirstName').value;
+    const lastName = document.getElementById('registerLastName').value;
+    const phoneNumber = document.getElementById('registerPhoneNumber').value;
     const email = document.getElementById('registerEmail').value;
     const password1 = document.querySelector('input[name="registerPassword1"]').value;
     const password2 = document.querySelector('input[name="registerPassword2"]').value;
     const errorDiv = document.getElementById('registerError');
     clearError(errorDiv);
-    if (!username || !email || !password1 || !password2) {
+    if (!username || !firstName || !lastName || !email || !password1 || !password2) {
         displayError(errorDiv, 'All fields are required.');
         return;
     }
@@ -77,7 +130,7 @@ export function register() {
             'Content-Type': 'application/json',
             'X-CSRFToken': csrftoken
         },
-        body: JSON.stringify({ username, email, password: password1 })
+        body: JSON.stringify({ username, firstName, lastName, phoneNumber, email, password: password1 })
     })
         .then(async response => {
             const data = await response.json();
