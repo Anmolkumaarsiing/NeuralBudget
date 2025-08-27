@@ -64,3 +64,120 @@
         grid-template-columns: 1fr; /* Stack charts on smaller screens */
     }
 }
+
+/* in apps/insights/static/insights/css/insights.css */
+
+/* --- 1. Main Page Layout & Header --- */
+.insights-page {
+    max-width: 1200px;
+    margin: 0 auto; /* Centers the content on the page */
+    padding: 2rem;
+}
+
+.insights-page .page-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+.insights-page h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2a2a72; /* Your theme's dark blue */
+}
+.insights-page p {
+    font-size: 16px;
+    color: #555;
+    max-width: 600px;
+    margin: 10px auto 0 auto;
+}
+
+/* --- 2. Main Grid Layout --- */
+.insights-grid {
+    display: grid;
+    /* Creates two columns, with the timeline taking up more space */
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+/* --- 3. Card Styles (for both chart and timeline) --- */
+.chart-card,
+.timeline-card {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: 1px solid #eee;
+}
+
+.chart-card h3,
+.timeline-card h3 {
+    margin-top: 0;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.chart-wrapper {
+    height: 350px;
+}
+
+
+/* --- 4. Day-wise Timeline Styles --- */
+.daily-timeline {
+    border-left: 3px solid #e0e0e0;
+    padding-left: 20px;
+    margin-top: 20px;
+    height: 350px; /* Match chart height */
+    overflow-y: auto; /* Allow scrolling if content is long */
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+    padding-left: 20px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -32px; /* Aligns the circle on the timeline */
+    top: 5px;
+    width: 15px;
+    height: 15px;
+    background-color: rgb(36, 167, 145); /* Your theme's teal */
+    border-radius: 50%;
+    border: 3px solid #fff;
+}
+
+.timeline-date {
+    font-weight: 700;
+    color: #2a2a72;
+}
+
+.timeline-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    color: #555;
+    margin-top: 5px;
+}
+
+.timeline-total {
+    margin-left: auto;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* --- 5. Spinner & Error Styles --- */
+.spinner-container { text-align: center; padding: 2rem; }
+.error-container { text-align: center; padding: 40px; background-color: #fff3f3; border-radius: 12px; color: #c0392b; }
+
+
+/* --- 6. Responsive Adjustments --- */
+@media (max-width: 1100px) {
+    .insights-grid {
+        grid-template-columns: 1fr; /* Stack the chart and timeline on smaller screens */
+    }
+}

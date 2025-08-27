@@ -11,9 +11,11 @@ def dashboard_view(request):
         return redirect('accounts:login')
     
     email = get_email(request)
+    user_name = email.split('@')[0] if email else "User"   # simple fallback
+    
     dashboard_data = get_dashboard_data(request)
     context = {
-        "email": email,
+        "user_name": user_name,   # 🔹 key matches template
         "FIREBASE_API_KEY": FIREBASE_API_KEY,
         "total_expenses": dashboard_data['total_expenses'],
         "savings": dashboard_data['savings'],
