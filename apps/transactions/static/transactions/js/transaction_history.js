@@ -46,7 +46,7 @@ async function fetchAndDisplayTransactions(append = false) {
 
             tr.innerHTML = `
                 <td data-label="Name">${transaction.name || transaction.source || "N/A"}</td>
-                <td data-label="Category">${transaction.category || "-"}</td>
+                <td data-label="Category">${transaction.category || "Income"}</td>
                 <td data-label="Amount">₹${(transaction.amount || 0).toFixed(2)}</td>
                 <td data-label="Date">${new Date(transaction.date).toLocaleDateString()}</td>
                 <td data-label="Status">

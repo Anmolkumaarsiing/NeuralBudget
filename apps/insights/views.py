@@ -43,9 +43,7 @@ def spending_insights_page(request):
     """
     Renders the Spending Insights page instantly with a loading state.
     """
-    email = get_email(request)
-    user_name = email.split("@")[0] if email else "User"
-    return render(request, "insights/spending_insights.html", {"user_name": user_name})
+    return render(request, "insights/spending_insights.html")
 
 
 def get_spending_insights_api(request):

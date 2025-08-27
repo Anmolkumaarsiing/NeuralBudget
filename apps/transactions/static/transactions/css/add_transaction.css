@@ -25,7 +25,82 @@
     transition: color var(--transition-standard);
 }
 
-/* --- 3. Modern Toggle Buttons (Manual / OCR) --- */
+/* --- 3. Transaction Type Toggle (Expense/Income) --- */
+.transaction-type-toggle {
+    display: flex;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    padding: 6px;
+    margin-bottom: 25px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+    transition: all var(--transition-standard);
+}
+
+.transaction-type-toggle button {
+    flex: 1;
+    padding: 14px 24px;
+    border: none;
+    background-color: transparent;
+    color: var(--light-text-secondary);
+    cursor: pointer;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all var(--transition-standard);
+    position: relative;
+    overflow: hidden;
+}
+
+.transaction-type-toggle button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.5s;
+}
+
+.transaction-type-toggle button:hover::before {
+    left: 100%;
+}
+
+.transaction-type-toggle button:hover {
+    color: var(--theme-primary);
+    transform: translateY(-1px);
+}
+
+/* Expense button styling */
+.transaction-type-toggle button#expenseBtn.active {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    transform: translateY(-2px);
+}
+
+.transaction-type-toggle button#expenseBtn:hover:not(.active) {
+    color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Income button styling */
+.transaction-type-toggle button#incomeBtn.active {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    transform: translateY(-2px);
+}
+
+.transaction-type-toggle button#incomeBtn:hover:not(.active) {
+    color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+/* --- 4. Entry Method Toggle (Manual/OCR) --- */
 .entry-toggle {
     display: flex;
     justify-content: center;
@@ -59,16 +134,16 @@
     box-shadow: 0 2px 10px rgba(36, 167, 145, 0.15);
 }
 
-/* --- 4. Form Fields & Inputs --- */
+/* --- 5. Form Fields & Inputs --- */
 .entry-form {
     display: flex;
     flex-direction: column;
-    gap: 18px;
 }
 
 .entry-form label {
     display: block;
     margin-bottom: 8px;
+    margin-top: 8px;
     font-weight: 600;
     color: var(--light-text);
     font-size: 15px;
@@ -101,7 +176,7 @@
     border-color: var(--theme-primary);
 }
 
-/* --- 5. "Other Category" Section --- */
+/* --- 6. "Other Category" Section --- */
 #other-category-container {
     display: flex;
     gap: 10px;
@@ -143,7 +218,7 @@
     background-color: var(--button-secondary-hover);
 }
 
-/* --- 6. Submit Buttons --- */
+/* --- 7. Submit Buttons --- */
 .entry-form button[type="submit"] {
     background-color: var(--theme-primary);
     color: white;
@@ -166,7 +241,7 @@
     background-color: #238a6f;
 }
 
-/* --- 7. Success/Error States --- */
+/* --- 8. Success/Error States --- */
 .form-field-success input,
 .form-field-success select {
     border-color: var(--accent-green);
@@ -199,7 +274,7 @@
     color: #721c24;
 }
 
-/* --- 8. Loading States --- */
+/* --- 9. Loading States --- */
 .entry-form.loading {
     opacity: 0.7;
     pointer-events: none;
@@ -226,7 +301,7 @@
     100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-/* --- 9. Dark Mode Support --- */
+/* --- 10. Dark Mode Support --- */
 .dark-mode .add-expense-section {
     background: var(--dark-bg);
     border-color: var(--dark-border);
@@ -236,6 +311,40 @@
 .dark-mode .add-expense-section h2,
 .dark-mode .entry-form label {
     color: var(--dark-text);
+}
+
+/* Dark mode transaction type toggle */
+.dark-mode .transaction-type-toggle {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .transaction-type-toggle button {
+    color: var(--dark-text-secondary);
+}
+
+.dark-mode .transaction-type-toggle button:hover:not(.active) {
+    color: var(--accent-green);
+}
+
+.dark-mode .transaction-type-toggle button#expenseBtn.active {
+    background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+    box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+}
+
+.dark-mode .transaction-type-toggle button#incomeBtn.active {
+    background: linear-gradient(135deg, var(--accent-green) 0%, #38b2ac 100%);
+    box-shadow: 0 4px 15px rgba(42, 245, 161, 0.4);
+}
+
+.dark-mode .transaction-type-toggle button#expenseBtn:hover:not(.active) {
+    color: #e53e3e;
+    background-color: rgba(229, 62, 62, 0.15);
+}
+
+.dark-mode .transaction-type-toggle button#incomeBtn:hover:not(.active) {
+    color: var(--accent-green);
+    background-color: rgba(42, 245, 161, 0.15);
 }
 
 .dark-mode .entry-toggle {
@@ -292,8 +401,6 @@
     background-color: #1dd882;
 }
 
-
-
 .dark-mode .entry-form button[type="submit"]:hover {
     background-color: #1dd882;
 }
@@ -308,7 +415,7 @@
     color: #ff6b6b;
 }
 
-/* --- 10. Responsive Adjustments --- */
+/* --- 11. Responsive Adjustments --- */
 @media screen and (max-width: 768px) {
     .add-expense-section {
         margin: 15px;
@@ -319,6 +426,15 @@
     .add-expense-section h2 {
         font-size: 22px;
         margin-bottom: 25px;
+    }
+    
+    .transaction-type-toggle {
+        margin-bottom: 20px;
+    }
+    
+    .transaction-type-toggle button {
+        padding: 12px 18px;
+        font-size: 14px;
     }
     
     .entry-toggle {
@@ -367,6 +483,11 @@
         margin-bottom: 20px;
     }
     
+    .transaction-type-toggle button {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+    
     .entry-toggle button {
         padding: 8px 12px;
         font-size: 13px;
@@ -383,7 +504,7 @@
     }
 }
 
-/* --- 11. Utility Classes --- */
+/* --- 12. Utility Classes --- */
 .form-row {
     display: flex;
     gap: 15px;
