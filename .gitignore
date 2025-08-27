@@ -20,3 +20,5 @@ chatbot.log
 GEMINI.md
 media/
 /chroma_db
+ai.md
+Context_processor.md

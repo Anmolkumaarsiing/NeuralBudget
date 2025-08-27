@@ -11,15 +11,9 @@ def dashboard_view(request):
         print("[DEBUG] dashboard_view: User not authenticated, redirecting to login.")
         return redirect('accounts:login')
     
-    user_id = get_user_id(request)
-    email = get_email(request)
-    user_profile = get_user_profile(user_id)
-    full_name = get_user_full_name(user_profile)
 
     dashboard_data = get_dashboard_data(request)
     context = {
-        "email": email,
-        "full_name": full_name, # Added full_name to context
         "FIREBASE_API_KEY": FIREBASE_API_KEY,
         "total_expenses": dashboard_data['total_expenses'],
         "total_income":dashboard_data['total_income'],

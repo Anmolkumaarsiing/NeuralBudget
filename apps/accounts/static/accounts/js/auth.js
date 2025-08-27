@@ -51,6 +51,40 @@ document.addEventListener('DOMContentLoaded', function() {
             google.accounts.id.prompt(); // Display the One Tap / Google Sign-In dialog
         });
     }
+
+    function setupPasswordToggle(toggleId, passwordId) {
+        const toggle = document.getElementById(toggleId);
+        const password = document.getElementById(passwordId);
+
+        if (toggle && password) {
+            toggle.addEventListener('click', function() {
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        }
+    }
+    
+    function setupPasswordToggleByName(toggleId, passwordName) {
+        const toggle = document.getElementById(toggleId);
+        const password = document.querySelector(`input[name="${passwordName}"]`);
+
+        if (toggle && password) {
+            toggle.addEventListener('click', function() {
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        }
+    }
+
+    setupPasswordToggle('togglePassword', 'loginPassword');
+    setupPasswordToggleByName('toggleRegisterPassword1', 'registerPassword1');
+    setupPasswordToggleByName('toggleRegisterPassword2', 'registerPassword2');
 });
 
 export function login(email, password) {

@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Neural Budget AI</title>
+    <link rel="icon" href="{% static 'core/favicon.ico' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'core/css/index.css' %}" />
     <link
       rel="stylesheet"
@@ -101,10 +102,6 @@
         </div>
       </div>
     </section>
-    <div id="chatbot-component" data-api-url="{% url 'core:chatbot_api' %}">
-      {% include 'core/chatbot.html' %}
-    </div>
-
     <!-- Features Section -->
     <div class="features" id="features">
       <h2 class="features-title">
@@ -136,7 +133,7 @@
         </p>
       </div>
       <div class="features-2-image">
-        <img src="{% static 'home/img/image3.png' %}" alt="Feature 2 Image" />
+        <img src="{% static 'core/img/image3.png' %}" alt="Feature 2 Image" />
       </div>
     </div>
 
@@ -150,10 +147,7 @@
       <div class="team-container">
         <!-- Team Member 1 -->
         <div class="team-member">
-          <img
-            src="https://media.licdn.com/dms/image/v2/D4D03AQH3vXlFbqUqWA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1688562310995?e=1744243200&v=beta&t=oJiUZJcw6zDy8uojrKHh9veZeVSTDaoChbI_KDHRCwY"
-            alt="Thura Kyaw"
-          />
+
           <h3>Thura Kyaw</h3>
           <p>Full Stack Developer</p>
           <p></p>
@@ -172,10 +166,8 @@
 
         <!-- Team Member 2 -->
         <div class="team-member">
-          <img
-            src="https://media.licdn.com/dms/image/v2/D4D03AQHOnM4yGqWUtA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1732121458518?e=1744243200&v=beta&t=CtHZ2_BWUv68mQFqStRAa-D2shThf-Fw0InjzyTSlJE"
-            alt="Hansakunvar Rathod"
-          />
+          <!-- Replace with a local, publicly accessible image -->
+          
           <h3>Hansakunvar Rathod</h3>
           <p>ML Engineer</p>
           <p></p>
@@ -194,10 +186,8 @@
 
         <!-- Team Member 3 -->
         <div class="team-member">
-          <img
-            src="https://media.licdn.com/dms/image/v2/D4D03AQGGzv0ND6MTkg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1711904070755?e=1744243200&v=beta&t=5rCWH1j3LQW4ZF3hJWFKoREiqDc5T_-XOUznH8rAv-s"
-            alt="Anmol Kumar Singh"
-          />
+          <!-- Replace with a local, publicly accessible image -->
+          
           <h3>Anmol Kumar Singh</h3>
           <p>Full Stack Developer</p>
           <p></p>
@@ -216,10 +206,8 @@
 
         <!-- Team Member 4 -->
         <div class="team-member">
-          <img
-            src="https://media.licdn.com/dms/image/v2/D5603AQHROsUyQePjKw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1700139200145?e=1744243200&v=beta&t=1Bm59_kLVIKGrofqysE795zJqrJj30UyJAm2GQvgOgc"
-            alt="Harsh"
-          />
+          <!-- Replace with a local, publicly accessible image -->
+          
           <h3>Harsh</h3>
           <p>Frontend Developer</p>
           <p></p>
@@ -318,18 +306,5 @@
         });
       });
     </script>
-    <script>
-      // Sidebar toggle logic
-      const sidebar = document.getElementById("sidebar");
-      const toggleBtn = document.getElementById("toggleBtn");
-
-      toggleBtn.addEventListener("click", () => {
-        if (sidebar.style.left === "0px") {
-          sidebar.style.left = "-250px";
-        } else {
-          sidebar.style.left = "0px";
-        }
-      });
-    </script>
-  </body>
+    </body>
 </html>

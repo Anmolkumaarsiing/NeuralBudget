@@ -137,7 +137,7 @@ input:checked + .slider:before {
 .signin-signup {
   position: relative;
   width: 100%;
-  min-height: 700px;
+  /* min-height: 700px; */ /* Removed */
 }
 
 form {
@@ -147,7 +147,7 @@ form {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 1rem; /* Adjusted padding */
   transition: transform 0.6s ease-in-out, opacity 0.5s ease-in-out;
 }
 
@@ -164,6 +164,8 @@ form {
   opacity: 0;
   z-index: 1;
   transform: translateX(100%);
+  overflow-y: auto; /* Added */
+  height: 100%; /* Added */
 }
 
 /* When in sign-up mode, shift forms */
@@ -217,12 +219,13 @@ form {
   padding: 0 1rem;
   transition: background-color var(--transition-standard);
   box-sizing: border-box; /* prevent padding from changing height */
+  position: relative;
 }
 
 .input-field i {
   color: var(--light-text-secondary);
   font-size: 1.1rem;
-  margin-right: 1rem;
+  margin-right: 1.1rem;
   width: 20px;
   text-align: center;
   transition: color var(--transition-standard);
@@ -243,6 +246,23 @@ form {
 .input-field input::placeholder {
   color: var(--light-text-secondary);
   font-weight: 400;
+}
+
+
+
+.input-field .fa-eye,
+.input-field .fa-eye-slash {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--light-text-secondary);
+}
+
+.dark-mode .input-field .fa-eye,
+.dark-mode .input-field .fa-eye-slash {
+  color: var(--dark-text-secondary);
 }
 
 .forgot-password {
@@ -536,25 +556,30 @@ form {
     width: 180px;
     height: 100px;
   }
+}
 
-  .title {
-    font-size: 1.6rem;
-  }
+.title {
+  font-size: 1.6rem;
+}
 
-  .input-field {
-    max-width: 100%;
-    height: 48px;
-  }
+.input-field {
+  max-width: 100%;
+  height: 48px;
+}
 
-  .btn {
-    width: 160px;
-    height: 42px;
-    font-size: 13px;
-  }
+.btn {
+  width: 160px;
+  height: 42px;
+  font-size: 13px;
+}
 
-  .social-icon {
-    height: 40px;
-    width: 40px;
-    font-size: 1rem;
-  }
+.social-icon {
+  height: 40px;
+  width: 40px;
+  font-size: 1rem;
+}
+.social-icon {
+  height: 40px;
+  width: 40px;
+  font-size: 1rem;
 }

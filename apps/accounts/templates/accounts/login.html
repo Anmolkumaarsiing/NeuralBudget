@@ -88,6 +88,7 @@
           <div class="input-field">
             <i class="fas fa-lock"></i>
             <input type="password" id="loginPassword" placeholder="Password" required />
+            <i class="fas fa-eye" id="togglePassword"></i>
           </div>
           <div class="forgot-password">
             <a href="{% url 'accounts:reset_password_form' %}">Forgot Password?</a>
@@ -149,10 +150,12 @@
           <div class="input-field">
             <i class="fas fa-lock"></i>
             <input type="password" name="registerPassword1" placeholder="Password" required />
+            <i class="fas fa-eye" id="toggleRegisterPassword1"></i>
           </div>
           <div class="input-field">
             <i class="fas fa-lock"></i>
             <input type="password" name="registerPassword2" placeholder="Confirm Password" required />
+            <i class="fas fa-eye" id="toggleRegisterPassword2"></i>
           </div>
           <button type="submit" class="btn solid">Sign Up</button>
           <div id="registerError" class="error-message"></div>

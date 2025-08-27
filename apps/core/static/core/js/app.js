@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (signupForm) {
         signupForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
+            event.preventDefault(); 
             register();
         });
     }
