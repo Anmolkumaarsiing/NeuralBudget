@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'corsheaders', # Added for CORS
     'apps.core',
     'apps.accounts',
     'apps.transactions',
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "neural_budget.custom_error_middleware.CustomErrorMiddleware",
+    # "corsheaders.middleware.CorsMiddleware", # Added for CORS
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -71,6 +73,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                'apps.core.context_processors.user_full_name',
             ],
         },
     },
@@ -131,7 +134,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-CSRF_TRUSTED_ORIGINS = ['https://*.127.0.0.1', 'https://*.localhost']
-# GOOGLE_APPLICATION_CREDENTIALS="/firebase_auth_key.json"
+# CSRF_TRUSTED_ORIGINS = ['https://*.127.0.0.1', 'https://*.localhost']
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5000",
+#     "http://127.0.0.1:5000",
+# ]
+# CORS_ALLOW_CREDENTIALS = True
+GOOGLE_APPLICATION_CREDENTIALS="/firebase_auth_key.json"
 
 GEMINI_API_KEY = config('GEMINI_API_KEY')

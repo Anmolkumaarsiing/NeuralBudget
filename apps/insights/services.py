@@ -191,11 +191,9 @@ def update_user_salary(user_id, salary):
 def generate_investment_guide(user_id, location, salary):
     """
     Analyzes user's savings and location to generate investment tips via Gemini API.
-    Includes debugging prints to trace the execution flow.
     """
     print("--- 1. Starting Investment Guide Generation ---")
     
-    # 1. Fetch all expense transactions from the last 30 days
     thirty_days_ago = datetime.now() - timedelta(days=30)
     all_expenses = get_transactions(user_id, 'expenses', limit=1000)
     
@@ -207,19 +205,24 @@ def generate_investment_guide(user_id, location, salary):
     total_monthly_expenses = sum(t.get('amount', 0) for t in recent_expenses)
     print(f"--- 2. Calculated last 30 days expenses: ₹{total_monthly_expenses:.2f} ---")
 
-    # 2. Calculate monthly savings
     monthly_savings = float(salary) - total_monthly_expenses
     print(f"--- 3. Calculated monthly savings: ₹{monthly_savings:.2f} (Salary: ₹{salary}) ---")
 
     if monthly_savings <= 100:
-        print("--- ERROR: Monthly savings are too low. Aborting. ---")
         return {"error": "Your monthly savings are too low to generate investment tips. Focus on budgeting first."}
 
-    # 3. Construct a detailed prompt for the Gemini API
     prompt = f"""
-    You are "SAVI", an expert financial advisor...
-    ...(The rest of your prompt is the same)...
+     You are "SAVI", an expert financial advisor for the "Neural Budget AI" app, specializing in investment advice for beginners in India.
+    Your task is to create a personalized investment guide for a user. The advice must be practical, easy to understand, and relevant to their location.
+    **User's Financial Profile:**
+    - Location: {location}, India
+    - Calculated Monthly Savings: ₹{monthly_savings:.2f}
+    **Your Output:**
+    Generate a valid JSON object with a single key: "investment_tips".
+    The value must be an array of 3 to 4 objects, each with the keys: "title", "icon", "description", "action_step", and "risk_level".
+    The tips should be suitable for a beginner with the calculated monthly savings. Prioritize safer, long-term options.
     """
+
 
     # 4. Call the Gemini API and return the response
     try:

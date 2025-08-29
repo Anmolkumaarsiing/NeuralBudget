@@ -14,5 +14,6 @@ urlpatterns =[
     path('send_password_reset_email/', views.send_password_reset_email_view, name='send_password_reset_email'),
     path('forgot-password/', views.reset_password_form_view, name='reset_password_form'),
     path('reset-done/', views.reset_done_view, name='reset_done'),
+    path('google_login/', views.google_login_view, name='google_login'),
 
 ]

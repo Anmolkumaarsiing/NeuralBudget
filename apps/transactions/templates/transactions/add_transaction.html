@@ -1,133 +1,122 @@
-{% extends 'core/base.html' %}
-{% load static %}
+{% extends 'core/base.html' %} {% load static %} {% block title %}Add
+Transaction | Neural Budget AI{% endblock %} {% block extra_css %}
+<link
+  rel="stylesheet"
+  href="{% static 'transactions/css/add_transaction.css' %}"
+/>
+<style>
+  .incomeTable tbody {
+    display: table-row-group !important;
+  }
+</style>
+{% endblock %} {% block content %}
+<section class="add-expense-section">
+  <h2>Add Transaction</h2>
 
-{% block title %}Add Transaction | Neural Budget AI{% endblock %}
+  <!-- Transaction Type Toggle -->
+  <div class="transaction-type-toggle">
+    <button
+      type="button"
+      id="expenseBtn"
+      class="active"
+    >
+      Expense
+    </button>
+    <button type="button" id="incomeBtn">
+      Income
+    </button>
+  </div>
 
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'transactions/css/add_transaction.css' %}"/>
-    <style>
-      .incomeTable tbody {
-        display: table-row-group !important;
-      }
-    </style>
-{% endblock %}
+  <!-- Entry Type Toggle -->
+  <div class="entry-toggle">
+    <button
+      type="button"
+      id="manualBtn"
+      class="active"
+    >
+      Manual Entry
+    </button>
+    <button type="button" id="ocrBtn">
+      Upload Image (OCR)
+    </button>
+  </div>
 
-{% block content %}
-        <section class="add-expense-section">
-          <h2>Add Expense</h2>
+  <!-- Manual Entry Form -->
+  <form
+    method="POST"
+    enctype="multipart/form-data"
+    class="entry-form"
+    id="manualForm"
+    action="#"
+  >
+    {% csrf_token %}
+    <input
+      type="hidden"
+      id="transaction_type"
+      name="transaction_type"
+      value="expense"
+    />
+    <label for="name" id="name_label">Transaction Name:</label>
+    <input type="text" id="name" name="name" required />
 
-          <!-- Entry Type Toggle -->
-          <div class="entry-toggle">
-            <button
-              type="button"
-              id="manualBtn"
-              class="active"
-              onclick="showForm('manual')"
-            >
-              Manual Entry
-            </button>
-            <button type="button" id="ocrBtn" onclick="showForm('ocr')">
-              Upload Image (OCR)
-            </button>
-          </div>
+    <label for="category" id="category_label">Category:</label>
+    <select
+      id="category"
+      name="category"
+      required
+    >
+      {% for category in categories %}
+      <option value="{{ category }}">{{ category }}</option>
+      {% endfor %}
+      <option value="Other">Other</option>
+    </select>
 
-          <!-- Manual Entry Form -->
-          <form
-            method="POST"
-            enctype="multipart/form-data"
-            class="entry-form"
-            id="manualForm"
-            action="#"
-          >
-            {% csrf_token %}
-            <label for="name">Transaction Name:</label>
-            <input type="text" id="name" name="name" required />
+    <div id="other-category-container" style="display: none">
+      <label for="other-category">Specify Category:</label>
+      <input type="text" id="other-category" name="other_category" />
+      <button type="button" id="add-category-btn">Add New Category</button>
+    </div>
 
-            <label for="category">Category:</label>
-            <select
-              id="category"
-              name="category"
-              required
-              onchange="toggleOtherCategory()"
-            >
-              {% for category in categories %}
-              <option value="{{ category }}">{{ category }}</option>
-              {% endfor %}
-              <option value="Other">Other</option>
-            </select>
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" name="amount" required />
 
-            <div id="other-category-container" style="display: none">
-              <label for="other-category">Specify Category:</label>
-              <input type="text" id="other-category" name="other_category" />
-              <button type="button" id="add-category-btn">
-                Add New Category
-              </button>
-            </div>
+    <label for="date">Date:</label>
+    <input type="date" id="date" name="date" required />
 
-            <label for="amount">Amount:</label>
-            <input type="number" id="amount" name="amount" required />
+    <label for="status">Status:</label>
+    <select id="status" name="status" required>
+      <option value="Pending">Pending</option>
+      <option value="Completed">Completed</option>
+      <option value="Failed">Failed</option>
+      <option value="Cancelled">Cancelled</option>
+      <option value="Partially Paid">Partially Paid</option>
+      <option value="Due">Due</option>
+    </select>
 
-            <label for="date">Date:</label>
-            <input type="date" id="date" name="date" required />
+    <button type="submit">Submit Expense</button>
+  </form>
 
-            <label for="status">Status:</label>
-            <select id="status" name="status" required>
-              <option value="Pending">Pending</option>
-              <option value="Completed">Completed</option>
-              <option value="Failed">Failed</option>
-              <option value="Cancelled">Cancelled</option>
-              <option value="Partially Paid">Partially Paid</option>
-              <option value="Due">Due</option>
-            </select>
+  <!-- OCR Upload Form -->
+  <form
+    method="POST"
+    enctype="multipart/form-data"
+    class="entry-form"
+    id="ocrForm"
+    style="display: none"
+  >
+    {% csrf_token %}
+    <label for="receipt">Upload Receipt:</label>
+    <input type="file" id="image" name="image" accept="image/*" required />
+    <button type="submit">Upload & Extract</button>
+  </form>
+</section>
 
-            <button type="submit">Submit Expense</button>
-          </form>
-
-          <!-- OCR Upload Form -->
-          <form
-            method="POST"
-            enctype="multipart/form-data"
-            class="entry-form"
-            id="ocrForm"
-            style="display: none"
-          >
-            {% csrf_token %}
-            <label for="receipt">Upload Receipt:</label>
-            <input
-              type="file"
-              id="image"
-              name="image"
-              accept="image/*"
-              required
-            />
-            <button type="submit">Upload & Extract</button>
-          </form>
-        </section>
-
-        <script>
-          function showForm(type) {
-            document.getElementById("manualForm").style.display =
-              type === "manual" ? "block" : "none";
-            document.getElementById("ocrForm").style.display =
-              type === "ocr" ? "block" : "none";
-            document
-              .getElementById("manualBtn")
-              .classList.toggle("active", type === "manual");
-            document
-              .getElementById("ocrBtn")
-              .classList.toggle("active", type === "ocr");
-          }
-
-          function toggleOtherCategory() {
-            const selected = document.getElementById("category").value;
-            document.getElementById("other-category-container").style.display =
-              selected === "Other" ? "block" : "none";
-          }
-        </script>
-{% endblock %}
-
-{% block extra_js %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="module" src="{% static 'transactions/js/add_transaction.js' %}"></script>
-    <script type="module" src="{% static 'budgets/js/budget.js' %}"></script>
+<script></script>
+{% endblock %} {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script
+  type="module"
+  src="{% static 'transactions/js/add_transaction.js' %}"
+></script>
+<script type="module" src="{% static 'budgets/js/budget.js' %}"></script>
 {% endblock %}

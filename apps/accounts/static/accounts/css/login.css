@@ -137,21 +137,47 @@ input:checked + .slider:before {
 .signin-signup {
   position: relative;
   width: 100%;
-  min-height: 700px;
+  /* min-height: 700px; */ /* Removed */
 }
 
 form {
   position: relative; /* instead of absolute */
   width: 100%;
-  display: none; /* hide inactive forms */
+  display: flex; /* show all forms by default, then hide with specific rules */
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 1rem; /* Adjusted padding */
+  transition: transform 0.6s ease-in-out, opacity 0.5s ease-in-out;
 }
 
-form.active {
-  display: flex; /* show only active form */
+.sign-in-form {
+  z-index: 2;
+  opacity: 1;
+  transform: translateX(0%);
+}
+
+.sign-up-form {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  z-index: 1;
+  transform: translateX(100%);
+  overflow-y: auto; /* Added */
+  height: 100%; /* Added */
+}
+
+/* When in sign-up mode, shift forms */
+.container.sign-up-mode .sign-in-form {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.container.sign-up-mode .sign-up-form {
+  transform: translateX(0%);
+  opacity: 1;
+  z-index: 2;
 }
 /* SVG Illustrations */
 .form-illustration {
@@ -193,12 +219,13 @@ form.active {
   padding: 0 1rem;
   transition: background-color var(--transition-standard);
   box-sizing: border-box; /* prevent padding from changing height */
+  position: relative;
 }
 
 .input-field i {
   color: var(--light-text-secondary);
   font-size: 1.1rem;
-  margin-right: 1rem;
+  margin-right: 1.1rem;
   width: 20px;
   text-align: center;
   transition: color var(--transition-standard);
@@ -219,6 +246,23 @@ form.active {
 .input-field input::placeholder {
   color: var(--light-text-secondary);
   font-weight: 400;
+}
+
+
+
+.input-field .fa-eye,
+.input-field .fa-eye-slash {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--light-text-secondary);
+}
+
+.dark-mode .input-field .fa-eye,
+.dark-mode .input-field .fa-eye-slash {
+  color: var(--dark-text-secondary);
 }
 
 .forgot-password {
@@ -512,25 +556,30 @@ form.active {
     width: 180px;
     height: 100px;
   }
+}
 
-  .title {
-    font-size: 1.6rem;
-  }
+.title {
+  font-size: 1.6rem;
+}
 
-  .input-field {
-    max-width: 100%;
-    height: 48px;
-  }
+.input-field {
+  max-width: 100%;
+  height: 48px;
+}
 
-  .btn {
-    width: 160px;
-    height: 42px;
-    font-size: 13px;
-  }
+.btn {
+  width: 160px;
+  height: 42px;
+  font-size: 13px;
+}
 
-  .social-icon {
-    height: 40px;
-    width: 40px;
-    font-size: 1rem;
-  }
+.social-icon {
+  height: 40px;
+  width: 40px;
+  font-size: 1rem;
+}
+.social-icon {
+  height: 40px;
+  width: 40px;
+  font-size: 1rem;
 }
