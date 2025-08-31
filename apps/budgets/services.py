@@ -1,43 +1,70 @@
-# in apps/budgets/services.py
-
 import json,logging
 import google.generativeai as genai
 from django.conf import settings
-from apps.common_utils.firebase_service import get_user_categories, add_transaction, get_transactions, set_document
+from apps.common_utils.firebase_service import get_user_categories, add_transaction, get_transactions, set_document, delete_transaction
 from google.cloud.firestore_v1.base_query import FieldFilter
 from apps.common_utils.firebase_config import db # Import db
 from datetime import datetime # Import the datetime module
 
 # --- Service functions for Budgeting ---
 
+CATEGORY_DISPLAY_MAP = {
+    "groceries": "🛒 Groceries",
+    "transportation": "🚗 Transportation",
+    "shopping & personal care": "🛍️ Shopping & Personal Care",
+    "entertainment & dining": "🎬 Entertainment & Dining",
+    "utilities": "💡 Utilities",
+    "healthcare": "🏥 Healthcare",
+    "education & self-development": "📚 Education & Self-Development",
+    "travel": "✈️ Travel",
+    "savings & investments": "💰 Savings & Investments",
+    "debt payments": "💳 Debt Payments",
+    "housing": "🏠 Housing",
+    "other": "📝 Other",
+    "uncategorized": "❓ Uncategorized",
+}
+
+CATEGORY_ICONS = {
+    "food": "fas fa-utensils",
+    "transport": "fas fa-bus",
+    "shopping": "fas fa-shopping-bag",
+    "entertainment": "fas fa-film",
+    "bills": "fas fa-lightbulb",
+    "healthcare": "fas fa-heartbeat",
+    "education": "fas fa-graduation-cap",
+    "travel": "fas fa-plane",
+    "savings": "fas fa-piggy-bank",
+    "other": "fas fa-question-circle",
+    "uncategorized": "fas fa-question-circle",
+}
+
 def get_categories(user_id):
     return get_user_categories(user_id)
 
 def set_budget(user_id, category, budget, period):
     budgets_ref = db.collection("budgets")
+    category_lower = category.lower()
     
-    # Query for an existing budget for this user and category
-    query = budgets_ref.where(filter=FieldFilter("userId", "==", user_id)).where(filter=FieldFilter("category", "==", category)).limit(1)
+    query = budgets_ref.where(filter=FieldFilter("userId", "==", user_id)).where(filter=FieldFilter("category", "==", category_lower)).limit(1)
     docs = query.get()
 
     doc_id = None
     for doc in docs:
         doc_id = doc.id
-        break # Should only be one, due to limit(1)
+        break
 
     budget_data = {
         "userId": user_id,
-        "category": category,
+        "category": category_lower,
         "budget": budget,
-        "period": period
+        "period": period,
+        "created_at": datetime.utcnow()
     }
 
     if doc_id:
-        # Update existing budget
         set_document("budgets", doc_id, budget_data)
     else:
-        # Create new budget (Firestore will auto-generate ID)
-        add_transaction(user_id, budget_data, "budgets") # Re-using add_transaction for new entries
+        add_transaction(user_id, budget_data, "budgets")
 
 def get_budgets(user_id):
     all_budgets = get_transactions(user_id, "budgets")
@@ -45,13 +72,82 @@ def get_budgets(user_id):
 
     for budget_doc in all_budgets:
         category = budget_doc.get('category')
-        doc_id = budget_doc.get('id') # Assuming 'id' field is added by get_transactions
-
         if category:
-            if category not in latest_budgets or (doc_id and doc_id > latest_budgets[category].get('id', '')):
+            category = category.lower()
+        
+        if category:
+            new_budget_time = budget_doc.get('created_at')
+            current_budget_time = latest_budgets.get(category, {}).get('created_at')
+
+            if category not in latest_budgets or (new_budget_time and (not current_budget_time or new_budget_time > current_budget_time)):
                 latest_budgets[category] = budget_doc
     
     return list(latest_budgets.values())
+
+def delete_budget(user_id, budget_id):
+    return delete_transaction(budget_id, "budgets", user_id)
+
+def get_budget_analysis(user_id):
+    user_budgets = get_budgets(user_id)
+    user_expenses = get_transactions(user_id, "expenses")
+
+    total_budget = 0
+    total_spent = 0
+    budget_data_map = {}
+
+    for b in user_budgets:
+        cat_name = b.get("category")
+        if cat_name:
+            cat_name = cat_name.lower()
+        amount = float(b.get("budget", 0))
+        period = b.get("period", "monthly")
+
+        total_budget += amount
+        budget_data_map[cat_name] = {
+            "id": b.get("id"),
+            "name": cat_name,
+            "budget_amount": amount,
+            "spent_amount": 0,
+            "period": period,
+            "icon": "",
+            "display_name": "",
+        }
+
+    for e in user_expenses:
+        cat_name = e.get("category")
+        if cat_name:
+            cat_name = cat_name.lower()
+        amount = float(e.get("amount", 0))
+
+        # Exact category matching
+        if cat_name in budget_data_map:
+            budget_data_map[cat_name]["spent_amount"] += amount
+            total_spent += amount
+
+    processed_categories = []
+    for cat_name, data in budget_data_map.items():
+        budget_amount = data["budget_amount"]
+        spent_amount = data["spent_amount"]
+
+        remaining = budget_amount - spent_amount
+        progress_percentage = (spent_amount / budget_amount * 100) if budget_amount > 0 else 0
+
+        data["icon"] = CATEGORY_ICONS.get(cat_name, "fas fa-question-circle")
+        data["display_name"] = CATEGORY_DISPLAY_MAP.get(cat_name, cat_name.replace("_", " ").title())
+        data["remaining"] = remaining
+        data["progress_percentage"] = min(100, round(progress_percentage, 2))
+        processed_categories.append(data)
+
+    total_remaining = total_budget - total_spent
+    if total_budget == 0:
+        total_remaining = 0
+
+    return {
+        "processed_categories": processed_categories,
+        "total_budget": total_budget,
+        "total_spent": total_spent,
+        "total_remaining": total_remaining,
+    }
 
 # --- Service functions for Smart Saver (Stateless) ---
 

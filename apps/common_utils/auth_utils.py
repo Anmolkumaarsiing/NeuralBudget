@@ -1,3 +1,5 @@
+from apps.common_utils.firebase_service import refresh_firebase_token as refresh_firebase_token_service
+
 def is_authenticated(request):
     id_token = request.session.get('id_token')
     # print(id_token)
@@ -32,3 +34,6 @@ def get_user_full_name(user_profile):
     if not full_name:
         return user_profile.get('display_name', user_profile.get('email', 'User'))
     return full_name
+
+def refresh_firebase_token(request):
+    return refresh_firebase_token_service(request)

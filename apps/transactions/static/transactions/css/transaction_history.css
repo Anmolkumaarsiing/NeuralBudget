@@ -17,6 +17,37 @@
     color: var(--theme-secondary);
 }
 
+/* Table Toolbar */
+.table-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: var(--light-surface);
+    border-radius: 8px;
+}
+
+.filter-group {
+    margin-left: 20px;
+}
+
+.filter-group label {
+    font-weight: 600;
+    color: var(--light-text-secondary);
+    margin-right: 10px;
+}
+
+.filter-group select {
+    padding: 8px 12px;
+    border: 1px solid var(--light-border);
+    border-radius: 6px;
+    background-color: var(--light-bg);
+    color: var(--light-text);
+    font-size: 14px;
+    cursor: pointer;
+}
+
 /* Modern Table Design */
 .incomeTable {
     width: 100%;
@@ -57,7 +88,6 @@
     color: var(--light-text);
 }
 
-/* Status Badges */
 /* Status Badges */
 .status-badge {
     padding: 6px 12px;
@@ -166,6 +196,20 @@
     color: var(--dark-text);
 }
 
+.dark-mode .table-toolbar {
+    background-color: var(--dark-surface);
+}
+
+.dark-mode .filter-group label {
+    color: var(--dark-text-secondary);
+}
+
+.dark-mode .filter-group select {
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+    border-color: var(--dark-border);
+}
+
 .dark-mode .incomeTable thead {
     background-color: var(--dark-border);
 }
@@ -246,6 +290,18 @@
     .incomeTable td:nth-child(7),
     .incomeTable td:nth-child(8) {
         justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .table-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-group {
+        margin-left: 0;
+        margin-bottom: 10px;
     }
 }
 

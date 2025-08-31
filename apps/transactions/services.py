@@ -10,7 +10,7 @@ import json
 from datetime import datetime
 from dateutil import parser
 import logging
-from django.utils.timezone import make_naive, make_aware
+from django.utils.timezone import make_naive
 import pytz
 
 # Constants
@@ -20,17 +20,6 @@ MAX_ITEMS_PER_REQUEST = 100
 DEFAULT_ITEMS_PER_REQUEST = 10
 
 logger = logging.getLogger(__name__)
-
-# def _parse_date_for_sorting(date_str):
-#     """Robust date parsing that handles multiple formats and timezones."""
-#     if isinstance(date_str, datetime):
-#         return date_str
-#     if not date_str:
-#         return datetime.min
-#     try:
-#         return parser.parse(date_str) if isinstance(date_str, str) else datetime.min
-#     except (ValueError, TypeError):
-#         return datetime.min
 
 def _validate_transaction_data(transaction_data):
     """Validate common transaction fields."""
@@ -119,30 +108,33 @@ def delete_transaction_util(request):
         return JsonResponse({"error": str(e)}, status=500)
 
 def get_transactions_history_util(request):
-    """Retrieve and sort transactions with pagination."""
+    """Retrieve, filter, and sort transactions with pagination."""
     try:
         user_id = request.session.get("user_id")
         if not user_id:
             return JsonResponse({"error": "User not authenticated"}, status=401)
 
-        # Safe pagination parameters
         item_count = min(
             int(request.GET.get("itemCount", DEFAULT_ITEMS_PER_REQUEST)),
             MAX_ITEMS_PER_REQUEST
         )
-        last_doc_id = request.GET.get("lastDocId")
+        page = int(request.GET.get("page", 1))
+        sort_by = request.GET.get("sortBy", "date")
+        sort_order = request.GET.get("sortOrder", "desc")
+        category_filter = request.GET.get("category")
 
-        # Get transactions
-        incomes = get_transactions(user_id, INCOME_COLLECTION, item_count, last_doc_id) or []
-        expenses = get_transactions(user_id, EXPENSE_COLLECTION, item_count, last_doc_id) or []
+        incomes = get_transactions(user_id, INCOME_COLLECTION) or []
+        expenses = get_transactions(user_id, EXPENSE_COLLECTION) or []
 
-        # Add type and parsed date for sorting
+        if category_filter and category_filter != "all":
+            expenses = [t for t in expenses if t.get("category") == category_filter]
+            incomes = [] # Do not show income when filtering by expense category
+
         for transaction in incomes + expenses:
-            transaction['type'] = 'Income' if transaction in incomes else 'Expense'
+            transaction['type'] = 'Income' if 'source' in transaction else 'Expense'
             date_value = transaction.get('date')
             
             if isinstance(date_value, datetime):
-                # Convert to naive datetime in UTC if it's timezone-aware
                 if date_value.tzinfo is not None:
                     transaction['date_for_sort'] = make_naive(date_value, pytz.UTC)
                 else:
@@ -150,19 +142,20 @@ def get_transactions_history_util(request):
             else:
                 transaction['date_for_sort'] = datetime.min
 
+        reverse_order = sort_order == "desc"
+        
+        def sort_key(x):
+            if sort_by == 'amount':
+                return x.get('amount', 0)
+            return x.get('date_for_sort', datetime.min)
 
-        # Sort with fallback values
-        all_transactions = sorted(
-            incomes + expenses,
-            key=lambda x: (
-                x.get('date_for_sort', datetime.min),
-                x.get('amount', 0),
-                x.get('name', '') or x.get('source', '')
-            ),
-            reverse=True
-        )
+        all_transactions = sorted(incomes + expenses, key=sort_key, reverse=reverse_order)
 
-        return JsonResponse({"transactions": all_transactions}, safe=False)
+        start_index = (page - 1) * item_count
+        end_index = start_index + item_count
+        paginated_transactions = all_transactions[start_index:end_index]
+
+        return JsonResponse({"transactions": paginated_transactions}, safe=False)
 
     except Exception as e:
         logger.error(f"Failed to get transactions: {str(e)}")

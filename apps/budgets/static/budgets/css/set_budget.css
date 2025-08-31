@@ -14,7 +14,6 @@
     padding: 0;
 }
 
-
 /* Budget Stats Cards */
 .budget-stats {
     display: grid;
@@ -186,20 +185,58 @@
     color: var(--light-text-secondary);
     font-size: 0.9rem;
     transition: color var(--transition-standard);
+    flex-grow: 1;
 }
 
-.edit-btn {
+/* Card Actions Container */
+.card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Base styles for footer buttons */
+.edit-btn,
+.delete-btn {
     background: none;
     border: none;
-    color: var(--theme-primary);
     cursor: pointer;
     padding: 8px;
     border-radius: 6px;
+    font-size: 1rem;
     transition: all var(--transition-standard);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    min-height: 32px;
 }
 
-.edit-btn:hover {
+.edit-btn:disabled,
+.delete-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Edit Button Styling */
+.edit-btn {
+    color: var(--theme-primary);
+}
+
+.edit-btn:hover:not(:disabled) {
     background: rgba(36, 167, 145, 0.1);
+    transform: scale(1.05);
+}
+
+/* Delete Button Styling */
+.delete-btn {
+    color: #ef4444;
+}
+
+.delete-btn:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    transform: scale(1.05);
 }
 
 /* No Budgets State */
@@ -294,6 +331,7 @@
     border-radius: 8px;
     padding: 15px;
     margin-bottom: 20px;
+    transition: all var(--transition-standard);
 }
 
 .current-progress h4 {
@@ -320,6 +358,18 @@
     background: var(--theme-primary);
     border-radius: 3px;
     transition: width 0.3s ease;
+}
+
+.mini-progress-fill.green {
+    background: linear-gradient(90deg, #28a745, #218838);
+}
+
+.mini-progress-fill.yellow {
+    background: linear-gradient(90deg, #ffc107, #e0a800);
+}
+
+.mini-progress-fill.red {
+    background: linear-gradient(90deg, #dc3545, #c82333);
 }
 
 .mini-progress-text {
@@ -350,6 +400,13 @@
     justify-content: center;
     gap: 8px;
     margin-bottom: 10px;
+    min-height: 44px;
+}
+
+.save-btn:disabled,
+.reset-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .save-btn {
@@ -357,8 +414,9 @@
     color: white;
 }
 
-.save-btn:hover {
+.save-btn:hover:not(:disabled) {
     background: #2a9e80;
+    transform: translateY(-1px);
 }
 
 .reset-btn {
@@ -366,11 +424,9 @@
     color: var(--light-text-secondary);
 }
 
-.reset-btn:hover {
+.reset-btn:hover:not(:disabled) {
     background: #d1d5db;
 }
-
-
 
 /* Dark Mode */
 .dark-mode .budget-dashboard {
@@ -379,14 +435,6 @@
 
 .dark-mode .budget-main {
     color: var(--dark-text);
-}
-
-.dark-mode .dashboard-header h1 {
-    color: var(--dark-text);
-}
-
-.dark-mode .dashboard-header p {
-    color: var(--dark-text-secondary);
 }
 
 .dark-mode .stat-card,
@@ -421,7 +469,8 @@
     color: var(--accent-green);
 }
 
-.dark-mode .progress-bar {
+.dark-mode .progress-bar,
+.dark-mode .mini-progress-bar {
     background: var(--dark-border);
 }
 
@@ -437,8 +486,17 @@
     color: var(--accent-green);
 }
 
-.dark-mode .edit-btn:hover {
+.dark-mode .edit-btn:hover:not(:disabled) {
     background: rgba(42, 245, 161, 0.1);
+}
+
+.dark-mode .delete-btn {
+    color: #f87171;
+}
+
+.dark-mode .delete-btn:hover:not(:disabled) {
+    background: rgba(248, 113, 113, 0.1);
+    color: #ff4d4d;
 }
 
 .dark-mode .form-container h2 {
@@ -475,10 +533,6 @@
     color: var(--accent-green);
 }
 
-.dark-mode .mini-progress-bar {
-    background: var(--dark-border);
-}
-
 .dark-mode .mini-progress-fill {
     background: var(--accent-green);
 }
@@ -496,7 +550,7 @@
     color: var(--dark-bg);
 }
 
-.dark-mode .save-btn:hover {
+.dark-mode .save-btn:hover:not(:disabled) {
     background: #1dd882;
 }
 
@@ -505,88 +559,8 @@
     color: var(--dark-text-secondary);
 }
 
-.dark-mode .reset-btn:hover {
+.dark-mode .reset-btn:hover:not(:disabled) {
     background: #4b5563;
-}
-
-.dark-mode .quick-actions h3 {
-    color: var(--dark-text);
-}
-
-.dark-mode .quick-btn {
-    background: var(--dark-surface);
-    color: var(--dark-text);
-    border-color: var(--dark-border);
-}
-
-.dark-mode .quick-btn:hover {
-    background: var(--dark-border);
-}
-
-/* Responsive Design */
-@media (max-width: 1200px) {
-    .budget-dashboard {
-        grid-template-columns: 1fr 320px;
-        gap: 20px;
-    }
-}
-
-@media (max-width: 968px) {
-    .budget-dashboard {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    .budget-sidebar {
-        position: static;
-        order: -1;
-    }
-    
-    .dashboard-header h1 {
-        font-size: 2rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .budget-dashboard {
-        padding: 15px;
-    }
-    
-    .budget-stats {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-    
-    .budget-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-    
-    .form-container {
-        padding: 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .budget-dashboard {
-        padding: 10px;
-    }
-    
-    .dashboard-header h1 {
-        font-size: 1.8rem;
-    }
-    
-    .stat-card {
-        padding: 15px;
-    }
-    
-    .budget-card {
-        padding: 15px;
-    }
-    
-    .form-container {
-        padding: 15px;
-    }
 }
 
 /* Progress Bar Colors */
@@ -616,6 +590,85 @@
 }
 
 .dark-mode .percentage.red-text {
-    color: #ff6b6b; /* Lighter red for dark mode */
+    color: #ff6b6b;
 }
 
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .budget-dashboard {
+        grid-template-columns: 1fr 320px;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 968px) {
+    .budget-dashboard {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .budget-sidebar {
+        position: static;
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .budget-dashboard {
+        padding: 15px;
+    }
+    
+    .budget-stats {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .budget-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .form-container {
+        padding: 20px;
+    }
+    
+    .card-actions {
+        gap: 4px;
+    }
+    
+    .edit-btn,
+    .delete-btn {
+        padding: 6px;
+        min-width: 28px;
+        min-height: 28px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .budget-dashboard {
+        padding: 10px;
+    }
+    
+    .stat-card {
+        padding: 15px;
+    }
+    
+    .budget-card {
+        padding: 15px;
+    }
+    
+    .form-container {
+        padding: 15px;
+    }
+    
+    .budget-card-footer {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    
+    .card-actions {
+        align-self: flex-end;
+    }
+}

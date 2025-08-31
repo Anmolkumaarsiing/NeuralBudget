@@ -1,14 +1,19 @@
 import { getCookie } from '/static/core/js/help.js';
 const csrftoken = getCookie('csrftoken');
 let itemCount = 5;
-let lastDocId = null;
+let currentPage = 1;
+
+const sortByEl = document.getElementById("sort-by");
+const sortOrderEl = document.getElementById("sort-order");
+const categoryFilterEl = document.getElementById("category-filter");
 
 async function fetchAndDisplayTransactions(append = false) {
     try {
-        let url = `/transactions/get_transactions/?itemCount=${itemCount}`;
-        if (lastDocId && append) { // Only add lastDocId if appending
-            url += `&lastDocId=${lastDocId}`;
-        }
+        const sortBy = sortByEl.value;
+        const sortOrder = sortOrderEl.value;
+        const category = categoryFilterEl.value;
+
+        let url = `/transactions/get_transactions/?itemCount=${itemCount}&sortBy=${sortBy}&sortOrder=${sortOrder}&category=${category}&page=${currentPage}`;
 
         const response = await fetch(url, {
             headers: { "X-Requested-With": "XMLHttpRequest" }
@@ -40,7 +45,7 @@ async function fetchAndDisplayTransactions(append = false) {
 
         transactions.forEach(transaction => {
             const tr = document.createElement("tr");
-            tr.dataset.id = transaction.id; // Set data-id on the correct tr
+            tr.dataset.id = transaction.id;
 
             const statusClass = (transaction.status || 'pending').toLowerCase().replace(/\s+/g, '-');
 
@@ -63,10 +68,6 @@ async function fetchAndDisplayTransactions(append = false) {
             tbody.appendChild(tr);
         });
 
-        if (transactions.length > 0) {
-            lastDocId = transactions[transactions.length - 1].id;
-        }
-
         if (loadMoreButton) {
             loadMoreButton.style.display = transactions.length < itemCount ? "none" : "block";
         }
@@ -76,36 +77,20 @@ async function fetchAndDisplayTransactions(append = false) {
 }
 
 function reloadTransactions() {
-    lastDocId = null; // Reset pagination
-    fetchAndDisplayTransactions(false); // Call with append=false to clear the table
+    currentPage = 1;
+    fetchAndDisplayTransactions(false);
 }
 
-// --- Combined Event Listeners for cleaner code ---
 document.addEventListener("DOMContentLoaded", function () {
-    // Initial load
     fetchAndDisplayTransactions();
 
-    // Listener for sidebar dropdowns
-    document.querySelectorAll(".drop-btn").forEach(button => {
-        button.addEventListener("click", function () {
-            const dropdownContent = this.nextElementSibling;
-            const icon = this.querySelector(".dropdown-icon");
-            dropdownContent.classList.toggle("active");
-            if (dropdownContent.classList.contains("active")) {
-                dropdownContent.style.display = "block";
-                icon.classList.remove("fa-angle-right");
-                icon.classList.add("fa-angle-down");
-            } else {
-                dropdownContent.style.display = "none";
-                icon.classList.remove("fa-angle-down");
-                icon.classList.add("fa-angle-right");
-            }
-        });
-    });
+    sortByEl.addEventListener("change", reloadTransactions);
+    sortOrderEl.addEventListener("change", reloadTransactions);
+    categoryFilterEl.addEventListener("change", reloadTransactions);
 
-    // Listener for clicks on the whole page (Load More, Delete)
     document.addEventListener("click", async (e) => {
         if (e.target.id === "LoadMore") {
+            currentPage++;
             await fetchAndDisplayTransactions(true);
         }
 
@@ -123,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const data = await response.json();
                     if (response.ok) {
                         alert("Transaction deleted successfully!");
-                        reloadTransactions();  // Remove row by reloading
+                        reloadTransactions();
                     } else {
                         throw new Error(data.error || "Failed to delete transaction");
                     }

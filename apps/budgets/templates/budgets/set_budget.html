@@ -14,13 +14,8 @@
 
 {% block content %}
 <div class="budget-dashboard">
-    
-
-    
     <!-- Main Budget Display Area -->
     <div class="budget-main">
-
-
         <div class="budget-stats">
             <div class="stat-card total">
                 <div class="stat-icon">
@@ -53,7 +48,7 @@
 
         <div class="budget-grid">
             {% for category in categories %}
-            <div class="budget-card" data-category="{{ category.name }}">
+            <div class="budget-card" data-category="{{ category.name }}" data-id="{{ category.id }}">
                 <div class="budget-card-header">
                     <div class="category-info">
                         <i class="fas {{ category.icon }}"></i>
@@ -76,9 +71,14 @@
 
                 <div class="budget-card-footer">
                     <span class="remaining">₹{{ category.remaining|default:"0" }} left</span>
-                    <button class="edit-btn" onclick="editBudget('{{ category.name }}', { category.budget_amount|default:0 }})">
-                        <i class="fas fa-edit"></i>
-                    </button>
+                    <div class="card-actions">
+                        <button class="edit-btn" onclick="editBudget('{{ category.name }}', {{ category.budget_amount|default:0 }}, '{{ category.period|default:'monthly' }}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="delete-btn" data-id="{{ category.id }}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             {% empty %}

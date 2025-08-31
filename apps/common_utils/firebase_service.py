@@ -7,6 +7,7 @@ from django.conf import settings
 import os
 
 FIREBASE_SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
+FIREBASE_REFRESH_TOKEN_URL = "https://securetoken.googleapis.com/v1/token"
 DEFAULT_PROFILE_PIC_URL = os.path.join(settings.MEDIA_URL, 'profile_photos', 'default_profile.jpg') # Assuming .jpeg
 
 def get_user_categories(user_id):
@@ -104,7 +105,7 @@ def update_user_profile_picture(uid, photo_url):
     user_profile_ref = db.collection('user_profiles').document(uid)
     user_profile_ref.update({'photo_url': photo_url})
 
-def get_transactions(user_id,collection,limit=10, start_after_doc_id=None):
+def get_transactions(user_id,collection):
 
     try:
         transactions_ref = db.collection(collection)
@@ -114,13 +115,7 @@ def get_transactions(user_id,collection,limit=10, start_after_doc_id=None):
     # copy_default_categories_to_user(user_id)
     query = transactions_ref.where(filter=FieldFilter("userId", "==", user_id))
     
-    if start_after_doc_id:
-        start_after_doc = transactions_ref.document(start_after_doc_id).get()
-        if not start_after_doc.exists:
-            return [] # No more documents to fetch
-        query = query.start_after(start_after_doc)
-
-    query = query.limit(limit).get()
+    query = query.get()
     
     transactions = []
     for doc in query:
@@ -145,6 +140,7 @@ def delete_transaction(transaction_id, collection, user_id):
     """
     # TODO: Add a security rule or check to verify user_id owns the transaction_id
     db.collection(collection).document(transaction_id).delete()
+    print(f"Deleted transaction {transaction_id} from {collection}")
 
 def firebase_login(email, password):
     payload = {
@@ -168,6 +164,23 @@ def firebase_login(email, password):
             raise ValueError(f"{error_message}")
     except requests.exceptions.RequestException as e:
         raise ValueError(f"Network error or invalid request: {str(e)}")
+
+def refresh_firebase_token(request):
+    refresh_token = request.session.get('firebase_refresh_token')
+    if not refresh_token:
+        raise ValueError("Refresh token not found in session")
+
+    payload = {
+        "grant_type": "refresh_token",
+        "refresh_token": refresh_token
+    }
+    params = {"key": FIREBASE_API_KEY}
+    try:
+        response = requests.post(FIREBASE_REFRESH_TOKEN_URL, json=payload, params=params)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        raise ValueError(f"Failed to refresh token: {str(e)}")
 
 def verify_firebase_token(id_token):
     try:

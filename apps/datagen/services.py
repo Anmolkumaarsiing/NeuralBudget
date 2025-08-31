@@ -2,16 +2,17 @@ import json
 import google.generativeai as genai
 from django.conf import settings
 from datetime import datetime
-from apps.common_utils.firebase_service import add_transaction
+from apps.common_utils.firebase_service import add_transaction, get_user_categories
 
-def generate_transaction_batch(num_transactions: int):
+def generate_transaction_batch(num_transactions: int, user_categories: list):
     """
     Generates a batch of hyper-realistic transaction data using an optimized Gemini API prompt.
     """
     genai.configure(api_key=settings.GEMINI_API_KEY)
     model = genai.GenerativeModel("gemini-1.5-flash-latest")
     
-    # --- THIS IS THE NEW, HIGHLY-OPTIMIZED PROMPT ---
+    categories_str = ", ".join([f'"{c}"' for c in user_categories])
+
     prompt = f"""
     You are an AI data generator creating hyper-realistic financial data for a user in Vadodara, Gujarat, India.
 
@@ -30,15 +31,15 @@ def generate_transaction_batch(num_transactions: int):
     2.  **Local Context (Vadodara):** Use real, existing merchants, restaurants, and places.
         -   **Good examples:** Canara Coffee House, Mandap Restaurant, Inorbit Mall, D-Mart, Ratri Bazaar, Uber, Zomato, Swiggy.
         -   **Bad examples:** "Sursagar Lake Restaurant" (this does not exist).
-    3.  **Accurate Categories:** Assign the single most accurate category. "Netflix" MUST be in "Subscriptions & OTT", not "Dining Out & Entertainment".
+    3.  **Accurate Categories:** Assign the single most accurate category from this list: {categories_str}.
     4.  **Financial Realism:** The sum of all expenses should reflect the user's budget. Create a mix of small daily purchases (like "chai", "snacks") and larger, less frequent ones (like "utility bill", "rent").
     5.  **Salary:** You MUST include one salary credit of exactly ₹30,000 with the category "Income", dated on the first day of the month.
 
     **Schema for each JSON object:**
     - `name`: (String) The hyper-realistic transaction name including merchant and item.
-    - `category`: (String) One of: "Housing", "Groceries & Essentials", "Dining Out & Entertainment", "Transportation", "Utilities", "Healthcare & Insurance", "Subscriptions & OTT", "Shopping", "Education & Self-Development", "Income", "Other".
+    - `category`: (String) One of the provided categories.
     - `amount`: (Float) A realistic amount in INR for the specific item.
-    - `date`: (String) A date in "YYYY-MM-DD" format.
+    - `date`: (String) A date in "YYYY-MM-DD" format,in the year 2025.
     - `status`: (String) Must always be "Completed".
 
     The final output must be a single, valid JSON array only.
@@ -56,7 +57,12 @@ def add_generated_data_to_user(user_id, num_transactions):
     """
     Generates data and adds it to the user's Firestore collections.
     """
-    transactions = generate_transaction_batch(num_transactions)
+    user_categories = get_user_categories(user_id)
+    if not user_categories:
+        # Handle case where user has no categories, or provide a default list
+        user_categories = ["Housing", "Groceries & Essentials", "Dining Out & Entertainment", "Transportation", "Utilities", "Healthcare & Insurance", "Subscriptions & OTT", "Shopping", "Education & Self-Development", "Income", "Other"]
+
+    transactions = generate_transaction_batch(num_transactions, user_categories)
     if not transactions:
         raise Exception("Failed to generate transaction data from the AI.")
 

@@ -25,10 +25,6 @@ def categorize_expense_view(request):
             return JsonResponse({'error': 'Invalid image field.'}, status=400)
 
         user_id = request.session.get('user_id') # Get user ID from session
-        # user_id = "PZWaO69zDjfivyIwPX4wi1KK6Pp2"  # For testing purposes, hardcoded user ID
-
-        if not user_id:
-            return JsonResponse({"error": "User not authenticated"}, status=401)
 
         # Create a temporary directory if it doesn't exist
         temp_dir = os.path.join(settings.MEDIA_ROOT, 'temp')
@@ -68,8 +64,6 @@ def chatbot_response_view(request):
             user_message = data.get('message')
             user_id = request.session.get('user_id')
 
-            if not user_id:
-                return JsonResponse({"error": "User not authenticated"}, status=401)
             if not user_message:
                 return JsonResponse({"error": "No message provided"}, status=400)
 

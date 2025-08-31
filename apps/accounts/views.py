@@ -3,17 +3,14 @@ from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from firebase_admin import exceptions as firebase_exceptions
-import json,requests
+import json,requests,time
 from apps.common_utils.firebase_config import FIREBASE_API_KEY
 from apps.common_utils.auth_utils import get_user_id, get_email,get_user_full_name
 from apps.common_utils.firebase_service import firebase_login, verify_firebase_token, get_user_profile, create_user_profile
-from apps.common_utils.auth_utils import is_authenticated
 from apps.accounts.services import register_user, logout_user,update_profile_service,upload_profile_picture_service, send_password_reset_email_service
 
 # @csrf_exempt
 def login_view(request):
-    if is_authenticated(request):
-        return redirect('reports:dashboard')
     if request.method == 'GET':
         return render(request, 'accounts/login.html', {'FIREBASE_API_KEY': FIREBASE_API_KEY})
     elif request.method == 'POST':
@@ -27,6 +24,8 @@ def login_view(request):
 
             response_data = firebase_login(email, password)
             id_token = response_data.get("idToken")
+            refresh_token = response_data.get("refreshToken")
+            expires_in = response_data.get("expiresIn")
 
             if not id_token:
                 return JsonResponse({'error': 'Failed to retrieve ID token'}, status=401)
@@ -47,6 +46,8 @@ def login_view(request):
             request.session['user_id'] = uid
             request.session['email'] = email
             request.session['id_token'] = id_token
+            request.session['firebase_refresh_token'] = refresh_token
+            request.session['firebase_token_expiration'] = time.time() + int(expires_in)
 
             return JsonResponse({
                 'message': 'Login successful',
@@ -70,9 +71,6 @@ def login_view(request):
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 def register_view(request):
-    if is_authenticated(request):
-        return render(request, 'reports/dashboard.html')
-
     if request.method == "POST":
         data = json.loads(request.body)
         # Extract new fields
@@ -105,9 +103,6 @@ def logout_view(request):
     }, status=405)
 
 def profile_view(request):
-    if not is_authenticated(request):
-        return redirect('accounts:login')
-    
     user_id = get_user_id(request)
     user_profile = get_user_profile(user_id)
     print(f"[DEBUG] User Profile Object: {user_profile}") # Added for debugging username availability
@@ -121,9 +116,6 @@ def profile_view(request):
 
 @csrf_exempt
 def update_profile_view(request):
-    if not is_authenticated(request):
-        return JsonResponse({"error": "Unauthorized"}, status=401)
-    
     if request.method == "POST":
         user_id = get_user_id(request)
         data = json.loads(request.body)
@@ -175,9 +167,6 @@ def refresh_token_view(request):
 
 @csrf_exempt
 def upload_profile_picture_view(request):
-    if not is_authenticated(request):
-        return JsonResponse({"error": "Unauthorized"}, status=401)
-    
     if request.method == "POST":
         user_id = get_user_id(request)
         if 'profile_picture' not in request.FILES:
@@ -222,10 +211,6 @@ def google_login_view(request):
     print(f"[DEBUG] google_login_view received request. Method: {request.method}")
     print(f"[DEBUG] Request Headers: {request.headers}")
     
-    if is_authenticated(request):
-        print("[DEBUG] User already authenticated, redirecting to dashboard.")
-        return redirect('reports:dashboard')
-
     if request.method == 'POST':
         try:
             body = json.loads(request.body)

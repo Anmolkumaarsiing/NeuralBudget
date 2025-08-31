@@ -13,22 +13,119 @@
 ---
 
 ## 🚀 **Neural Budget AI**
-**Neural Budget AI** is an AI-powered financial management tool that helps users track expenses, manage budgets, and gain insights through AI-driven analytics.
+**Neural Budget AI** is an intelligent financial management application designed to simplify your personal finances. Built with a powerful backend powered by Django and a dynamic JavaScript frontend, it leverages AI to provide smart expense tracking, budgeting, and insightful analytics. The application uses Firebase for secure user authentication and Firestore for scalable, real-time data storage.
 
-### 🏆 **Key Features**
-✔️ **AI-Powered Expense Categorization**  
-✔️ **Real-Time Budget Tracking**  
-✔️ **Smart Insights & Analytics**  
-✔️ **Gamified Budgeting Experience**  
-✔️ **Secure and Encrypted Transactions**  
-✔️ **Automated Financial Forecasting**  
+This project addresses the challenges of modern financial management by integrating **Generative Artificial Intelligence (GenAI)**, **Optical Character Recognition (OCR)**, and **predictive analytics** to simplify expense tracking and budgeting. It aims to bridge the gap between financial awareness and effective money management by reducing manual data entry, improving prediction accuracy, and providing users with tailored recommendations.
+
+---
+
+## 🏆 **Key Features**
+
+### **User Management & Authentication**
+*   **Secure Login & Registration:** Users can create an account and log in securely using their email and password, authenticated via Firebase.
+*   **User-Specific Data:** Every user has their own dedicated data space in Firestore, ensuring privacy and personalization.
+*   **Personalized Profiles:** Users can view and update their profile information, including their name, profile picture, and other personal details.
+*   **Password Reset:** A secure password reset functionality is available, allowing users to reset their password via a link sent to their email.
+
+### **Financial Tracking & Management**
+*   **Smart Expense Categorization:** Upload a receipt or a screenshot of a transaction, and the AI-powered OCR and LLM will automatically extract the details, categorize the expense, and record it.
+*   **Manual Transactions:** Users can manually add their income and expenses, with the ability to select from a list of predefined or custom categories.
+*   **Budgeting:** Set monthly budgets for different expense categories and get warnings when you are about to exceed them.
+*   **Transaction History:** View a detailed history of all your transactions, with options to filter and search.
+
+### **AI-Powered Insights**
+*   **Spending Analysis:** Get a visual breakdown of your spending habits with interactive charts and graphs.
+*   **Predictive Analytics:** The system uses machine learning models to forecast future expenses and provide insights into spending patterns.
+*   **AI-Powered Chatbot:** An interactive chatbot, powered by Google Generative AI, to answer user queries and provide financial assistance.
+
+---
+
+## 🔬 **Research**
+This project is based on the research paper **"NeuralBudget: An AI-Powered Personal Finance Management System"**. The paper highlights the need for intelligent and automated financial management systems to address the complexities of modern financial transactions.
+
+### **Objectives**
+*   Develop an AI-driven platform to automate expense categorization and reduce manual effort.
+*   Implement OCR for seamless data extraction from receipts and invoices.
+*   Design an interactive and engaging user interface.
+*   Integrate a secure and scalable backend using Django.
+*   Provide real-time budget tracking and alerts.
+*   Generate smart insights and predictions using machine learning.
+
+### **Key Findings**
+*   NeuralBudget reduces manual data entry by up to **80%**.
+*   It improves prediction accuracy by **15%** compared to static budgeting applications.
+*   The system provides a holistic solution by combining automation, prediction, and user engagement.
 
 ---
 
 ## 🌟 **Tech Stack**
-<p align="center">
-  <img src="https://skillicons.dev/icons?i=html,css,js,python,django,firebase,ai" />
-</p>
+
+*   **Backend:** Django, Django REST Framework
+*   **Frontend:** HTML, CSS, JavaScript
+*   **Database:** PostgreSQL, SQLite, Firebase Firestore
+*   **AI/ML:**
+    *   **OCR:** PaddleOCR
+    *   **Predictive Analytics:** Scikit-learn, NumPy, Pandas
+    *   **Generative AI:** Google Generative AI
+*   **Visualization:** Matplotlib, Seaborn
+
+---
+
+## 🛠️ **Running the Project Locally**
+
+### **Prerequisites**
+*   Python 3.8+
+*   Pip
+*   Virtualenv (recommended)
+
+### **Setup Instructions**
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/Anmolkumaarsiing/NeuralBudget.git
+    cd NeuralBudget
+    ```
+
+2.  **Create and activate a virtual environment:**
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+    ```
+
+3.  **Install the dependencies:**
+    ```bash
+    pip install -r requirement.txt
+    ```
+
+4.  **Firebase Configuration:**
+    *   Place your Firebase service account key file named `firebase_key.json` inside the `apps` directory.
+    *   Create a `.env` file in the root directory and add your `FIREBASE_API_KEY` and other sensitive information.
+    *   Make sure to add `firebase_key.json` and `.env` to your `.gitignore` file to avoid committing them.
+
+5.  **Run the database migrations:**
+    ```bash
+    python manage.py migrate
+    ```
+
+6.  **Run the development server:**
+    ```bash
+    python manage.py runserver
+    ```
+
+7.  **Access the application:**
+    Open your browser and navigate to `http://127.0.0.1:8000/`.
+
+---
+
+## 🎯 **Outcomes**
+
+The primary outcome of this project is a fully functional, AI-powered personal finance management application that allows users to:
+
+*   Effortlessly track their income and expenses.
+*   Gain a clear understanding of their financial health through visualizations.
+*   Set and manage budgets to achieve their financial goals.
+*   Leverage AI to automate the process of expense categorization.
+
+The project serves as a practical example of integrating a powerful backend framework like Django with modern frontend technologies and AI services to create a real-world application.
 
 ---
 
