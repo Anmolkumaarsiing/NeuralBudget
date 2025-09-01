@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
 
-from apps.common_utils.auth_utils import get_email, get_user_id
+from apps.common_utils.auth_utils import get_user_id
 from apps.budgets.services import (
     get_categories,
     set_budget as set_budget_service,
@@ -17,10 +17,7 @@ from apps.budgets.services import (
 from . import services
 
 def set_budget(request):
-    email = get_email(request)
-    user_name = email.split("@")[0] if email else "User"
     user_id = get_user_id(request)
-
     if request.method == "POST":
         budget = request.POST.get("budget")
         category = request.POST.get("category")
@@ -46,7 +43,6 @@ def set_budget(request):
         )
 
     context = {
-        "user_name": user_name,
         "categories": budget_analysis["processed_categories"],
         "user_available_categories": user_available_categories_for_dropdown,
         "total_budget": budget_analysis["total_budget"],
@@ -81,18 +77,14 @@ def smart_saver(request):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
 
-    email = get_email(request)
-    user_name = email.split("@")[0] if email else "User"
-    return render(request, "budgets/Smart_saver.html", {"user_name": user_name})
+   
+    return render(request, "budgets/Smart_saver.html")
 
 
 # --- Smart Categorization (budgets) ---
 
 def smart_categorization(request):
-    """Renders the main page for the Smart Categorization feature."""
-    email = get_email(request)
-    user_name = email.split("@")[0] if email else "User"
-    return render(request, "budgets/smart_categorization.html", {"user_name": user_name})
+    return render(request, "budgets/smart_categorization.html")
 
 
 def get_smart_analysis_data(request):

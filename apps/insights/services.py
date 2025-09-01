@@ -16,11 +16,10 @@ def generate_predictive_analysis(user_id):
     """
 
     # 1. Fetch transactions
-    all_expenses = get_transactions(user_id, 'expenses', limit=2000)
+    all_expenses = get_transactions(user_id, 'expenses')
     if not all_expenses:
         return {"error": "No transaction data found to generate an analysis."}
 
-    # 2. Filter for last 6 months
     six_months_ago = datetime.now() - timedelta(days=180)
     recent_expenses = [
         tx for tx in all_expenses
@@ -122,7 +121,7 @@ def generate_smart_categorization(user_id):
     """
     Fetches expenses and uses Gemini to generate a hierarchical spending analysis.
     """
-    all_expenses = get_transactions(user_id, 'expenses', limit=500)
+    all_expenses = get_transactions(user_id, 'expenses')
     if not all_expenses:
         return {"error": "No transactions found to analyze."}
 
@@ -169,13 +168,6 @@ def generate_smart_categorization(user_id):
     except Exception as e:
         return {"error": f"AI analysis failed: {e}"}
 
-# in apps/insights/services.py
-
-import json
-from datetime import datetime, timedelta
-import google.generativeai as genai
-from django.conf import settings
-from apps.common_utils.firebase_service import db, get_transactions
 
 def update_user_salary(user_id, salary):
     """Saves or updates the monthly salary in the user's Firestore profile."""

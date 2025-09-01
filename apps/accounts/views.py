@@ -24,7 +24,6 @@ def login_view(request):
 
             response_data = firebase_login(email, password)
             id_token = response_data.get("idToken")
-            refresh_token = response_data.get("refreshToken")
             expires_in = response_data.get("expiresIn")
 
             if not id_token:
@@ -46,8 +45,7 @@ def login_view(request):
             request.session['user_id'] = uid
             request.session['email'] = email
             request.session['id_token'] = id_token
-            request.session['firebase_refresh_token'] = refresh_token
-            request.session['firebase_token_expiration'] = time.time() + int(expires_in)
+            request.session['firebase_token_expiration'] = time.time() + (3600 * 24 * 10) # 10 days
 
             return JsonResponse({
                 'message': 'Login successful',
@@ -105,11 +103,10 @@ def logout_view(request):
 def profile_view(request):
     user_id = get_user_id(request)
     user_profile = get_user_profile(user_id)
-    print(f"[DEBUG] User Profile Object: {user_profile}") # Added for debugging username availability
-
+    full_name = user_profile.get('first_name') + ' ' + user_profile.get('last_name')
     context = {
-        'email': get_email(request),
-        'full_name': get_user_full_name(user_profile),
+        'email': user_profile.get('email'),
+        'full_name': full_name,
         'profile': user_profile
     }
     return render(request, 'accounts/profile.html', context)

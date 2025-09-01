@@ -7,7 +7,6 @@ from django.conf import settings
 import os
 
 FIREBASE_SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
-FIREBASE_REFRESH_TOKEN_URL = "https://securetoken.googleapis.com/v1/token"
 DEFAULT_PROFILE_PIC_URL = os.path.join(settings.MEDIA_URL, 'profile_photos', 'default_profile.jpg') # Assuming .jpeg
 
 def get_user_categories(user_id):
@@ -106,13 +105,11 @@ def update_user_profile_picture(uid, photo_url):
     user_profile_ref.update({'photo_url': photo_url})
 
 def get_transactions(user_id,collection):
-
     try:
         transactions_ref = db.collection(collection)
     except Exception as e:
         print(e)
         return []
-    # copy_default_categories_to_user(user_id)
     query = transactions_ref.where(filter=FieldFilter("userId", "==", user_id))
     
     query = query.get()
@@ -164,23 +161,6 @@ def firebase_login(email, password):
             raise ValueError(f"{error_message}")
     except requests.exceptions.RequestException as e:
         raise ValueError(f"Network error or invalid request: {str(e)}")
-
-def refresh_firebase_token(request):
-    refresh_token = request.session.get('firebase_refresh_token')
-    if not refresh_token:
-        raise ValueError("Refresh token not found in session")
-
-    payload = {
-        "grant_type": "refresh_token",
-        "refresh_token": refresh_token
-    }
-    params = {"key": FIREBASE_API_KEY}
-    try:
-        response = requests.post(FIREBASE_REFRESH_TOKEN_URL, json=payload, params=params)
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        raise ValueError(f"Failed to refresh token: {str(e)}")
 
 def verify_firebase_token(id_token):
     try:

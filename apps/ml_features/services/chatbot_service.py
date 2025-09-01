@@ -136,8 +136,8 @@ def index_user_transactions(user_id: str, embedding_service, vector_store, force
         clear_user_data_from_vector_store(user_id, vector_store)
 
         # Fetch transactions (expenses) and incomes for this user
-        transactions_data = get_transactions(user_id, "expenses", limit=1000)
-        income_data = get_transactions(user_id, "incomes", limit=1000)
+        transactions_data = get_transactions(user_id, "expenses")
+        income_data = get_transactions(user_id, "incomes")
         print(f"Retrieved {len(transactions_data)} expense(s) and {len(income_data)} income(s)")
 
         all_docs = []

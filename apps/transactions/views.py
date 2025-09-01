@@ -32,11 +32,10 @@ def transaction_history(request):
     categories = get_user_categories(user_id)
     return render(request, 'transactions/transaction_history.html', {"email": email, "categories": categories})
 
-# @csrf_exempt
+
 def get_transactions_history(request):
     return get_transactions_history_util(request)
 
-# @csrf_exempt
 def add_category(request):
     if request.method == "POST":
         user_id = get_user_id(request)

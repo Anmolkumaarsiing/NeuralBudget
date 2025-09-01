@@ -21,14 +21,39 @@ document.addEventListener("DOMContentLoaded", function() {
             processedCategories = JSON.parse(categoriesElement.textContent);
         }
     } catch (error) {
-        console.error("Error parsing processed categories JSON:", error);
+        // console.error("Error parsing processed categories JSON:", error);
         processedCategories = [];
+    }
+
+    // Debug: Log available dropdown options
+    if (categorySelect) {
+        // console.log("Available dropdown options:");
+        for (let option of categorySelect.options) {
+            // console.log(`Value: "${option.value}", Text: "${option.textContent}"`);
+        }
     }
 
     // Global function to be called from HTML for editing
     window.editBudget = function(categoryName, budgetAmount, period = 'monthly') {
         if (categorySelect && budgetAmountInput && periodSelect) {
-            categorySelect.value = categoryName;
+            // console.log('Trying to set category to:', categoryName);
+            
+            let optionFound = false;
+            
+            // Try case-insensitive value match first (this worked for you)
+            for (let option of categorySelect.options) {
+                if (option.value.toLowerCase() === categoryName.toLowerCase()) {
+                    categorySelect.value = option.value;
+                    optionFound = true;
+                    // console.log('Found by case-insensitive value match');
+                    break;
+                }
+            }
+            
+            if (!optionFound) {
+                // console.warn('Category not found in dropdown:', categoryName);
+            }
+            
             budgetAmountInput.value = budgetAmount;
             periodSelect.value = period;
             updateCurrentProgress();
@@ -46,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Function to update current progress display based on selected category
+    // FIXED: Function to update current progress display
     function updateCurrentProgress() {
         const selectedCategory = categorySelect.value;
         
@@ -55,14 +80,53 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
-        const categoryData = processedCategories.find(cat => cat.name === selectedCategory);
+        // console.log('Looking for category data for:', selectedCategory);
+        // console.log('Available processed categories:', processedCategories);
+
+        // Try different approaches to find the category data
+        let categoryData = null;
+
+        // 1. Try exact match with name field
+        categoryData = processedCategories.find(cat => cat.name === selectedCategory);
+        
+        // 2. If not found, try case-insensitive match with name
+        if (!categoryData) {
+            categoryData = processedCategories.find(cat => 
+                cat.name && cat.name.toLowerCase() === selectedCategory.toLowerCase()
+            );
+        }
+        
+        // 3. Try to match with display_name field
+        if (!categoryData) {
+            categoryData = processedCategories.find(cat => 
+                cat.display_name && cat.display_name.toLowerCase() === selectedCategory.toLowerCase()
+            );
+        }
+        
+        // 4. Try partial matching (in case of slight differences)
+        if (!categoryData) {
+            categoryData = processedCategories.find(cat => {
+                const catName = (cat.name || '').toLowerCase();
+                const catDisplay = (cat.display_name || '').toLowerCase();
+                const selected = selectedCategory.toLowerCase();
+                
+                return catName.includes(selected) || 
+                       selected.includes(catName) ||
+                       catDisplay.includes(selected) || 
+                       selected.includes(catDisplay);
+            });
+        }
+
+        // console.log('Found category data:', categoryData);
 
         if (categoryData) {
             // Update progress display with existing data
-            miniSpentSpan.textContent = `₹${parseFloat(categoryData.spent_amount || 0).toFixed(2)}`;
-            miniBudgetSpan.textContent = `₹${parseFloat(categoryData.budget_amount || 0).toFixed(2)}`;
-            
+            const spentAmount = parseFloat(categoryData.spent_amount || 0);
+            const budgetAmount = parseFloat(categoryData.budget_amount || 0);
             const progressPercentage = parseFloat(categoryData.progress_percentage || 0);
+            
+            miniSpentSpan.textContent = `₹${spentAmount.toFixed(2)}`;
+            miniBudgetSpan.textContent = `₹${budgetAmount.toFixed(2)}`;
             miniProgressFill.style.width = `${progressPercentage}%`;
             miniPercentageSpan.textContent = `${progressPercentage}% used`;
             
@@ -77,8 +141,10 @@ document.addEventListener("DOMContentLoaded", function() {
             }
             
             currentProgressDiv.style.display = "block";
+            // console.log('Progress updated successfully');
         } else {
             // No budget set for this category, show default values
+            // console.log('No category data found, showing defaults');
             miniSpentSpan.textContent = `₹0.00`;
             miniBudgetSpan.textContent = `₹0.00`;
             miniProgressFill.style.width = `0%`;
@@ -96,75 +162,82 @@ document.addEventListener("DOMContentLoaded", function() {
     // Event delegation for delete buttons
     if (budgetGrid) {
         budgetGrid.addEventListener("click", async function(e) {
-            const deleteBtn = e.target.closest(".delete-btn");
-            console.log("clicked", deleteBtn);
+            if (e.target.classList.contains('fa-trash') || 
+                e.target.closest('.delete-btn')) {
+                
+                const deleteBtn = e.target.closest(".delete-btn");
+                
+                if (!deleteBtn) {
+                    // console.error('Delete button not found');
+                    return;
+                }
 
-            const budgetId = deleteBtn.dataset.id;
-            const budgetCard = deleteBtn.closest(".budget-card");
-            const categoryName = budgetCard.querySelector(".category-info h3").textContent;
+                const budgetId = deleteBtn.dataset.id;
+                const budgetCard = deleteBtn.closest(".budget-card");
+                
+                if (!budgetCard) {
+                    // console.error('Budget card not found');
+                    return;
+                }
+                
+                const categoryNameElement = budgetCard.querySelector(".category-info h3");
+                const categoryName = categoryNameElement ? categoryNameElement.textContent : 'this item';
 
-            if (!budgetId) {
-                console.error("Budget ID not found");
-                alert("Error: Budget ID not found");
-                return;
-            }
+                if (!budgetId) {
+                    // console.error("Budget ID not found");
+                    alert("Error: Budget ID not found");
+                    return;
+                }
 
-            if (confirm(`Are you sure you want to delete the budget for "${categoryName}"?`)) {
-                // Disable button during request
-                deleteBtn.disabled = true;
-                deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                if (confirm(`Are you sure you want to delete the budget for "${categoryName}"?`)) {
+                    deleteBtn.disabled = true;
+                    deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
-                try {
-                    console.log("Deleting budget with ID:", budgetId);
-                    const response = await fetch("/budgets/delete_budget/", {
-                        method: "DELETE",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRFToken": getCookie("csrftoken"),
-                        },
-                        body: JSON.stringify({ budget_id: budgetId }),
-                    });
+                    try {
+                        const response = await fetch("/budgets/delete_budget/", {
+                            method: "DELETE",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRFToken": getCookie("csrftoken"),
+                            },
+                            body: JSON.stringify({ budget_id: budgetId }),
+                        });
 
-                    const data = await response.json();
+                        const data = await response.json();
 
-                    if (response.ok) {
-                        // Remove the card from the DOM with animation
-                        budgetCard.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                        budgetCard.style.opacity = '0';
-                        budgetCard.style.transform = 'scale(0.95)';
-                        
-                        setTimeout(() => {
-                            budgetCard.remove();
+                        if (response.ok) {
+                            budgetCard.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                            budgetCard.style.opacity = '0';
+                            budgetCard.style.transform = 'scale(0.95)';
                             
-                            // Update cached data
-                            processedCategories = processedCategories.filter(cat => cat.id !== parseInt(budgetId));
-                            
-                            // Show "no budgets" message if grid is empty
-                            const remainingCards = budgetGrid.querySelectorAll('.budget-card');
-                            if (remainingCards.length === 0) {
-                                budgetGrid.innerHTML = `
-                                    <div class="no-budgets">
-                                        <i class="fas fa-plus-circle"></i>
-                                        <h3>No budgets set yet</h3>
-                                        <p>Use the form on the right to create your first budget</p>
-                                    </div>
-                                `;
-                            }
-                        }, 300);
+                            setTimeout(() => {
+                                budgetCard.remove();
+                                processedCategories = processedCategories.filter(cat => cat.id !== parseInt(budgetId));
+                                
+                                const remainingCards = budgetGrid.querySelectorAll('.budget-card');
+                                if (remainingCards.length === 0) {
+                                    budgetGrid.innerHTML = `
+                                        <div class="no-budgets">
+                                            <i class="fas fa-plus-circle"></i>
+                                            <h3>No budgets set yet</h3>
+                                            <p>Use the form on the right to create your first budget</p>
+                                        </div>
+                                    `;
+                                }
+                            }, 300);
 
-                        // Show success message
-                        showNotification(data.message || "Budget deleted successfully", "success");
+                            showNotification(data.message || "Budget deleted successfully", "success");
+                            
+                        } else {
+                            throw new Error(data.error || "Failed to delete budget");
+                        }
+                    } catch (error) {
+                        // console.error("Error deleting budget:", error);
+                        alert(`Error: ${error.message}`);
                         
-                    } else {
-                        throw new Error(data.error || "Failed to delete budget");
+                        deleteBtn.disabled = false;
+                        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
                     }
-                } catch (error) {
-                    console.error("Error deleting budget:", error);
-                    alert(`Error: ${error.message}`);
-                    
-                    // Re-enable button on error
-                    deleteBtn.disabled = false;
-                    deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
                 }
             }
         });
@@ -181,9 +254,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Utility function to show notifications (optional enhancement)
+    // Utility function to show notifications
     function showNotification(message, type = 'info') {
-        // Create notification element
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
         notification.textContent = message;
@@ -202,7 +274,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
         document.body.appendChild(notification);
 
-        // Remove notification after 3 seconds
         setTimeout(() => {
             notification.style.animation = 'slideOut 0.3s ease';
             setTimeout(() => {
@@ -228,5 +299,5 @@ document.addEventListener("DOMContentLoaded", function() {
     document.head.appendChild(style);
 
     // Initial update in case a category is pre-selected
- updateCurrentProgress();
+    updateCurrentProgress();
 });
