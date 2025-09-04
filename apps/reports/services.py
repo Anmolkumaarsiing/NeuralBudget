@@ -118,7 +118,7 @@ def get_income_data(request):
 
     try:
         # Fetch all income transactions for the user
-        incomes = get_transactions(user_id, INCOME_COLLECTION, limit=1000)
+        incomes = get_transactions(user_id, INCOME_COLLECTION)
         
         # Process data for chart
         income_sources = {}

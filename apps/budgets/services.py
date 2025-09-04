@@ -257,7 +257,7 @@ def generate_smart_categorization(user_id):
     hierarchical spending analysis.
     """
     # 1. Fetch all expense transactions from Firestore
-    all_expenses = get_transactions(user_id, 'expenses', limit=500)
+    all_expenses = get_transactions(user_id, 'expenses')
 
     if not all_expenses:
         return {"error": "No transactions found to analyze."}

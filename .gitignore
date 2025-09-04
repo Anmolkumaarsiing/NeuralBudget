@@ -15,6 +15,7 @@ move_dash_image.pyvenv/
 __pycache__/
 *.pyc
 *.pyo
+.python-version
 *.pyd
 chatbot.log
 GEMINI.md

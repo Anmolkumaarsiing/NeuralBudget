@@ -187,7 +187,7 @@ def generate_investment_guide(user_id, location, salary):
     print("--- 1. Starting Investment Guide Generation ---")
     
     thirty_days_ago = datetime.now() - timedelta(days=30)
-    all_expenses = get_transactions(user_id, 'expenses', limit=1000)
+    all_expenses = get_transactions(user_id, 'expenses')
     
     recent_expenses = [
         t for t in all_expenses
