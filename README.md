@@ -28,15 +28,21 @@ This project addresses the challenges of modern financial management by integrat
 *   **Password Reset:** A secure password reset functionality is available, allowing users to reset their password via a link sent to their email.
 
 ### **Financial Tracking & Management**
-*   **Smart Expense Categorization:** Upload a receipt or a screenshot of a transaction, and the AI-powered OCR and LLM will automatically extract the details, categorize the expense, and record it.
-*   **Manual Transactions:** Users can manually add their income and expenses, with the ability to select from a list of predefined or custom categories.
-*   **Budgeting:** Set monthly budgets for different expense categories and get warnings when you are about to exceed them.
-*   **Transaction History:** View a detailed history of all your transactions, with options to filter and search.
+*   **Smart Expense Categorization:** Upload a receipt or a screenshot of a transaction, and the AI-powered OCR (PaddleOCR) and LLM (Google Generative AI) will automatically extract details like amount, merchant, and date, categorize the expense, and record it seamlessly.
+*   **Manual Transactions:** Users can manually add income and expenses via intuitive forms, selecting from predefined or custom categories.
+*   **Budgeting & Savings Goals:** Set monthly budgets for categories (e.g., food, travel) with real-time tracking and alerts for overspending; track progress toward savings goals with visual indicators.
+*   **Transaction History:** View a detailed, searchable history of all transactions with filters by date, category, or amount.
 
-### **AI-Powered Insights**
-*   **Spending Analysis:** Get a visual breakdown of your spending habits with interactive charts and graphs.
-*   **Predictive Analytics:** The system uses machine learning models to forecast future expenses and provide insights into spending patterns.
-*   **AI-Powered Chatbot:** An interactive chatbot, powered by Google Generative AI, to answer user queries and provide financial assistance.
+### **AI-Powered Insights & Analytics**
+*   **Spending Analysis:** Interactive dashboards with charts and graphs (Matplotlib/Seaborn) breaking down spending habits by category, time, and trends.
+*   **Predictive Analytics:** Machine learning models (Scikit-learn) forecast future expenses, detect patterns, and provide actionable insights to optimize spending.
+*   **Investment Guide:** Personalized recommendations and tips for investments based on spending patterns and financial goals.
+*   **AI-Powered Chatbot:** An interactive, real-time chatbot using Google Generative AI to answer queries (e.g., "What's my food spending this month?") and offer tailored financial advice.
+
+### **Developer & Testing Tools**
+*   **Data Generation:** Built-in tools to generate realistic historical or test data for transactions and budgets, aiding development and testing.
+*   **Reports & Visualizations:** Comprehensive reporting module for exporting insights and generating custom visualizations.
+*   **Modular Architecture:** Separate apps for accounts, budgets, transactions, insights, and more, with shared utilities for Firebase integration and auth middleware for secure sessions.
 
 ---
 

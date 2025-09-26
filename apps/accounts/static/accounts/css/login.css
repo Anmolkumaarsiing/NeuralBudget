@@ -137,7 +137,8 @@ input:checked + .slider:before {
 .signin-signup {
   position: relative;
   width: 100%;
-  /* min-height: 700px; */ /* Removed */
+  height: 620px; /* Set height for login form */
+  transition: height 0.6s ease-in-out;
 }
 
 form {
@@ -169,6 +170,10 @@ form {
 }
 
 /* When in sign-up mode, shift forms */
+.container.sign-up-mode .signin-signup {
+  height: 820px; /* Taller height for sign-up form */
+}
+
 .container.sign-up-mode .sign-in-form {
   transform: translateX(-100%);
   opacity: 0;
