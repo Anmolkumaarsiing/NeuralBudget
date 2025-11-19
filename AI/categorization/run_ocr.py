@@ -1,35 +1,55 @@
 import os
-import logging
-from paddleocr import PaddleOCR
+import google.generativeai as genai
+from PIL import Image
+from dotenv import load_dotenv
 
-# Suppress PaddleOCR logging
-logging.getLogger('ppocr').setLevel(logging.ERROR)
+# Load env
+load_dotenv()
 
-# Initialize OCR
-ocr = PaddleOCR(use_angle_cls=True, lang="en", show_log=False)
+# Configure Gemini
+# Ensure GEMINI_API_KEY is set in your .env file
+api_key = os.getenv("GEMINI_API_KEY")
+
+
+if api_key:
+    genai.configure(api_key=api_key)
+else:
+    print("Warning: GEMINI_API_KEY or GOOGLE_API_KEY not found in environment variables.")
 
 def get_ocr_text(image_path):
+    """
+    Extracts text from an image using Google Gemini 1.5 Flash.
+    """
     # Check if the file exists
     if not os.path.isfile(image_path):
         print(f"Error: File '{image_path}' not found! Check the path.")
-        return ""  # Return empty if file doesn't exist
-
-    # Run OCR if the file exists
-    print("Processing OCR")
-    res_text = ""
-    result = ocr.ocr(image_path, cls=True)
-
-    # The result is a list containing one element for the single image processed.
-    # It can be None or contain None if no text is found.
-    if not result or not result[0]:
         return ""
 
-    image_result = result[0]
-    
-    extracted_texts = []
-    for line in image_result:
-        # Each line is a list containing the bounding box and a tuple of (text, confidence)
-        if line and len(line) > 1 and isinstance(line[1], tuple) and len(line[1]) > 0:
-            extracted_texts.append(line[1][0])
+    if not api_key:
+        print("Error: API key not configured. Cannot run Gemini OCR.")
+        return ""
 
-    return "\n".join(extracted_texts).strip()
+    print("Processing OCR with Gemini...")
+    try:
+
+        model = genai.GenerativeModel('gemini-flash-lite-latest')
+        
+        # Use context manager to ensure file is closed
+        with Image.open(image_path) as img:
+            # Prompt for pure text extraction
+            response = model.generate_content(["Check whether the image is for screenshot of a trancastion via any UPI app. If yes then, extract all text from this image verbatim. Do not add any markdown formatting or explanations, just the raw text. If no, Just repond Not a screenshot.", img])
+            
+            if response.text:
+                cleaned_text = response.text.strip()
+                # Check for the specific rejection phrase from the prompt
+                if "Not a screenshot" in cleaned_text:
+                    print("Gemini rejected image: Not a transaction screenshot.")
+                    return ""
+                return cleaned_text
+            else:
+                print("Gemini returned empty response.")
+                return ""
+            
+    except Exception as e:
+        print(f"Error during Gemini OCR: {e}")
+        return ""

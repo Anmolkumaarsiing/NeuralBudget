@@ -533,3 +533,172 @@
         flex: 1;
     }
 }
+
+/* --- 13. OCR Preview Modal --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    background-color: var(--light-bg);
+    margin: 5% auto;
+    padding: 30px;
+    border: 1px solid var(--light-border);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: var(--shadow-medium);
+    position: relative;
+    animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: var(--theme-secondary);
+    font-size: 22px;
+    text-align: center;
+}
+
+.modal-content p {
+    text-align: center;
+    color: var(--light-text-secondary);
+    margin-bottom: 25px;
+    font-size: 15px;
+}
+
+/* Re-use entry form styles for modal form */
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal-content label {
+    font-weight: 600;
+    color: var(--light-text);
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.modal-content input,
+.modal-content select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--light-border);
+    border-radius: 8px;
+    font-size: 15px;
+    background-color: var(--light-surface);
+    color: var(--light-text);
+    transition: all var(--transition-standard);
+    box-sizing: border-box;
+}
+
+.modal-content input:focus,
+.modal-content select:focus {
+    border-color: var(--theme-primary);
+    box-shadow: 0 0 0 3px rgba(36, 167, 145, 0.1);
+    outline: none;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.modal-actions button {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-standard);
+}
+
+#cancelPreviewBtn {
+    background-color: var(--light-border);
+    color: var(--light-text);
+}
+
+#cancelPreviewBtn:hover {
+    background-color: #d1d5db;
+}
+
+#confirmTransactionBtn {
+    background-color: var(--theme-primary);
+    color: white;
+}
+
+#confirmTransactionBtn:hover {
+    background-color: #2a9e80;
+}
+
+/* Dark Mode for Modal */
+.dark-mode .modal-content {
+    background-color: var(--dark-bg);
+    border-color: var(--dark-border);
+    box-shadow: var(--shadow-dark);
+}
+
+.dark-mode .modal-content h3 {
+    color: var(--dark-text);
+}
+
+.dark-mode .modal-content p {
+    color: var(--dark-text-secondary);
+}
+
+.dark-mode .modal-content label {
+    color: var(--dark-text);
+}
+
+.dark-mode .modal-content input,
+.dark-mode .modal-content select {
+    background-color: var(--dark-surface);
+    color: var(--dark-text);
+    border-color: var(--dark-border);
+}
+
+.dark-mode .modal-content input:focus,
+.dark-mode .modal-content select:focus {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 0 3px rgba(42, 245, 161, 0.1);
+}
+
+.dark-mode #cancelPreviewBtn {
+    background-color: var(--dark-border);
+    color: var(--dark-text);
+}
+
+.dark-mode #cancelPreviewBtn:hover {
+    background-color: #4a5568;
+}
+
+.dark-mode #confirmTransactionBtn {
+    background-color: var(--accent-green);
+    color: var(--dark-bg);
+}
+
+.dark-mode #confirmTransactionBtn:hover {
+    background-color: #1dd882;
+}

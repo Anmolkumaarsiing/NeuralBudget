@@ -35,7 +35,7 @@
 - **Templates**: Django templates in `apps/<app>/templates/<app>/`
 
 ### AI/ML Components
-- **OCR**: PaddleOCR for receipt/transaction image processing
+- **OCR & Categorization**: Google Gemini 1.5 Flash for receipt/transaction image processing and categorization
 - **Predictive Analytics**: Scikit-learn, NumPy, Pandas for forecasting expenses
 - **Generative AI**: Google Generative AI for chatbot and categorization
 - **Visualization**: Matplotlib, Seaborn for charts/graphs
@@ -254,7 +254,7 @@ Core expense/income tracking.
 ### OCR for Smart Categorization
 - **Location**: `AI/categorization/`
 - **Files**:
-  - `run_ocr.py`: Processes images (e.g., receipts) using PaddleOCR.
+  - `run_ocr.py`: Processes images (e.g., receipts) using Google Gemini 1.5 Flash.
   - `structured_output.py`: Parses OCR text into structured data (amount, merchant, date).
 - **Usage**: In budgets/smart_categorization.html, upload image → run_ocr → LLM categorizes (e.g., "Groceries") → save to transactions.
 - **Example Flow**: Image → OCR extracts "Coffee $5" → GenAI classifies as "Dining" → Check budget.
@@ -279,7 +279,7 @@ Core expense/income tracking.
 - Python 3.8+
 - Git, Pip, Virtualenv
 - Firebase project (for Auth/Firestore)
-- PaddleOCR, Google GenAI API key
+- Google GenAI API key
 
 ### Step-by-Step Setup
 1. **Clone Repo**:
@@ -297,7 +297,7 @@ Core expense/income tracking.
 3. **Install Dependencies**:
    ```
    pip install -r requirement.txt
-   # For ML: pip install paddleocr scikit-learn google-generativeai matplotlib seaborn
+   # For ML: pip install scikit-learn google-generativeai matplotlib seaborn
    ```
 
 4. **Firebase Setup**:
@@ -350,7 +350,7 @@ Core expense/income tracking.
 
 ## Troubleshooting
 - **Firebase Errors**: Check `firebase_key.json` path and `.env`.
-- **OCR Fails**: Ensure PaddleOCR installed; test with `AI/categorization/run_ocr.py`.
+- **OCR Fails**: Ensure Google GenAI API key is set; test with `AI/categorization/run_ocr.py`.
 - **No Models**: Project leans on Firestore; add Django models if needed for local caching.
 - **Templates Missing**: Extend `core/base.html` in all apps.
 

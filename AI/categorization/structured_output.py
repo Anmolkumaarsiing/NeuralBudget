@@ -1,18 +1,19 @@
-from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
-from dotenv import load_dotenv
+import google.generativeai as genai
 import os
-import sys
 import json
 from datetime import datetime
-
-# Add project root to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+from dotenv import load_dotenv
 
 # Load env first
 load_dotenv()
 
-# Import Firestore client from centralized setup (if needed, but not for this function's return)
-# from apps.common_utils.firebase_config import db
+# Configure Gemini
+api_key = os.getenv("GEMINI_API_KEY")
+if not api_key:
+    api_key = os.getenv("GOOGLE_API_KEY")
+
+if api_key:
+    genai.configure(api_key=api_key)
 
 # === Category Logic ===
 CATEGORY_KEYWORDS = {
@@ -27,17 +28,6 @@ CATEGORY_KEYWORDS = {
 }
 
 def process_transaction_text(ocr_text: str, user_id: str) -> dict:
-    # === LLM Setup ===
-    llm = HuggingFaceEndpoint(
-        repo_id="mistralai/Mistral-7B-Instruct-v0.3",
-        task="text-generation",
-        huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN"),
-        max_new_tokens=500,
-        temperature=0.6,
-    )
-
-    model = ChatHuggingFace(llm=llm)
-
     # === Get Categories ===
     categories = list(CATEGORY_KEYWORDS.keys())
 
@@ -84,26 +74,29 @@ def process_transaction_text(ocr_text: str, user_id: str) -> dict:
     - Your entire response must be ONLY the JSON object.
     """
 
-    response = model.invoke(prompt)
-
-    # === Parse JSON ===
     try:
-        response_text = response.content if hasattr(response, 'content') else str(response)
+        model = genai.GenerativeModel('gemini-flash-latest')
+        response = model.generate_content(prompt)
+        
+        response_text = response.text
+        # Clean up markdown if present
         if '```json' in response_text:
             response_text = response_text.split('```json')[1].split('```')[0]
+        elif '```' in response_text:
+            response_text = response_text.split('```')[1].split('```')[0]
         
         raw_data = json.loads(response_text.strip())
 
         # Check if the LLM returned a structured error
         if raw_data.get("error"):
             print(f"LLM returned a structured error: {raw_data['error']}")
-            transaction = {{
+            transaction = {
                 "amount": 0,
                 "category": "Other",
                 "date": datetime.now().strftime('%Y-%m-%d'),
                 "name": "Unreadable Transaction",
                 "status": "Failed"
-            }}
+            }
         else:
             # Initialize with defaults to ensure structure
             transaction = {
@@ -122,16 +115,15 @@ def process_transaction_text(ocr_text: str, user_id: str) -> dict:
                 # Log if the transaction format is not a dict, and use defaults
                 print(f"Warning: LLM returned 'transaction' but it was not a dictionary. Using defaults.")
 
-    except (json.JSONDecodeError, IndexError) as e:
+    except Exception as e:
         print(f"Error parsing LLM response: {e}")
-        print(f"Raw response: {response_text}")
-        transaction = {{
+        transaction = {
             "amount": 0,
             "category": "Other",
             "date": datetime.now().strftime('%Y-%m-%d'),
             "name": "Processing Error",
             "status": "Failed"
-        }}
+        }
 
     # Final validation and timestamping
     if transaction.get("category") not in categories:
@@ -140,5 +132,3 @@ def process_transaction_text(ocr_text: str, user_id: str) -> dict:
     transaction["timestamp"] = datetime.now().isoformat()
 
     return transaction
-
-# Removed standalone testing block

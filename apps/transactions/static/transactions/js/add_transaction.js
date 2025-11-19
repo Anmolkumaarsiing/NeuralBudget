@@ -75,18 +75,31 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // OCR Form submission
+    // OCR Form submission
+    // OCR Form submission
     const ocrForm = document.getElementById('ocrForm');
+    const previewModal = document.getElementById('ocrPreviewModal');
+    const previewForm = document.getElementById('previewForm');
+    const cancelPreviewBtn = document.getElementById('cancelPreviewBtn');
+
+    console.log("OCR Elements:", { ocrForm, previewModal, previewForm, cancelPreviewBtn }); // Debug log
+
     if (ocrForm) {
         ocrForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(ocrForm);
             const receiptFile = formData.get('image');
-            console.log(receiptFile);
 
             if (!receiptFile || receiptFile.size === 0) {
                 alert('Please select an image to upload.');
                 return;
             }
+
+            // Show loading state (optional but good)
+            const submitBtn = ocrForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.textContent = 'Processing...';
+            submitBtn.disabled = true;
 
             try {
                 const ocrResponse = await fetch('/ml_features/categorize_expense/', {
@@ -103,33 +116,87 @@ document.addEventListener("DOMContentLoaded", function () {
                     throw new Error(ocrData.error || 'Failed to process image.');
                 }
 
-                // Now, send the extracted transaction data to the add_transaction endpoint
-                const transactionData = ocrData.transaction;
-                const userId = localStorage.getItem("uid");
+                // Populate Preview Modal
+                const transaction = ocrData.transaction;
+                document.getElementById('preview-name').value = transaction.name || '';
+                document.getElementById('preview-amount').value = transaction.amount || 0;
+                document.getElementById('preview-date').value = transaction.date || new Date().toISOString().split('T')[0];
+                document.getElementById('preview-category').value = transaction.category || 'Other';
+                document.getElementById('preview-status').value = transaction.status || 'Pending';
 
+                // Show Modal
+                previewModal.style.display = 'block';
+
+            } catch (error) {
+                console.error('Error processing image:', error);
+                alert(error.message);
+            } finally {
+                submitBtn.textContent = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        });
+    }
+
+    // Handle Preview Confirmation
+    if (previewForm) {
+        previewForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log("Preview form submitted"); // Debug log
+
+            const transaction = {
+                name: document.getElementById('preview-name').value,
+                amount: parseFloat(document.getElementById('preview-amount').value),
+                date: document.getElementById('preview-date').value,
+                category: document.getElementById('preview-category').value,
+                status: document.getElementById('preview-status').value
+            };
+
+            const userId = localStorage.getItem("uid");
+
+            try {
                 const addResponse = await fetch('/transactions/add_transaction/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRFToken': getCookie('csrftoken'),
                     },
-                    body: JSON.stringify({ transaction: transactionData, id: userId }),
+                    body: JSON.stringify({ transaction: transaction, id: userId }),
                 });
 
                 const addData = await addResponse.json();
 
                 if (addResponse.ok) {
-                    alert('Transaction extracted and added successfully!');
+                    alert('Transaction added successfully!');
+                    previewModal.style.display = 'none';
                     window.location.href = "/transactions/transaction_history/";
                 } else {
                     throw new Error(addData.error || 'Failed to save transaction.');
                 }
             } catch (error) {
-                console.error('Error processing image:', error);
+                console.error('Error saving transaction:', error);
                 alert(error.message);
             }
         });
+    } else {
+        console.error("Preview form not found!");
     }
+
+    // Handle Cancel
+    if (cancelPreviewBtn) {
+        cancelPreviewBtn.addEventListener('click', () => {
+            console.log("Cancel button clicked"); // Debug log
+            previewModal.style.display = 'none';
+        });
+    } else {
+        console.error("Cancel button not found!");
+    }
+
+    // Close modal if clicked outside
+    window.addEventListener('click', (event) => {
+        if (event.target === previewModal) {
+            previewModal.style.display = 'none';
+        }
+    });
 
     // UI Toggles
     const expenseBtn = document.getElementById('expenseBtn');
@@ -210,10 +277,10 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("other-category-container").style.display =
             selected === "Other" ? "block" : "none";
     }
-    
+
     // Handle add category button click
     const addCategoryBtn = document.getElementById("add-category-btn");
-    if(addCategoryBtn) {
+    if (addCategoryBtn) {
         addCategoryBtn.addEventListener("click", async () => {
             const newCategoryName = document.getElementById("other-category").value.trim();
             if (newCategoryName) {

@@ -28,7 +28,7 @@ This project addresses the challenges of modern financial management by integrat
 *   **Password Reset:** A secure password reset functionality is available, allowing users to reset their password via a link sent to their email.
 
 ### **Financial Tracking & Management**
-*   **Smart Expense Categorization:** Upload a receipt or a screenshot of a transaction, and the AI-powered OCR (PaddleOCR) and LLM (Google Generative AI) will automatically extract details like amount, merchant, and date, categorize the expense, and record it seamlessly.
+*   **Smart Expense Categorization:** Upload a receipt or a screenshot of a transaction, and the AI-powered OCR (Google Gemini 1.5 Flash) will automatically extract details like amount, merchant, and date, categorize the expense, and record it seamlessly.
 *   **Manual Transactions:** Users can manually add income and expenses via intuitive forms, selecting from predefined or custom categories.
 *   **Budgeting & Savings Goals:** Set monthly budgets for categories (e.g., food, travel) with real-time tracking and alerts for overspending; track progress toward savings goals with visual indicators.
 *   **Transaction History:** View a detailed, searchable history of all transactions with filters by date, category, or amount.
@@ -70,7 +70,7 @@ This project is based on the research paper **"NeuralBudget: An AI-Powered Perso
 *   **Frontend:** HTML, CSS, JavaScript
 *   **Database:** PostgreSQL, SQLite, Firebase Firestore
 *   **AI/ML:**
-    *   **OCR:** PaddleOCR
+    *   **OCR & Categorization:** Google Gemini 1.5 Flash
     *   **Predictive Analytics:** Scikit-learn, NumPy, Pandas
     *   **Generative AI:** Google Generative AI
 *   **Visualization:** Matplotlib, Seaborn
