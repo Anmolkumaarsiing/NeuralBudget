@@ -8,7 +8,7 @@ matplotlib==3.8.0
 seaborn==0.13.0
 mongoengine==0.23.1
 pymongo==3.12.3
-dotenv
+python-dotenv
 setuptools
 langchain_huggingface
 langchain_community

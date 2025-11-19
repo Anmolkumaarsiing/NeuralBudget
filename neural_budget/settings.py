@@ -24,8 +24,8 @@ else:
     SESSION_COOKIE_SECURE=False
 
 SESSION_COOKIE_HTTPONLY = True
-DEBUG = True
-ALLOWED_HOSTS = []
+DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 # Applicationdefinition
 
@@ -106,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 import mongoengine
 
-mongoengine.connect(db='your-mongodb-database-name', host='localhost', port=27017) #TODO: Replace with your database name
+# mongoengine.connect(db='your-mongodb-database-name', host='localhost', port=27017) #TODO: Replace with your database name
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -128,6 +128,7 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 
