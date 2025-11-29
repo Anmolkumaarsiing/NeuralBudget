@@ -1,7 +1,6 @@
 .env
 env
-myenv
-venv/
+myvenv
 firebase_key.json
 db.sqlite3
 /neural_budget/__pycache__
