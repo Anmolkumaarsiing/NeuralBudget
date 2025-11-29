@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import statistics
 import google.generativeai as genai
 from django.conf import settings
-from apps.common_utils.firebase_service import get_transactions
+from apps.common_utils.firebase_service import get_transactions, db
 
 
 def generate_predictive_analysis(user_id):

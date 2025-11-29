@@ -6,6 +6,9 @@ from google.cloud.firestore_v1.base_query import FieldFilter
 from apps.common_utils.firebase_config import db # Import db
 from datetime import datetime # Import the datetime module
 
+from dotenv import load_dotenv
+
+load_dotenv()
 # --- Service functions for Budgeting ---
 
 CATEGORY_DISPLAY_MAP = {
@@ -38,6 +41,7 @@ CATEGORY_ICONS = {
     "uncategorized": "fas fa-question-circle",
 }
 
+load_dotenv()
 def get_categories(user_id):
     return get_user_categories(user_id)
 
@@ -297,7 +301,7 @@ def generate_smart_categorization(user_id):
     # 4. Call the Gemini API and parse the response
     try:
         genai.configure(api_key=settings.GEMINI_API_KEY)
-        model = genai.GenerativeModel(gemini-flash-lite-latest)
+        model = genai.GenerativeModel("gemini-flash-lite-latest")
         response = model.generate_content(prompt)
         
         result_text = response.text.strip().replace("```json", "").replace("```", "")
