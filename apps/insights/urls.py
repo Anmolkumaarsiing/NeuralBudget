@@ -14,4 +14,5 @@ urlpatterns = [
     path('investment-guide/', views.investment_guide_page, name='investment_guide'),
     path('api/generate-investment-tips/', views.generate_investment_tips_api, name='generate_investment_tips_api'),
     path("api/get-city/", views.get_city_api, name="get_city_api"),
+    path('api/get-spending-insights/', views.get_spending_insights_api, name='get_spending_insights_api'),
 ]

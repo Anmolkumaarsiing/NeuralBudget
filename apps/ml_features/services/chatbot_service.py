@@ -37,8 +37,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
-LLM_REPO_ID = "mistralai/Mixtral-8x7B-Instruct-v0.1"
-FALLBACK_LLM_REPO_ID = "HuggingFaceH4/zephyr-7b-beta"
+LLM_REPO_ID = "meta-llama/Llama-3.1-70B-Instruct"
+FALLBACK_LLM_REPO_ID = "meta-llama/Meta-Llama-3.1-8B-Instruct"
+
+
 VECTOR_COLLECTION_NAME = "user_transaction_vectors"
 CHROMA_PERSIST_DIR = "./chroma_db"
 

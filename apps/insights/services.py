@@ -105,7 +105,7 @@ def generate_predictive_analysis(user_id):
     # 6. Call Gemini API
     try:
         genai.configure(api_key=settings.GEMINI_API_KEY)
-        model = genai.GenerativeModel("gemini-1.5-flash-latest")
+        model = genai.GenerativeModel("gemini-flash-lite-latest")
         response = model.generate_content(prompt)
 
         result_text = response.text.strip().replace("```json", "").replace("```", "")
@@ -161,7 +161,7 @@ def generate_smart_categorization(user_id):
     """
     try:
         genai.configure(api_key=settings.GEMINI_API_KEY)
-        model = genai.GenerativeModel("gemini-1.5-flash-latest")
+        model = genai.GenerativeModel("gemini-flash-lite-latest")
         response = model.generate_content(prompt)
         result_text = response.text.strip().replace("```json", "").replace("```", "")
         return json.loads(result_text)
@@ -220,7 +220,7 @@ def generate_investment_guide(user_id, location, salary):
     try:
         print("--- 4. Sending prompt to Gemini API... ---")
         genai.configure(api_key=settings.GEMINI_API_KEY)
-        model = genai.GenerativeModel("gemini-1.5-flash-latest")
+        model = genai.GenerativeModel("gemini-flash-lite-latest")
         response = model.generate_content(prompt)
         
         print("--- 5. Received response from Gemini. Parsing JSON... ---")
@@ -264,3 +264,84 @@ def get_city_from_coordinates(lat, lon):
         )
     except Exception:
         return "Unknown"
+
+
+def generate_spending_insights(user_id):
+    """
+    Analyzes user spending to provide personalized insights and suggestions.
+    """
+    all_expenses = get_transactions(user_id, 'expenses')
+    if not all_expenses:
+        return {"error": "No transaction data found to generate insights."}
+
+    # Aggregate spending by category for the last 30 days
+    thirty_days_ago = datetime.now() - timedelta(days=30)
+    recent_expenses = [
+        tx for tx in all_expenses
+        if isinstance(tx.get('date'), datetime) and tx['date'].replace(tzinfo=None) > thirty_days_ago
+    ]
+
+    category_spending = {}
+    for tx in recent_expenses:
+        category = tx.get('category', 'Uncategorized')
+        amount = float(tx.get('amount', 0))
+        category_spending[category] = category_spending.get(category, 0) + amount
+
+    # Prepare data for Gemini
+    spending_summary = []
+    for category, total_amount in category_spending.items():
+        spending_summary.append(f"{category}: ₹{total_amount:.2f}")
+    
+    total_recent_spend = sum(category_spending.values())
+
+    prompt = f"""
+    You are "SAVI", an expert financial advisor for the "Neural Budget AI" app.
+    Your task is to provide personalized spending insights and actionable suggestions to a user based on their recent spending.
+
+    **User's Recent Spending (last 30 days):**
+    - Total Spent: ₹{total_recent_spend:.2f}
+    - Breakdown by Category:
+      {', '.join(spending_summary) if spending_summary else 'No specific category spending found.'}
+
+    **Your Output:**
+    Generate a valid JSON object with the following structure:
+    {{
+      "summary": "A concise, encouraging summary of their spending habits.",
+      "insights": [
+        {{
+          "title": "Insight Title 1",
+          "icon": "<FontAwesome Icon Name (e.g., 'fa-lightbulb', 'fa-chart-line')>",
+          "description": "Detailed explanation of the insight.",
+          "suggestion": "Actionable advice or tip related to the insight."
+        }},
+        ... (2-3 more insights)
+      ],
+      "top_categories": [
+        {{
+          "name": "Category Name 1",
+          "amount": <float>,
+          "percentage": <float>
+        }},
+        ... (Top 3-5 categories by spending)
+      ]
+    }}
+
+    Focus on:
+    - Identifying patterns (e.g., high spending in a particular category, unusual spikes).
+    - Providing clear, actionable advice.
+    - Maintaining a positive and supportive tone.
+    - Using relevant FontAwesome icons for each insight.
+    """
+
+    try:
+        genai.configure(api_key=settings.GEMINI_API_KEY)
+        model = genai.GenerativeModel("gemini-flash-lite-latest")
+        response = model.generate_content(prompt)
+
+        result_text = response.text.strip().replace("```json", "").replace("```", "")
+        insights_data = json.loads(result_text)
+
+        return insights_data
+    except Exception as e:
+        print(f"Gemini API Error for Spending Insights: {e}")
+        return {"error": "The AI could not generate your spending insights. Please try again later."}

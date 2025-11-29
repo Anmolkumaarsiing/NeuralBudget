@@ -6,8 +6,6 @@ from dotenv import load_dotenv
 # Load env
 load_dotenv()
 
-# Configure Gemini
-# Ensure GEMINI_API_KEY is set in your .env file
 api_key = os.getenv("GEMINI_API_KEY")
 
 
@@ -32,7 +30,7 @@ def get_ocr_text(image_path):
     print("Processing OCR with Gemini...")
     try:
 
-        model = genai.GenerativeModel('gemini-flash-lite-latest')
+        model = genai.GenerativeModel(gemini-flash-lite-latest)
         
         # Use context manager to ensure file is closed
         with Image.open(image_path) as img:

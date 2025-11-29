@@ -29,7 +29,7 @@ def chatbot_api(request):
         )
 
         # Use the latest, recommended model
-        model = genai.GenerativeModel("gemini-1.5-flash-latest")
+        model = genai.GenerativeModel("gemini-flash-lite-latest")
         response = model.generate_content(prompt)
         
         return JsonResponse({"reply": response.text})

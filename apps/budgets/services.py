@@ -221,7 +221,7 @@ def create_smart_saver_plan(data):
 
     try:
         genai.configure(api_key=settings.GEMINI_API_KEY)
-        model = genai.GenerativeModel("gemini-1.5-flash-latest")
+        model = genai.GenerativeModel("gemini-flash-lite-latest")
         response = model.generate_content(prompt)
         logger.info("GenAI called successfully for plan")
 
@@ -297,7 +297,7 @@ def generate_smart_categorization(user_id):
     # 4. Call the Gemini API and parse the response
     try:
         genai.configure(api_key=settings.GEMINI_API_KEY)
-        model = genai.GenerativeModel("gemini-1.5-flash-latest")
+        model = genai.GenerativeModel(gemini-flash-lite-latest)
         response = model.generate_content(prompt)
         
         result_text = response.text.strip().replace("```json", "").replace("```", "")

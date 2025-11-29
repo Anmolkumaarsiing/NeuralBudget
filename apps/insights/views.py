@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+import json
 from apps.common_utils.auth_utils import get_email, get_user_id
 from apps.common_utils.firebase_service import get_user_profile
 from . import services
@@ -95,3 +96,14 @@ def get_city_api(request):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
     return JsonResponse({"error": "Invalid method"}, status=405)
+
+
+def get_spending_insights_api(request):
+    """
+    API endpoint that returns the AI-generated spending insights.
+    """
+    user_id = get_user_id(request)
+    insights_data = services.generate_spending_insights(user_id)
+    if "error" in insights_data:
+        return JsonResponse(insights_data, status=400)
+    return JsonResponse(insights_data)

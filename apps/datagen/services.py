@@ -9,7 +9,7 @@ def generate_transaction_batch(num_transactions: int, user_categories: list):
     Generates a batch of hyper-realistic transaction data using an optimized Gemini API prompt.
     """
     genai.configure(api_key=settings.GEMINI_API_KEY)
-    model = genai.GenerativeModel("gemini-1.5-flash-latest")
+    model = genai.GenerativeModel("gemini-flash-lite-latest")
     
     categories_str = ", ".join([f'"{c}"' for c in user_categories])
 
@@ -167,7 +167,7 @@ def generate_historical_data(user_id, constraints):
     Generates a batch of historical transaction data based on user constraints.
     """
     genai.configure(api_key=settings.GEMINI_API_KEY)
-    model = genai.GenerativeModel("gemini-1.5-flash-latest")
+    model = genai.GenerativeModel("gemini-flash-lite-latest")
     
     # --- NEW OPTIMIZED PROMPT ---
     prompt = f"""
