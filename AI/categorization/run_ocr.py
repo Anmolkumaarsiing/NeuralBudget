@@ -30,17 +30,17 @@ def get_ocr_text(image_path):
     print("Processing OCR with Gemini...")
     try:
 
-        model = genai.GenerativeModel(gemini-flash-lite-latest)
+        model = genai.GenerativeModel("gemini-flash-lite-latest")
         
         # Use context manager to ensure file is closed
         with Image.open(image_path) as img:
             # Prompt for pure text extraction
-            response = model.generate_content(["Check whether the image is for screenshot of a trancastion via any UPI app. If yes then, extract all text from this image verbatim. Do not add any markdown formatting or explanations, just the raw text. If no, Just repond Not a screenshot.", img])
+            response = model.generate_content(["Determine if this image is a screenshot of a transaction receipt from a UPI app (such as Paytm, PhonePe, Google Pay, BHIM UPI, or similar). If it is, extract all visible text from the image exactly as it appears, including amounts, dates, and details, without adding any formatting, markdown, explanations, or non-text elements. If it is not a transaction screenshot, respond with 'Not a transaction screenshot'.", img])
             
             if response.text:
                 cleaned_text = response.text.strip()
                 # Check for the specific rejection phrase from the prompt
-                if "Not a screenshot" in cleaned_text:
+                if "Not a transaction screenshot" in cleaned_text:
                     print("Gemini rejected image: Not a transaction screenshot.")
                     return ""
                 return cleaned_text
